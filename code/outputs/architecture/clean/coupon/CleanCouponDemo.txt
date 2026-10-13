@@ -1,0 +1,5 @@
+=== Grocery: one use case, two presenters ===
+web    CART-1 MANGO20  -> {"ok":true,"subtotal":"₹1,447.00","discount":"-₹200.00","total":"₹1,247.00","note":"coupon applied"}
+mobile CART-1 MANGO20  -> 🎉 You saved ₹200
+mobile CART-2 MANGO20  -> ⚠ add ₹101 more to use MANGO20
+mobile CART-1 DIWALI10 -> ⚠ coupon expired on 2025-11-05

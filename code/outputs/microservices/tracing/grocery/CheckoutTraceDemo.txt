@@ -1,0 +1,8 @@
+=== Grocery: tracing one slow checkout across services ===
+trace-id bba3bf02597de5beb5915af31e40d9b2
+  api-gateway: POST /checkout                         1493 ms |########################################
+    order-service: placeOrder                         1485 ms |########################################
+      inventory-service: reserve                        40 ms |#
+      payment-service: charge                         1420 ms | ######################################
+        payment-service: HTTP POST bank /authorize    1400 ms |  ######################################
+The tree shows where the time went: payment-service waiting on the bank.

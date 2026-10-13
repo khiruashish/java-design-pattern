@@ -1,0 +1,8 @@
+=== Streaming: personalised row with layered fallbacks ===
+P-1: For you [Monsoon Express, Spice Route]
+-- Friday 9 pm peak: recommender overloaded --
+    [recommender] CLOSED -> OPEN
+P-1: For you (cached) [Monsoon Express, Spice Route]
+P-2: Popular now [City of Rain, Monsoon Express]
+P-1: For you (cached) [Monsoon Express, Spice Route]   <- breaker open, recommender not called
+P-3: Popular now [City of Rain, Monsoon Express]

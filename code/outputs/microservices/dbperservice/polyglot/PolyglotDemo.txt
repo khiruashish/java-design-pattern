@@ -1,0 +1,6 @@
+=== E-commerce: each service picks the store that fits ===
+session-service (key-value + TTL): sess-91 -> CUST-42
+                31 minutes later : sess-91 -> null
+search-service (inverted index)  : 'organic' -> [Organic Alphonso Mangoes 1 kg, Organic Basmati Rice 5 kg]
+                                   'organic mangoes' -> [Organic Alphonso Mangoes 1 kg]
+payment-service (relational, ACID): ledger sums to 0 across 2 entries

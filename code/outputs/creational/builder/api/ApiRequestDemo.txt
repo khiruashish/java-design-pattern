@@ -1,0 +1,4 @@
+GET https://api.example.com/payments timeout=5s
+POST retries=3 headers=[Authorization, Idempotency-Key]
+Original unchanged? true
+Rejected: Retried POSTs need an Idempotency-Key header

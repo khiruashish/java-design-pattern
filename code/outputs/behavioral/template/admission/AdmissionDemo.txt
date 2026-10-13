@@ -1,0 +1,12 @@
+=== Hospital: Patient Admission ===
+Emergency (road accident):
+  - registered P-7781
+  - triage level 1 (critical), doctor paged
+  - bed assigned: ICU-04
+  - billing account opened, deposit deferred
+Planned (knee surgery):
+  - registered P-1204
+  - pre-op checklist verified
+  - insurance pre-authorization requested
+  - bed assigned: WARD-2B-17
+  - billing account opened, deposit INR 20000

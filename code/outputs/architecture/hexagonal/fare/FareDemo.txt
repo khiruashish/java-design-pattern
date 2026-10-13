@@ -1,0 +1,4 @@
+=== Ride-hailing: same fare core, swappable routing adapters ===
+GeoMaps adapter  : ₹611.30 for 38.4 km / 67 min (route from GeoMaps traffic)
+Offline adapter  : ₹691.00 for 39.8 km / 109 min (route from offline estimate)
+GeoMaps down     : ₹691.00 for 39.8 km / 109 min (route from offline estimate)

@@ -1,0 +1,6 @@
+=== Insurance: claims arrive by event and by nightly file, one core ===
+[topic] ACCEPTED POL-1234 MOTOR -> fast track
+[topic] REJECTED PX-99: invalid policy number
+[csv]   ACCEPTED POL-5678 MOTOR -> manual review
+[csv]   REJECTED POL-9012: amount must be positive
+Accepted claims: 2 (same rules for every channel)

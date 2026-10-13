@@ -1,0 +1,7 @@
+=== Grocery: 50 Products in 200 Dark Stores ===
+DS-1 SKU-1 INR 42 stock 1
+DS-2 SKU-1 INR 43 stock 2
+Shared ProductInfo instance? true
+Store listings      : 10000
+ProductInfo objects : 50
+Catalog loads       : 50

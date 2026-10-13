@@ -1,0 +1,5 @@
+T1 -> Bot: sent reset link
+T2 -> VIP desk: assigned to senior agent
+T3 -> L1 agent: refund initiated
+T4 -> Engineering: bug ticket created
+T5 -> Unhandled: queued for L2 triage

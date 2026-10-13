@@ -1,0 +1,4 @@
+=== Logistics: 10,000 Live Tracking Sessions ===
+Sessions blocked waiting for updates: 10000
+Sessions that received their update : 10000
+Platform threads that would need    : 10000 x ~1 MB stack

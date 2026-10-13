@@ -1,0 +1,4 @@
+=== E-commerce: order details for web vs. mobile ===
+Web BFF    (3 backend calls) -> {"order":"ORD-9","items":[{"name":"Alphonso mangoes 1 kg","qty":2,"price":"₹399.00"},{"name":"Basmati rice 5 kg","qty":1,"price":"₹649.00"}],"total":"₹1,447.00","tracking":{"carrier":"QuickDrop","status":"OUT_FOR_DELIVERY","timeline":["09:40 packed","11:05 left hub","16:10 out for delivery"]},"reviewSkus":["MANGO-1KG"]}
+Mobile BFF (2 backend calls) -> {"order":"ORD-9","summary":"3 items · ₹1,447.00","status":"Arriving by 18:30"}
+Mobile payload is 24% of the web payload

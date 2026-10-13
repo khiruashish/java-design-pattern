@@ -1,0 +1,4 @@
+=== SaaS ERP: Tenant-Aware Routing to Regional Shards ===
+acme.erp.example.com     -> 200 eu-1 served invoices for acme
+globex.erp.example.com   -> 503 shard us-2 under maintenance {Retry-After=120}
+hooli.erp.example.com    -> 404 unknown tenant 'hooli'

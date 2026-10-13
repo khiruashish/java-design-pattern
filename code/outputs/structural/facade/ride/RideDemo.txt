@@ -1,0 +1,4 @@
+Booked: Driver Ramesh (KA-01-AB-1234), 4 min away, fare INR 162
+Booked: Driver Ramesh (KA-01-AB-1234), 4 min away, fare INR 243 (1.5x surge)
+  released HOLD-R-9-540
+No drivers near Airport T2, you were not charged

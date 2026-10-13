@@ -1,0 +1,7 @@
+=== E-commerce: Search Filters as Specifications ===
+Filter: ((in stock AND price <= 2000) AND (brand = Pulse OR rating >= 4.5))
+  - Pulse Buds X Prime INR 1799
+Filter: ((in stock AND COD available) AND NOT brand = Sonix)
+  - Zing Buds 141 INR 1299
+  - Pulse Buds X Prime INR 1799
+  - Aura Buds T300 INR 2299

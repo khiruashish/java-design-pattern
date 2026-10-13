@@ -1,0 +1,4 @@
+=== Streaming: canary of recommendations v2 via mesh routing rules ===
+weights v1=90/v2=10 -> served {v1=9035, v2=959}, failed after retry: 6
+weights v1=50/v2=50 -> served {v1=5046, v2=4825}, failed after retry: 129
+The app code never changed: weights and retries are mesh configuration.

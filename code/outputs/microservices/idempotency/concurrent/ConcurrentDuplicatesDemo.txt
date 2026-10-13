@@ -1,0 +1,3 @@
+=== Challenge: 8 concurrent deliveries of msg-900 (₹500 refund) ===
+applied: 1, skipped as duplicate: 7
+wallet balance: ₹500

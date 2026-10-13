@@ -1,0 +1,7 @@
+=== Logistics: Which Couriers Can Take This Parcel? ===
+((max weight >= 2.5 kg AND serves 560034) AND collects COD)
+  -> [SwiftShip, CityDash]
+((max weight >= 18.0 kg AND serves 411001) AND hazmat certified)
+  -> [HeavyHaul]
+((max weight >= 7.0 kg AND serves 110001) AND collects COD)
+  -> no courier available, flag for manual booking

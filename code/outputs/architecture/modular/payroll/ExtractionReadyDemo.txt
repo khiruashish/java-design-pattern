@@ -1,0 +1,4 @@
+=== HR & Payroll: modules today, services tomorrow ===
+Modular monolith, in-process events -> payroll has [EMP-101 ₹95,000/month, EMP-102 ₹72,000/month]
+After extracting payroll, HR writes to the outbox:
+  topic=hr.employee-hired key=EMP-103 payload=EmployeeHired[employeeId=EMP-103, name=Sara Khan, monthlySalaryPaise=8100000]

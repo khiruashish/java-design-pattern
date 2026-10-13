@@ -1,0 +1,7 @@
+=== Payments: Transaction ID Generator ===
+First ID  : TXN-BLR-0000001
+Second ID : TXN-BLR-0000002
+Generating 10,000 IDs from 1,000 virtual threads...
+Unique IDs : 10000
+Duplicates : 0
+Next ID    : TXN-BLR-0010003

@@ -1,0 +1,4 @@
+=== Logistics: Shipment Planning ===
+SHP-1 Bengaluru->Mysuru    via Truck |  145 km | cost INR   2610 | ETA  3 h
+SHP-2 Delhi->Mumbai        via Train | 1400 km | cost INR  11200 | ETA 24 h
+SHP-3 Chennai->Guwahati    via Plane | 2650 km | cost INR 251750 | ETA  4 h

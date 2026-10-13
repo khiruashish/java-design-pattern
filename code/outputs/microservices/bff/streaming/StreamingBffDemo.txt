@@ -1,0 +1,7 @@
+=== Streaming: one backend, two BFFs ===
+GET /mobile/home ->
+  {"continue":[{"id":"T2","name":"City of Rain","img":"img/T2-320.jpg","percent":75}],"forYou":[{"id":"T1","name":"Monsoon Express","img":"img/T1-320.jpg"},{"id":"T3","name":"Spice Route","img":"img/T3-320.jpg"}]}
+GET /tv/home ->
+  {"hero":{"name":"Monsoon Express","art":"img/T1-1920.jpg","autoplay":"video/T1-trailer.m3u8"},"continue":[{"id":"T2","name":"City of Rain","genre":"Drama","art":"img/T2-1920.jpg"}],"forYou":[{"id":"T1","name":"Monsoon Express","genre":"Thriller","art":"img/T1-1920.jpg"},{"id":"T3","name":"Spice Route","genre":"Documentary","art":"img/T3-1920.jpg"},{"id":"T4","name":"Byte Club","genre":"Comedy","art":"img/T4-1920.jpg"}]}
+Payload size: mobile 211 chars, tv 423 chars
+Same 3 backend services, each screen gets exactly what it renders.

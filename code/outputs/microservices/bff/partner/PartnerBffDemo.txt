@@ -1,0 +1,6 @@
+=== Banking: partner BFF over the internal accounts service ===
+Internal record   : InternalAccount[accountNumber=50100012345678, holder=Asha Rao, balancePaise=1254075, currency=INR, branchCode=BLR-017, internalRiskScore=12, kycStatus=VERIFIED]
+GET /partner/v1/accounts/..5678 -> {"account":"XXXX5678","balance":12540.75}
+GET /partner/v2/accounts/..5678 -> {"account":"XXXX5678","balance":{"amountMinor":1254075,"currency":"INR"},"holderInitials":"A.R."}
+GET /partner/v2/accounts/..9999 -> {"error":"NO_CONSENT"}
+Branch code, risk score and KYC status never leave the bank.

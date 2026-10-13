@@ -1,0 +1,4 @@
+=== Travel: Flight Search Queries ===
+BLR->DEL 2026-12-20 one-way | 1 adult(s), 0 child(ren) | ECONOMY
+BOM->SIN 2026-12-22 return 2027-01-02 | 2 adult(s), 2 child(ren) | PREMIUM_ECONOMY | non-stop
+Invalid search: Return date is before departure

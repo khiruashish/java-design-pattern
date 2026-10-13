@@ -1,0 +1,10 @@
+=== Insurance: parallel run of the new premium engine ===
+Asha quoted 12000 (legacy answer returned)
+Ravi quoted 16800 (legacy answer returned)
+Meera quoted 13800 (legacy answer returned)
+Kabir quoted 15870 (legacy answer returned)
+Zoya quoted 25551 (legacy answer returned)
+Compared 5, mismatches 2:
+  Driver[name=Kabir, age=29, claims=2]: legacy=15870 modern=15600
+  Driver[name=Zoya, age=23, claims=3]: legacy=25551 modern=24360
+Not ready to switch: compounding rule differs for 2+ claims.

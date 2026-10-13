@@ -1,0 +1,8 @@
+=== Ride-hailing: trip service calls eta-service via client-side discovery ===
+ETA request 1: 10.0.1.21:9000 answered eta(trip-1)
+    10.0.1.22:9000 unreachable, trying next instance
+ETA request 2: 10.0.2.23:9000 answered eta(trip-2)
+ETA request 3: 10.0.1.21:9000 answered eta(trip-3)
+    10.0.1.22:9000 unreachable, trying next instance
+ETA request 4: 10.0.2.23:9000 answered eta(trip-4)
+ETA request 5: 10.0.1.21:9000 answered eta(trip-5)

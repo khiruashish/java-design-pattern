@@ -1,0 +1,12 @@
+=== E-commerce: Nested Product Bundles ===
++ Home Office Combo (10% off): INR 59,565
+    - Laptop 14in: INR 55,000
+    + Accessories Pack (5% off): INR 2,184
+        - Wireless Mouse: INR 799
+        - Mechanical Keyboard: INR 1,499
+    - Ergonomic Chair: INR 8,999
+
+Cart (client treats every item the same way):
+  Home Office Combo  INR  59,565
+  USB-C Cable        INR     349
+  TOTAL              INR  59,914

@@ -1,0 +1,14 @@
+=== Grocery: one request through three layers ===
+    [web] POST /orders {customer=CUST-42, MANGO-1KG=2, RICE-5KG=1}
+    [service] validating and pricing [MANGO-1KG, RICE-5KG]
+    [repository] INSERT order ORD-1
+-> OrderResponse[status=201, body=ORD-1 total ₹1447]
+    [web] POST /orders {customer=CUST-42, MANGO-1KG=two}
+-> OrderResponse[status=400, body=quantities must be numbers]
+    [web] POST /orders {customer=CUST-42, SAFFRON-1G=1}
+    [service] validating and pricing [SAFFRON-1G]
+-> OrderResponse[status=422, body=unknown product SAFFRON-1G]
+    [web] POST /orders {customer=CUST-42, RICE-5KG=25}
+    [service] validating and pricing [RICE-5KG]
+-> OrderResponse[status=422, body=max 20 items per order]
+Orders stored: 1

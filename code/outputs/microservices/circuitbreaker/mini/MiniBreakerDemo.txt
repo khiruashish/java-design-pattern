@@ -1,0 +1,8 @@
+=== Challenge: minimal circuit breaker (3 consecutive failures, 5 s open) ===
+t=   0ms service=ok   -> real     state=CLOSED
+t=1000ms service=fail -> fallback state=CLOSED
+t=2000ms service=fail -> fallback state=CLOSED
+t=3000ms service=fail -> fallback state=OPEN
+t=4000ms service=ok   -> fallback state=OPEN
+t=5000ms service=ok   -> fallback state=OPEN
+t=9000ms service=ok   -> real     state=CLOSED

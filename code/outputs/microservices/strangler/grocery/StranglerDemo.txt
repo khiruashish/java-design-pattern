@@ -1,0 +1,6 @@
+=== Grocery: strangling the monolith one route at a time ===
+Day 0   (all legacy)            [catalog->monolith, cart->monolith, orders->monolith, invoices->monolith]
+Month 2 (catalog extracted)     [catalog->catalog-svc, cart->monolith, orders->monolith, invoices->monolith]
+Month 5 (cart, orders)          [catalog->catalog-svc, cart->cart-svc, orders->order-svc, invoices->monolith]
+Month 5 (orders rolled back)    [catalog->catalog-svc, cart->cart-svc, orders->monolith, invoices->monolith]
+Month 9 (monolith retired)      [catalog->catalog-svc, cart->cart-svc, orders->order-svc, invoices->billing-svc]

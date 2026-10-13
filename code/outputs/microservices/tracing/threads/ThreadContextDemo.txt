@@ -1,0 +1,4 @@
+=== Streaming: parallel home-screen fetches keep the trace ===
+request thread trace: bb8f12ce...
+plain executor      : [continue-watching=NO TRACE, trending=NO TRACE, for-you=NO TRACE]
+propagating executor: [continue-watching=bb8f12ce, trending=bb8f12ce, for-you=bb8f12ce]

@@ -1,0 +1,5 @@
+=== Grocery: one deployable, three modules with enforced boundaries ===
+ordering.placeOrder -> ORD-1
+ordering.placeOrder -> rejected: not for sale: OLD-SKU
+billing invoices    -> [INV-ORD-1 CUST-42 ₹1447.00 + GST ₹72.35]
+(new CatalogService() from the ordering package would not compile: it is package-private)

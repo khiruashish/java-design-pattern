@@ -1,0 +1,6 @@
+=== Banking: slow statements must not block payments ===
+3 statement requests in flight; statements permits left: 0
+STMT-4  -> rejected fast: statements bulkhead full (client sees 503, retry later)
+PAY-101 -> payment accepted (separate bulkhead)
+PAY-102 -> payment accepted
+Statements finished; permits left: 3

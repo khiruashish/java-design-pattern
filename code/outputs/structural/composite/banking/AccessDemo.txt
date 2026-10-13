@@ -1,0 +1,6 @@
+=== Core Banking: Nested Roles ===
+Teller -> [account.view, cash.deposit, cash.withdraw.small]
+BranchManager -> [account.view, cash.deposit, cash.withdraw.large, cash.withdraw.small, loan.approve, loan.create]
+Teller can approve loans? false
+BranchManager can deposit cash (via Teller)? true
+Rejected: Cycle: BranchManager already includes Teller

@@ -1,0 +1,4 @@
+=== E-commerce: what the cart table shows vs. what the events know ===
+Current carts (CRUD view)          : {C1=[MANGO-1KG], C2=[RICE-5KG], C3=[MILK-1L]}
+Removed, yet the cart was bought   : {AVOCADO-2=2}
+Insight: avocados are dropped at checkout. Is the price too high, or is stock unreliable?

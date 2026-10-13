@@ -1,0 +1,5 @@
+Update menu          ok   (inside [Restaurant])
+Place order          ok   (reads from [Customer, Restaurant]: API calls or a read model)
+Assign rider         ok   (reads from [Ordering]: API calls or a read model)
+Rider location ping  ok   (inside [Delivery])
+Capture payment      ok   (reads from [Ordering]: API calls or a read model)

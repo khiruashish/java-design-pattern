@@ -1,0 +1,5 @@
+=== E-commerce: T-shirt Variants from One Base Listing ===
+TSHIRT-S-BLK Organic Cotton Tee INR  599 {material=cotton, size=S} images=3
+TSHIRT-M-BLK Organic Cotton Tee INR  599 {material=cotton, size=M} images=3
+TSHIRT-XL-BLK Organic Cotton Tee INR  649 {material=cotton, size=XL} images=3
+Base listing unchanged: TSHIRT-BASE  Organic Cotton Tee INR  599 {material=cotton} images=3

@@ -1,0 +1,17 @@
+=== Ride-hailing: ETA with a degraded fallback ===
+trip-1 (5 km):  12 min (live traffic)
+-- routing engine fails during a deploy --
+trip-2 (8 km):  25 min (estimate)
+    [routing] CLOSED -> OPEN
+trip-3 (8 km):  25 min (estimate)
+trip-4 (8 km):  25 min (estimate)
+trip-5 (8 km):  25 min (estimate)
+-- 10 s later: one trial call while the engine is still down --
+    [routing] OPEN -> HALF_OPEN
+    [routing] HALF_OPEN -> OPEN
+trip-6 (8 km):  25 min (estimate)
+-- another 10 s: engine is back --
+    [routing] OPEN -> HALF_OPEN
+    [routing] HALF_OPEN -> CLOSED
+trip-7 (8 km):  19 min (live traffic)
+Breaker state: CLOSED

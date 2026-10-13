@@ -1,0 +1,13 @@
+=== Travel: Licensed GDS Session Pool (2 licences, refresh after 3 uses) ===
+  [gds] login S1 (2 s handshake, uses 1 licence)
+S1 fares BLR-DEL (use 1)
+S1 fares DEL-DXB (use 2)
+  [gds] logout S1 after 3 uses (refresh policy)
+S1 fares BOM-LHR (use 3)
+  [gds] login S2 (2 s handshake, uses 1 licence)
+S2 fares MAA-SIN (use 1)
+S2 fares HYD-BKK (use 2)
+-- a long search holds a session while another request arrives --
+  [gds] login S3 (2 s handshake, uses 1 licence)
+  [gds] logout S2 after 3 uses (refresh policy)
+S2 fares CCU-NRT (use 3) | S3 fares GOI-DOH (use 1)

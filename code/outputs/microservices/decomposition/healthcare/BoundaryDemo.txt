@@ -1,0 +1,13 @@
+=== Hospital: Checking Two Candidate Service Splits ===
+Split A (by current teams):
+  Book appointment           WARN writes span [Doctors, Scheduling] -> needs a saga or a different boundary
+  Check in patient           ok   (reads from [Registration]: API calls or a read model)
+  Close consultation + bill  WARN writes span [Billing, Scheduling] -> needs a saga or a different boundary
+  Pay invoice                WARN writes span [Billing, Payments] -> needs a saga or a different boundary
+  Update allergies           ok   (inside [Registration])
+Split B (by business capability):
+  Book appointment           ok   (reads from [PatientRecords]: API calls or a read model)
+  Check in patient           ok   (reads from [PatientRecords]: API calls or a read model)
+  Close consultation + bill  WARN writes span [Billing, Scheduling] -> needs a saga or a different boundary
+  Pay invoice                ok   (inside [Billing])
+  Update allergies           ok   (inside [PatientRecords])

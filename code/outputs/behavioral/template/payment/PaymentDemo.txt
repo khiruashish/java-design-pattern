@@ -1,0 +1,16 @@
+=== Payments: Same Steps, Different Methods ===
+Card, INR 1,200:
+  [card] validated ORD-1 INR 1200
+  [card] authorization hold INR 1200
+  [card] captured hold AUTH-ORD-1
+  [card] receipt for ORD-1: CAP-AUTH-ORD-1
+Card, INR 18,000:
+  [card] validated ORD-2 INR 18000
+  [card] 3-D Secure OTP verified
+  [card] authorization hold INR 18000
+  [card] captured hold AUTH-ORD-2
+  [card] receipt for ORD-2: CAP-AUTH-ORD-2
+UPI, INR 18,000:
+  [upi] validated ORD-3 INR 18000
+  [upi] collect request approved in UPI app
+  [upi] receipt for ORD-3: UPI-ORD-3-SETTLED

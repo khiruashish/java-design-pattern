@@ -1,0 +1,6 @@
+=== Grocery: Checkout Validation Chain ===
+O-1: OK, proceed to payment
+O-2: REJECTED - We don't deliver to 110001 yet
+O-3: REJECTED - Only 2 left of MANGO-1KG
+O-4: REJECTED - Coupon FRESH50 is not valid for this order
+O-5: REJECTED - Cash on delivery is limited to INR 5000

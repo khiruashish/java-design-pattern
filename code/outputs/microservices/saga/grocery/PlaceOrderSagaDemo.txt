@@ -1,0 +1,20 @@
+=== Grocery: place-order saga (orchestration) ===
+  [ORD-1] reserve stock ✔
+  [ORD-1] charge payment ✔
+  [ORD-1] schedule delivery ✔
+  [ORD-1] COMPLETED
+Outcome: COMPLETED
+Stock left: 8, ORD-1 charged: true
+
+  [ORD-2] reserve stock ✔
+  [ORD-2] charge payment ✔
+  [ORD-2] schedule delivery ✘ no delivery slots for 999999
+  [ORD-2] undo charge payment ✔
+  [ORD-2] undo reserve stock ✔
+  [ORD-2] COMPENSATED
+Outcome: COMPENSATED
+Stock left: 8, ORD-2 charged: false
+
+  [ORD-3] reserve stock ✘ out of stock
+  [ORD-3] COMPENSATED
+Outcome: COMPENSATED

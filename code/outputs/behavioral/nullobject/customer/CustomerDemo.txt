@@ -1,0 +1,3 @@
+C1    Asha   tier=PLATINUM price of INR 1000 item: INR 900
+C2    Ravi   tier=SILVER   price of INR 1000 item: INR 1000
+C999  guest  tier=NONE     price of INR 1000 item: INR 1000

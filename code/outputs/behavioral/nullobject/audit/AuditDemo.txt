@@ -1,0 +1,3 @@
+=== SaaS: Audit Log by Plan ===
+free: projects=1, audit=(audit log not included in plan)
+enterprise: projects=1, audit=[neha created project Website revamp, arjun created project Q4 budget, arjun deleted project Q4 budget]

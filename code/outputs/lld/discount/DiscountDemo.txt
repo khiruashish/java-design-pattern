@@ -1,0 +1,11 @@
+=== LLD: Grocery discount engine ===
+GOLD cart, subtotal ₹1,377.00
+  - Mango 2+1 free         -₹399.00
+  - Gold: 10% off dairy    -₹18.00
+  - FLAT150 over ₹1,000    -₹150.00
+  total ₹810.00
+REGULAR cart, subtotal ₹3,245.00
+  - SAVE5% over ₹2,000     -₹162.25
+  total ₹3,082.75
+REGULAR cart, subtotal ₹112.00
+  total ₹112.00

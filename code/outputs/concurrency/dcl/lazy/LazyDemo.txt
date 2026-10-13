@@ -1,0 +1,3 @@
+Initialized before first use? false
+Value : Bank holiday calendar 2027 (loaded from the core banking system)
+Loads : 1

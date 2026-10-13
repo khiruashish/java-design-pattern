@@ -1,0 +1,10 @@
+=== LLD: Splitwise-style expense sharing (Goa trip) ===
+Asha   gets back ₹7,249.99
+Kabir  owes      ₹5,750.00
+Meera  owes      ₹750.00
+Ravi   owes      ₹749.99
+Sum of balances: 0 paise
+Settle up with the fewest payments:
+  Kabir pays Asha ₹5,750.00
+  Meera pays Asha ₹750.00
+  Ravi pays Asha ₹749.99

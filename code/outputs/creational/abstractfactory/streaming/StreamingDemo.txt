@@ -1,0 +1,7 @@
+=== Streaming: Device-Specific Playback ===
+MOBILE:
+    Playing 'The Monsoon Express' at 720p, adaptive bitrate for 4G
+    controls: swipe=seek, double-tap=skip 10s, pinch=zoom
+SMART_TV:
+    Playing 'The Monsoon Express' in 4K HDR with Dolby Atmos
+    controls: D-pad=navigate, OK=play/pause, long-press=menu

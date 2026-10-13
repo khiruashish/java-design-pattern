@@ -1,0 +1,15 @@
+=== Ride-hailing: Trip State Machine ===
+Normal trip:
+  Assign[driver=Ramesh] -> DriverAssigned[driver=Ramesh]
+  Arrive[] -> DriverArrived[driver=Ramesh, waitedMin=0]
+  Start[] -> InProgress[driver=Ramesh]
+  Finish[km=8] -> Completed[driver=Ramesh, fareInr=162]
+Rider cancels after a long wait:
+  Assign[driver=Sunita] -> DriverAssigned[driver=Sunita]
+  Arrive[] -> DriverArrived[driver=Sunita, waitedMin=0]
+  Wait[minutes=7] -> DriverArrived[driver=Sunita, waitedMin=7]
+  RiderCancels[] -> Cancelled[by=rider, feeInr=75]
+Bug in client app:
+  Start[] rejected: Start not allowed in Searching
+  Assign[driver=Imran] -> DriverAssigned[driver=Imran]
+  Finish[km=3] rejected: Finish not allowed in DriverAssigned

@@ -1,0 +1,8 @@
+=== Insurance: claim submitted -> fraud check must always run ===
+-- dual write (save, then publish) --
+  CLM-2: saved, but publish failed: broker timeout
+claims saved: 3, fraud checks received: [ClaimSubmitted CLM-1, ClaimSubmitted CLM-3]
+CLM-2 will be paid without a fraud check.
+-- transactional outbox --
+  relay: broker unavailable (broker timeout), will retry
+claims saved: 3, fraud checks received: [ClaimSubmitted CLM-1, ClaimSubmitted CLM-2, ClaimSubmitted CLM-3]

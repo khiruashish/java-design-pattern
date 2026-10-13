@@ -1,0 +1,6 @@
+=== Challenge: typed, fail-fast configuration ===
+valid  -> CheckoutConfig[maxItems=100, paymentTimeout=PT2S, paymentUrl=https://payments.internal]
+broken -> application failed to start: invalid configuration:
+  - checkout.payment-timeout is not valid: '2 seconds'
+  - checkout.max-items must be 1..500 (was 1000)
+  - checkout.payment-url must use https (was http://payments.internal)

@@ -1,0 +1,2 @@
+Last 3 pings: [12.9305,77.6210] [12.9312,77.6222] [12.9320,77.6230]
+Fail-fast: buffer changed during iteration

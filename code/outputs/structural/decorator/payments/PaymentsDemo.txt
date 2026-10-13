@@ -1,0 +1,13 @@
+=== Payments: Stacking Cross-Cutting Concerns ===
+Order 1:
+  [log] -> pay ORD-1 INR 1200
+  [log] <- FAILED: gateway timeout
+  [retry] attempt 1 failed (gateway timeout), retrying
+  [log] -> pay ORD-1 INR 1200
+  [log] <- FAILED: gateway timeout
+  [retry] attempt 2 failed (gateway timeout), retrying
+  [log] -> pay ORD-1 INR 1200
+  [log] <- PAID ORD-1
+Result: PAID ORD-1
+Order 2:
+Result: BLOCKED ORD-2 (fraud rule: amount > INR 50000)

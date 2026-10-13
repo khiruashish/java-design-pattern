@@ -1,0 +1,7 @@
+=== LLD: Tic-tac-toe with O(1) win check ===
+OOX
+XXO
+OXX
+result: DRAW
+X plays 2,2 -> X_WINS (main diagonal)
+next move -> game over: X_WINS

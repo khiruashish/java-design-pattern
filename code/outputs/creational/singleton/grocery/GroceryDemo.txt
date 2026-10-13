@@ -1,0 +1,6 @@
+=== Grocery Checkout Demo ===
+[StoreConfig] Loading configuration (runs once)...
+Cart #1 subtotal=INR 350 -> delivery fee=INR 30, total=INR 380
+Cart #2 subtotal=INR 620 -> delivery fee=INR 0, total=INR 620
+Express delivery available: true
+Same config instance in both services? true

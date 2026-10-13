@@ -1,0 +1,5 @@
+=== Travel: flight search with a 300 ms deadline per supplier ===
+Fares shown : [SkyHop BLR->DEL ₹4,820, CloudJet BLR->DEL ₹5,110]
+Timed out   : [AirNova]
+Failed      : [BlueWing]
+Page returned within ~300 ms (not waiting for AirNova): true

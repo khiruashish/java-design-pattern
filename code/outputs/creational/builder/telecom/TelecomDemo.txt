@@ -1,0 +1,11 @@
+=== Telecom: One Recipe, Two Representations ===
+Billing record: MobilePlan[name=Family Max, monthlyPriceInr=999, dataGbPerDay=3, unlimitedCalls=true, smsPerDay=100, addOns=[OTT streaming bundle, International roaming 7 days]]
+Website brochure:
+** FAMILY MAX **
+  Just INR 999/month
+  3 GB high-speed data every day
+  Unlimited calls to any network
+  100 SMS/day
+  + FREE OTT streaming bundle
+  + FREE International roaming 7 days
+Billing record: MobilePlan[name=Student Saver, monthlyPriceInr=199, dataGbPerDay=1, unlimitedCalls=true, smsPerDay=100, addOns=[]]

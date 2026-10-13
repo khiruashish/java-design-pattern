@@ -1,0 +1,3 @@
+task failed: task 13 hit a bad record
+Tasks completed: 49 of 50 (one failed, workers survived)
+After shutdown: pool is shut down

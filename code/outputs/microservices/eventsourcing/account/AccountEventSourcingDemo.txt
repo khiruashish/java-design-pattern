@@ -1,0 +1,7 @@
+=== Banking: an event-sourced account ===
+Event stream : [Opened[owner=Asha], Deposited[paise=10000], Withdrawn[paise=2500], Deposited[paise=4000], Withdrawn[paise=1000], Deposited[paise=700]]
+Balance 11200 at version 6, rebuilt by replaying 2 event(s) after the snapshot at v4
+-- two tellers load v6 at the same time --
+Teller A withdrew 10000 -> balance 1200
+Teller B rejected: ACC-1: expected version 6 but was 7 -> reload and retry
+Retry on fresh state: insufficient funds (no double spend)

@@ -1,0 +1,9 @@
+  -> Anil: you lead at INR 5000
+  -> Bela: bid INR 5200 rejected, minimum is INR 5500
+  -> Bela: you lead at INR 5500
+  -> Anil: outbid, new price INR 5500
+  -> Anil: you lead at INR 6500
+  -> Bela: outbid, new price INR 6500
+  -> Anil: Vintage camera sold to Anil for INR 6500
+  -> Bela: Vintage camera sold to Anil for INR 6500
+  -> Bela: auction closed

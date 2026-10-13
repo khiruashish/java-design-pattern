@@ -1,0 +1,13 @@
+=== Grocery: one config repo, many services and environments ===
+order-service [dev]
+  http.timeout.ms        = 2000                   (from application)
+  logging.level          = INFO                   (from application)
+  order.max.items        = 50                     (from order-service)
+  payment.url            = http://payment-service (from order-service)
+  tracing.sample.ratio   = 0.1                    (from application)
+order-service [prod]
+  http.timeout.ms        = 800                    (from order-service-prod)
+  logging.level          = WARN                   (from application-prod)
+  order.max.items        = 100                    (from order-service-prod)
+  payment.url            = http://payment-service (from order-service)
+  tracing.sample.ratio   = 0.1                    (from application)

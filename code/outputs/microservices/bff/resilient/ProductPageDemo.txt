@@ -1,0 +1,5 @@
+=== Challenge: parallel fan-out with graceful degradation ===
+All services up      -> {"product":"Alphonso mangoes 1 kg","price":"₹399","reviews":["Sweet!","Fresh"],"degraded":[]}
+Reviews hang         -> {"product":"Alphonso mangoes 1 kg","price":"₹399","reviews":[],"degraded":["reviews"]}
+Pricing returns 503  -> {"product":"Alphonso mangoes 1 kg","price":null,"reviews":["Sweet!"],"degraded":["price"]}
+Catalog returns 503  -> {"error":"PRODUCT_UNAVAILABLE"}

@@ -1,0 +1,7 @@
+=== SaaS ERP: Invoice Archiving per Tenant Cloud ===
+Tenant acme-retail (AwsFactory):
+  s3://erp-ap-south-1/INV-1001.pdf (120 KB)
+  SQS ap-south-1/invoice-archived <- INV-1001
+Tenant globex-pharma (AzureFactory):
+  https://globexprod.blob.core.windows.net/erp/INV-2001.pdf (85 KB)
+  ServiceBus globexprod/invoice-archived <- INV-2001

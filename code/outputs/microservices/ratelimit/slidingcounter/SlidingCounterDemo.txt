@@ -1,0 +1,4 @@
+=== Challenge: fixed window vs. sliding window counter (limit 10/min) ===
+20 requests within 15 seconds, straddling the minute boundary:
+Fixed window allowed  : 20  <- 2x the limit in 15 s
+Sliding window allowed: 11

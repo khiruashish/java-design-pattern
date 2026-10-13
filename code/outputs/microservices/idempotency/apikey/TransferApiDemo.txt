@@ -1,0 +1,5 @@
+=== Banking: POST /transfers with an Idempotency-Key ===
+1st attempt (response lost on a flaky mobile network): 201 transfer TX-1001 created
+App retries with the same key                          : 201 transfer TX-1001 created
+Same key, different amount                             : 422 Idempotency-Key reused with a different request
+Transfers actually executed: 1

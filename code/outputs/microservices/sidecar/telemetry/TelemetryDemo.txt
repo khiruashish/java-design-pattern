@@ -1,0 +1,8 @@
+=== Ride-hailing: golden signals from a sidecar, zero app changes ===
+GET /fares/TRIP-11 -> 200 fare ok, trace-id ...00000001
+GET /fares/TRIP-12 -> 200 fare ok, trace-id ...00000002
+GET /fares/TRIP-13 -> 500 fare table missing
+GET /fares/surge/TRIP-14 -> 200 fare ok, trace-id ...00000004
+Metrics exported to Prometheus:
+  GET /fares/surge/{id}  requests=1 errors=0 avg=180ms max=180ms
+  GET /fares/{id}        requests=3 errors=1 avg=40ms max=40ms

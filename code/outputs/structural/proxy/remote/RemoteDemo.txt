@@ -1,0 +1,9 @@
+=== Logistics: Order Service Calling the Inventory Service ===
+  [wire] -> availableUnits|BLR-1|RICE-5KG
+  [wire] <- OK|120
+Rice in BLR-1: 120
+  [wire] -> availableUnits|BLR-1|OIL-1L
+  [wire] <- OK|0
+Oil in BLR-1 : 0
+During outage: Inventory service unreachable: connect timed out after 2000 ms
+Server handled 2 calls

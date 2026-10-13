@@ -1,0 +1,7 @@
+=== Social Media: Home Feed from Three Sources ===
+  t=1009 [friends] Riya posted holiday photos
+  t=1008 [groups ] Pune Runners: Sunday 10K route
+  t=1006 [pages  ] City Metro: new line opens
+  t=1005 [pages  ] Weather: heavy rain alert
+  t=1004 [friends] Kabir changed his profile picture
+  t=1003 [pages  ] Library: new arrivals

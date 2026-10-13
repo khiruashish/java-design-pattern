@@ -1,0 +1,23 @@
+=== Travel: flight + hotel + cab, with a pivot step ===
+  [TRIP-1] hold flight ✔
+  [TRIP-1] hold hotel ✔
+  [TRIP-1] charge card ✔
+  [TRIP-1] book airport cab ✔
+  [TRIP-1] send itinerary ✔
+  [TRIP-1] COMPLETED
+
+-- hotel is sold out: cancel the flight hold --
+  [TRIP-2] hold flight ✔
+  [TRIP-2] hold hotel ✘ sold out
+  [TRIP-2] undo hold flight ✔
+  [TRIP-2] COMPENSATED
+
+-- after payment, the cab partner is flaky: retry forward, don't refund --
+  [TRIP-3] hold flight ✔
+  [TRIP-3] hold hotel ✔
+  [TRIP-3] charge card ✔
+  [TRIP-3] book airport cab ✘ cab API timeout, will retry
+  [TRIP-3] book airport cab ✘ cab API timeout, will retry
+  [TRIP-3] book airport cab ✔ (attempt 3)
+  [TRIP-3] send itinerary ✔
+  [TRIP-3] COMPLETED

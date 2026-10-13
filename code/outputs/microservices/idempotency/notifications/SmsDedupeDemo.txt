@@ -1,0 +1,8 @@
+=== Food delivery: "Your order is out for delivery" SMS ===
+ORD-9:OUT_FOR_DELIVERY -> SMS sent
+ORD-9:OUT_FOR_DELIVERY -> duplicate, not sent
+ORD-9:DELIVERED -> SMS sent
+ORD-10:OUT_FOR_DELIVERY -> SMS sent
+keys remembered: 3
+ORD-11:OUT_FOR_DELIVERY -> SMS sent
+keys remembered after 25 h: 1 (old keys expired)

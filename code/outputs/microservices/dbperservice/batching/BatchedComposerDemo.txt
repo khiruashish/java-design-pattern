@@ -1,0 +1,6 @@
+=== Challenge: API composition without N+1 calls ===
+  ORD-1 Asha Rao ₹798
+  ORD-2 Vikram Singh ₹649
+  ORD-3 Asha Rao ₹129
+  ORD-4 Vikram Singh ₹399
+customer-service API calls: 1

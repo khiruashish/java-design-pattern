@@ -1,0 +1,7 @@
+=== Challenge: backoff strategies (base 100 ms, cap 5 s, 5 retries) ===
+Exponential         : [200, 400, 800, 1600, 3200]
+Full jitter         : [146, 299, 278, 1435, 2266]
+Decorrelated jitter : [246, 577, 668, 1808, 3870]
+-- 1,000 clients fail at the same moment; when does their 1st retry land? --
+Without jitter: all 1,000 retries in 1 distinct millisecond (a thundering herd)
+With jitter   : retries spread over 200 distinct milliseconds

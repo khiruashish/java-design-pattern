@@ -1,0 +1,19 @@
+=== Grocery: Monolith Split by Business Capability ===
+Catalog   owns: product names, descriptions, images, availability badge
+Inventory owns: units per dark store, reservations
+Ordering  owns: orders, order lifecycle
+Customer 1 orders 2 mangoes:
+  [bus] orders.placed <- OrderPlaced[orderId=ORD-1, sku=MANGO-1KG, qty=2]
+  [inventory] reserved 2 x MANGO-1KG, 1 left
+  [bus] inventory.stock-low <- StockLow[sku=MANGO-1KG, left=1]
+  [catalog] MANGO-1KG badge -> only 1 left
+  -> accepted ORD-1
+Customer 2 orders 2 mangoes:
+  -> rejected: not enough MANGO-1KG
+Customer 3 orders 1 mango:
+  [bus] orders.placed <- OrderPlaced[orderId=ORD-2, sku=MANGO-1KG, qty=1]
+  [inventory] reserved 1 x MANGO-1KG, 0 left
+  [bus] inventory.stock-low <- StockLow[sku=MANGO-1KG, left=0]
+  [catalog] MANGO-1KG badge -> out of stock
+  -> accepted ORD-2
+Catalog page now shows: Alphonso mangoes, 1 kg (out of stock)

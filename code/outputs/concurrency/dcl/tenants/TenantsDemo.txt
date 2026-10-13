@@ -1,0 +1,4 @@
+=== SaaS: One Search Index per Tenant, Created on First Request ===
+Requests        : 3000 across 3 tenants
+Indexes created : 3
+Same instance on repeat call: true

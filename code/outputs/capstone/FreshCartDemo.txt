@@ -1,0 +1,98 @@
+=== FreshCart: a grocery platform built from the handbook's patterns ===
+
+1) Catalog [Builder] [Flyweight] [Proxy]
+   6 lookups -> 2 database reads (caching proxy)
+   4 products share 3 category objects (flyweight)
+   builder validation: BAD-1: name, category and a positive price are required
+
+2) Cart [Command]
+   after removing milk: 2 x Alphonso mangoes 1 kg; 1 x Basmati rice 5 kg
+   undid: remove 3 x Toned milk 1 L
+   cart: 2 x Alphonso mangoes 1 kg; 1 x Basmati rice 5 kg; 3 x Toned milk 1 L | subtotal ₹1,615.00
+
+3) Pricing [Specification] [Strategy]
+   FRUIT10 -> subtotal ₹1,615.00 - discount ₹79.80 [FRUIT10] + GST ₹40.85 + delivery ₹0.00 = ₹1,576.05
+   FLAT75  -> subtotal ₹1,615.00 - discount ₹75.00 [FLAT75] + GST ₹40.85 + delivery ₹0.00 = ₹1,580.85
+
+4) Checkout [Facade] [Chain of Responsibility] [Saga] [Factory Method] [Adapter] [Circuit Breaker] [Outbox]
+      OPS: restock MANGO-1KG (3 left)
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹1,576.05 via UPI ✔
+      [Saga] save order + outbox event ✔
+   -> 201 ORD-101 ₹1,576.05, delivery at 19:00
+   orders table: 1, outbox rows: 1
+
+5) Outbox relay -> events [Observer] [CQRS] [Idempotent Consumer]
+      SMS: FreshCart: order ORD-101 confirmed, total ₹1,576.05.
+   relayed 1 event(s)
+   loyalty points CUST-42: 15
+   My orders (read model): [ORD-101 ₹1,576.05 CONFIRMED]
+
+6) Double-tap on 'Pay' (same idempotency key)
+   -> 200 ORD-101 already placed (idempotent replay), no new charge
+   PayFast calls for the retry: 0
+
+7) Validation chain rejects
+   pincode 110001 -> 422 we don't deliver to this pincode yet
+   empty cart     -> 422 cart is empty
+
+8) Payment declined -> saga compensates
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹6,300.00 via UPI ✘ Declined[reason=card limit exceeded]
+      [Saga] compensate: undo book delivery slot
+      [Saga] compensate: undo reserve stock
+   -> 402 checkout failed: charge ₹6,300.00 via UPI failed: Declined[reason=card limit exceeded]
+   ghee stock after compensation: 40 (unchanged)
+
+9) PayFast outage -> circuit breaker opens, COD still works
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹147.60 via UPI ✘ Unavailable[reason=PayFast timeout]
+      [Saga] compensate: undo book delivery slot
+      [Saga] compensate: undo reserve stock
+   attempt 1 -> 402 checkout failed: charge ₹147.60 via UPI failed: Unavailable[reason=PayFast timeout] (PayFast called: true)
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹147.60 via UPI ✘ Unavailable[reason=PayFast timeout]
+      [Saga] compensate: undo book delivery slot
+      [Saga] compensate: undo reserve stock
+   attempt 2 -> 402 checkout failed: charge ₹147.60 via UPI failed: Unavailable[reason=PayFast timeout] (PayFast called: true)
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹147.60 via UPI ✘ Unavailable[reason=payment circuit OPEN, failing fast]
+      [Saga] compensate: undo book delivery slot
+      [Saga] compensate: undo reserve stock
+   attempt 3 -> 402 checkout failed: charge ₹147.60 via UPI failed: Unavailable[reason=payment circuit OPEN, failing fast] (PayFast called: false)
+   breaker open: true
+      [Saga] reserve stock ✔
+      [Saga] book delivery slot ✔
+      [Saga] charge ₹147.60 via COD ✔
+      [Saga] save order + outbox event ✔
+   pay by COD -> 201 ORD-106 ₹147.60, delivery at 19:00
+
+10) Order lifecycle [State]
+   ORD-101 CONFIRMED -> PACKED
+   ORD-101 PACKED -> OUT_FOR_DELIVERY
+   ORD-101 rejected: cannot 'cancel' an order that is OUT_FOR_DELIVERY
+   ORD-101 OUT_FOR_DELIVERY -> DELIVERED
+      SMS: FreshCart: order ORD-106 confirmed, total ₹147.60.
+      SMS: FreshCart: order ORD-101 is now packed. Track: fc.example/t
+      SMS: FreshCart: order ORD-101 is now out for delivery. Track: fc.example/t
+      SMS: FreshCart: order ORD-101 is now delivered. Track: fc.example/t
+   relayed 4 event(s)
+   My orders (read model): [ORD-101 ₹1,576.05 DELIVERED]
+
+11) A script hammers checkout [Rate Limiter]
+   attempt 1 -> 422 we don't deliver to this pincode yet
+   attempt 2 -> 422 we don't deliver to this pincode yet
+   attempt 3 -> 422 we don't deliver to this pincode yet
+   attempt 4 -> 422 we don't deliver to this pincode yet
+   attempt 5 -> 429 too many checkout attempts, try again in a minute
+
+12) Relay crashes before marking -> events redelivered
+   relayed 5 event(s) again
+   loyalty duplicates ignored: 2, points still 15
+
+Patterns used: Singleton, Builder, Flyweight, Proxy, Command, Specification, Strategy, Chain of Responsibility, Facade, Factory Method, Adapter, Decorator, Circuit Breaker, Saga, Transactional Outbox, Observer, CQRS, Idempotent Consumer, Template Method, State, Rate Limiter, Modular Monolith

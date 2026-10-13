@@ -1,0 +1,7 @@
+=== LLD: LRU cache (capacity 3) for product details ===
+after 3 puts      : [MILK=Toned ₹56, RICE=Basmati ₹649, MANGO=Alphonso ₹399]
+get MANGO         : Alphonso ₹399
+order now         : [MANGO=Alphonso ₹399, MILK=Toned ₹56, RICE=Basmati ₹649]
+put BREAD (evicts least recently used RICE): [BREAD=Whole wheat ₹45, MANGO=Alphonso ₹399, MILK=Toned ₹56]
+get RICE          : null
+8 threads x 1,000 puts into capacity 100 -> evictions: 7900 (exactly 8,000 - 100)

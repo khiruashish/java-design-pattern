@@ -1,0 +1,6 @@
+=== Challenge: automatic rollback when the new service misbehaves ===
+requests 1-10: NNNNNNNNNN  (N=new, L=legacy)
+    AUTO-ROLLBACK: 3 errors in last 10 calls
+requests 11-20: NLNLNLLLLL  (N=new, L=legacy)
+requests 21-30: LLLLLLLLLL  (N=new, L=legacy)
+Rolled back: true; every request still got an answer.

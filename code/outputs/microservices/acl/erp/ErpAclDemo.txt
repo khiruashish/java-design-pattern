@@ -1,0 +1,5 @@
+=== Grocery: reading products from a legacy ERP through an ACL ===
+ERP says   : {BASE_UOM=KGM, DEL_FLAG=, MAT_DESC=ALPHONSO MANGO PREMIUM   , MAT_NO=000000000000012345, PRICE=1.299,00}
+We see     : Product[sku=SKU-12345, name=Alphonso Mango Premium, unit=KILOGRAM, pricePaise=129900, active=true]
+We see     : Product[sku=SKU-12346, name=Coconut Water, unit=LITRE, pricePaise=8950, active=false]
+Unknown SKU: Optional.empty

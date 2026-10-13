@@ -1,0 +1,15 @@
+=== Grocery: OrderPlaced fan-out to independent consumers ===
+[orders] OrderPlaced[orderId=ORD-1, customerId=CUST-42, totalPaise=144700]
+    inventory     : reserve stock for ORD-1
+    loyalty       : +14 points to CUST-42
+    email-1       : receipt for ORD-1
+[orders] OrderPlaced[orderId=ORD-2, customerId=CUST-77, totalPaise=64900]
+    inventory     : reserve stock for ORD-2
+    loyalty       : +6 points to CUST-77
+    email-2       : receipt for ORD-2
+-- analytics team adds a consumer; the order service is not touched --
+[orders] OrderPlaced[orderId=ORD-3, customerId=CUST-42, totalPaise=12900]
+    inventory     : reserve stock for ORD-3
+    loyalty       : +1 points to CUST-42
+    email-1       : receipt for ORD-3
+    analytics     : basket value 129

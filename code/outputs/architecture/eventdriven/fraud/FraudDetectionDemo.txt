@@ -1,0 +1,6 @@
+=== Banking: real-time fraud detection on card events ===
+CARD-1 Bengaluru 09:00 ₹450 -> ok
+CARD-2 Mumbai    09:01 ₹1,200 -> ok
+CARD-1 Bengaluru 09:10 ₹99 -> ok
+CARD-1 Delhi     09:25 ₹24,999 -> FRAUD ALERT CARD-1: Bengaluru then Delhi within 15 min
+CARD-2 Pune      13:00 ₹300 -> ok

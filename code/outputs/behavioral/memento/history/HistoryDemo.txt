@@ -1,0 +1,6 @@
+text      : Fresh mangoes at 20% off
+kept/drop : 3/2
+undo ->   : Fresh mangoes at 20%
+undo ->   : Fresh mangoes at
+undo ->   : Fresh mangoes
+no more undo (older snapshots were dropped)

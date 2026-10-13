@@ -1,0 +1,6 @@
+=== Grocery: Mobile API Gateway ===
+GET /catalog/products/MANGO   -> 200 catalog-service saw /products/MANGO {X-Request-Id=req-1}
+GET /cart (no token)          -> 401 login required {X-Request-Id=req-2}
+GET /cart (logged in)         -> 200 cart-service: cart of CUST-42 {X-Request-Id=req-3}
+GET /orders/ORD-9 (logged in) -> 200 order-service: orders of CUST-42 at /ORD-9 {X-Request-Id=req-4}
+GET /admin/users              -> 404 no route for /admin/users {X-Request-Id=req-5}

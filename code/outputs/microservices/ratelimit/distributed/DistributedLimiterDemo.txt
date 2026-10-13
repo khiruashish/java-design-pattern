@@ -1,0 +1,5 @@
+=== Ticketing: concert sale, 4 seat-hold requests per user per minute ===
+Per-node counters : [gw-1 200, gw-2 200, gw-3 200, gw-1 200, gw-2 200, gw-3 200, gw-1 200, gw-2 200, gw-3 200, gw-1 200, gw-2 200, gw-3 200]
+Shared counter    : [gw-1 200, gw-2 200, gw-3 200, gw-1 200, gw-2 429, gw-3 429, gw-1 429, gw-2 429, gw-3 429, gw-1 429, gw-2 429, gw-3 429]
+Allowed: per-node 12 of 12 (3x the limit!), shared 4 of 12
+Next minute       : [gw-1 200, gw-2 200]

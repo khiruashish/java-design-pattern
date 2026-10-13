@@ -1,0 +1,6 @@
+=== Challenge: self-preservation during a network partition ===
+1 of 4 expired  -> evicted [cart-4]
+    self-preservation ON: 3 of 3 leases expired at once, evicting nobody
+3 of 3 expired  -> evicted []
+Callers still get 3 instances (possibly stale, but better than none; clients retry on failure)
+Partition heals -> evicted [], lookup returns 3 instances

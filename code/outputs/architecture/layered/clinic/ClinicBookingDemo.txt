@@ -1,0 +1,7 @@
+=== Clinic: two front ends, one service layer with the rules ===
+[green] CONFIRMED: PAT-1 with Dr. Iyer at 10:30
+KIOSK> REJECTED: Dr. Iyer is already booked at 10:30
+KIOSK> CONFIRMED: PAT-2 with Dr. Iyer at 11:00
+[green] CONFIRMED: PAT-2 with Dr. Rao at 12:00
+[red] REJECTED: max 2 appointments per patient per day
+KIOSK> REJECTED: outside clinic hours

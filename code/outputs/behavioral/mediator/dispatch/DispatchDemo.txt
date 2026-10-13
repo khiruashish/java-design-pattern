@@ -1,0 +1,12 @@
+=== Ride-hailing: Dispatch Center ===
+Asha requests a ride at km 8
+  Sunita: heading to Asha
+  Asha: Sunita arriving in 2 min
+Vikram requests a ride at km 3
+  Ramesh: heading to Vikram
+  Vikram: Ramesh arriving in 2 min
+Meera requests a ride at km 5
+  Meera: all drivers busy, you're in the queue
+Sunita finished a trip
+  Sunita: heading to Meera
+  Meera: Sunita arriving in 8 min

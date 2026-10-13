@@ -1,0 +1,10 @@
+=== Banking: Loan Approval Escalation ===
+Loan Officer APPROVED Meena's loan of INR 300000
+  Loan Officer -> escalating INR 1800000
+Branch Manager DECLINED Rahul's loan of INR 1800000
+  Loan Officer -> escalating INR 15000000
+  Branch Manager -> escalating INR 15000000
+Credit Committee APPROVED Acme Foods Pvt Ltd's loan of INR 15000000
+  Loan Officer -> escalating INR 90000000
+  Branch Manager -> escalating INR 90000000
+No one can approve INR 90000000; refer to the board

@@ -1,0 +1,16 @@
+=== Grocery: checkout -> payment provider ===
+ORD-1 paid (txn-ok)
+ORD-2 paid (txn-ok)
+-- provider starts timing out --
+ORD-3 queued for retry: provider timeout
+    [payment] CLOSED -> OPEN
+ORD-4 queued for retry: provider timeout
+ORD-5 queued for retry: payment circuit is OPEN
+ORD-6 queued for retry: payment circuit is OPEN
+Provider calls while OPEN: 0 (fail fast, no waiting)
+-- 30 s later, provider has recovered --
+    [payment] OPEN -> HALF_OPEN
+ORD-7 paid (txn-ok)
+    [payment] HALF_OPEN -> CLOSED
+ORD-8 paid (txn-ok)
+ORD-9 paid (txn-ok)

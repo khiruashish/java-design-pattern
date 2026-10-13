@@ -1,0 +1,13 @@
+=== LLD: Library management ===
+Oct 1 : Asha borrowed Effective Java, due 2026-10-15
+Oct 1 : Ravi: no copies, reservation queue position 1
+Oct 1 : Dr. Iyer: no copies, reservation queue position 2
+Oct 1 : Asha borrowed Design Patterns (GoF), due 2026-10-15
+Oct 1 : Asha: loan limit reached
+    notify Ravi: Effective Java is ready for pickup
+Oct 21: Asha returned Effective Java, 6 days late, fine ₹30
+Oct 21: Dr. Iyer: Effective Java is reserved for Ravi
+Oct 22: Ravi borrowed Effective Java, due 2026-11-05
+    notify Dr. Iyer: Effective Java is ready for pickup
+Dec 21: Ravi returned Effective Java, 46 days late, fine ₹200
+Dec 21: Dr. Iyer borrowed Effective Java, due 2027-01-20

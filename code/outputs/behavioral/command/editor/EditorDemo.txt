@@ -1,0 +1,9 @@
+=== Docs SaaS: Undo / Redo ===
+type           -> "Hello world"
+insert         -> "Hello, dear world"
+delete         -> "dear world"
+undid delete 7 chars -> "Hello, dear world"
+undid insert ', dear' -> "Hello world"
+redid insert ', dear' -> "Hello, dear world"
+new edit       -> "Hello, dear world!"
+nothing to redo

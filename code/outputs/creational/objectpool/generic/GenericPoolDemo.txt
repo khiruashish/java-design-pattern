@@ -1,0 +1,3 @@
+Reused same buffer? true, cleared? true
+Third borrow: Pool exhausted
+Idle buffers: 2

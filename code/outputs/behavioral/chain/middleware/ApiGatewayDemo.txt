@@ -1,0 +1,9 @@
+=== SaaS API: Middleware Chain ===
+  [log] /invoices -> 200
+Response[status=200, body={"invoices": 3}]
+  [log] /invoices -> 401
+Response[status=401, body=Unauthorized]
+  [log] /invoices -> 200
+Response[status=200, body={"invoices": 3}]
+  [log] /invoices -> 429
+Response[status=429, body=Too Many Requests]

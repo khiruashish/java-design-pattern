@@ -1,0 +1,14 @@
+=== LLD: Snake and ladder (30 squares, seeded dice) ===
+Asha  rolls 6:  0 ->  6
+Ravi  rolls 3:  0 -> 22 ladder to 22
+Asha  rolls 3:  6 ->  9
+Ravi  rolls 1: 22 -> 23
+Asha  rolls 5:  9 -> 14
+Ravi  rolls 6: 23 -> 29
+Asha  rolls 3: 14 ->  4 snake to 4
+Ravi  rolls 4: 29 -> 29 (needs exact roll)
+Asha  rolls 3:  4 ->  7
+Ravi  rolls 5: 29 -> 29 (needs exact roll)
+Asha  rolls 5:  7 -> 12
+Ravi  rolls 1: 29 -> 30  WINS
+Builder validation: snake must go down: 5->12

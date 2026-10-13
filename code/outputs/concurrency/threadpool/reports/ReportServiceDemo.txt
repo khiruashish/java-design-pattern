@@ -1,0 +1,8 @@
+=== Banking: Statement Report Generation Under Load ===
+STMT-1 accepted (running=1, queued=0)
+STMT-2 accepted (running=2, queued=0)
+STMT-3 accepted (running=2, queued=1)
+STMT-4 accepted (running=2, queued=2)
+STMT-5 REJECTED -> HTTP 429, please retry in a minute
+STMT-6 REJECTED -> HTTP 429, please retry in a minute
+Reports completed: 4

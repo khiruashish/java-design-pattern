@@ -1,0 +1,10 @@
+=== LLD: Parking lot ===
+bike  -> F0-S1 (smallest fitting spot on the nearest floor)
+car 1 -> F0-M1
+car 2 -> F1-M1
+truck -> F1-L1
+free spots for cars now: 0
+another car -> FULL
+Receipt[ticketId=T-1, plate=KA01-B-1, parked=PT20M, feePaise=0]  (first 30 min free)
+Receipt[ticketId=T-2, plate=KA01-C-1, parked=PT2H5M, feePaise=12000]  (3 started hours)
+re-using a ticket: unknown or already used ticket T-2

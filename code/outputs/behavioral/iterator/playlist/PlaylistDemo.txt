@@ -1,0 +1,4 @@
+=== Streaming: Road Trip Playlist ===
+IN_ORDER   -> [Kesariya, Lose Yourself, Bohemian Rhapsody, Tum Hi Ho]
+REPEAT_ALL -> [Kesariya, Lose Yourself, Bohemian Rhapsody, Tum Hi Ho, Kesariya, Lose Yourself]
+SHUFFLE    -> [Tum Hi Ho, Lose Yourself, Kesariya, Bohemian Rhapsody]

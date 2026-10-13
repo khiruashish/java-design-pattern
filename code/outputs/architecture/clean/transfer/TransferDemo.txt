@@ -1,0 +1,7 @@
+=== Banking: one interactor, a response model rendered twice ===
+200 {"message":"Sent ₹20000"}
+  AUDIT result=OK from=A-1 to=B-2 amount=2000000 reason=- balance_after=8000000
+422 {"message":"Transfer failed: daily transfer limit exceeded"}
+  AUDIT result=REJECTED from=A-1 to=B-2 amount=4000000 reason=daily transfer limit exceeded balance_after=8000000
+422 {"message":"Transfer failed: insufficient funds"}
+  AUDIT result=REJECTED from=A-1 to=B-2 amount=20000000 reason=insufficient funds balance_after=8000000

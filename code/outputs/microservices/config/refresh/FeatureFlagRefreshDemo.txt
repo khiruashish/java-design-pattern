@@ -1,0 +1,11 @@
+=== Fintech: switching a payment method off without a deploy ===
+pay ₹500 by UPI   : paid
+-- the UPI partner reports an outage; ops flips the flag in Git --
+    [refresh] upi.enabled -> false
+pay ₹500 by UPI   : UPI temporarily unavailable, please use a card
+-- partner recovers, with a temporary lower limit --
+    [refresh] upi.enabled -> true
+    [refresh] upi.max.amount -> 20000
+pay ₹500 by UPI   : paid
+pay ₹50,000 by UPI: amount above the current UPI limit
+config version 2, zero restarts

@@ -1,0 +1,6 @@
+=== Grocery: One Checkout, Many Countries ===
+IN: subtotal INR 150.00 + GST 5% INR 7.50 + delivery INR 25.00 = INR 182.50 (10-minute delivery)
+IN: subtotal INR 250.00 + GST 5% INR 12.50 + delivery INR 0.00 = INR 262.50 (10-minute delivery)
+IN: Minimum order is INR 99.00
+DE: subtotal 50,00 EUR + MwSt 7% 3,50 EUR + delivery 0,00 EUR = 53,50 EUR (2-hour delivery slot)
+DE: subtotal 30,00 EUR + MwSt 7% 2,10 EUR + delivery 2,99 EUR = 35,09 EUR (2-hour delivery slot)

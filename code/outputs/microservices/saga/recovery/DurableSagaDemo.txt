@@ -1,0 +1,9 @@
+=== Challenge: recovering a saga after the orchestrator crashes ===
+  inventory: reserved
+  payment: charged
+CRASH: orchestrator pod killed (OOM)
+Saga log after crash : [STARTED, BEGIN reserve stock, DONE reserve stock, BEGIN charge payment, DONE charge payment, BEGIN schedule delivery]
+-- new pod starts and scans unfinished sagas --
+  payment: refunded
+  inventory: released
+Saga log after restart: [STARTED, BEGIN reserve stock, DONE reserve stock, BEGIN charge payment, DONE charge payment, BEGIN schedule delivery, UNDONE charge payment, UNDONE reserve stock, ROLLED_BACK]

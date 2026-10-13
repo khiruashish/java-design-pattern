@@ -1,0 +1,7 @@
+=== Ride-hailing: relay crashes between publish and mark ===
+  billing: receipt sent for TripCompleted TRIP-1 ₹212
+  relay: CRASH before marking event 1
+-- relay restarts --
+  billing: duplicate event 1 ignored
+  billing: receipt sent for TripCompleted TRIP-2 ₹96
+Events delivered: 3, receipts sent: 2 (exactly once per trip)

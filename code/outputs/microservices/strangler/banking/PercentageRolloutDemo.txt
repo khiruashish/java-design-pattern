@@ -1,0 +1,6 @@
+=== Banking: moving statements to the new service by percentage ===
+  0% ->    0 of 10,000 customers on the new service; EMP-1 -> modern; CUST-1001 -> legacy
+  5% ->  494 of 10,000 customers on the new service; EMP-1 -> modern; CUST-1001 -> legacy
+ 25% -> 2523 of 10,000 customers on the new service; EMP-1 -> modern; CUST-1001 -> legacy
+100% -> 10000 of 10,000 customers on the new service; EMP-1 -> modern; CUST-1001 -> modern
+KILL ->    0 of 10,000 customers on the new service (instant rollback)

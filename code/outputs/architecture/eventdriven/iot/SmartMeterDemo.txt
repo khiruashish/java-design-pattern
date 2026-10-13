@@ -1,0 +1,7 @@
+=== Energy: 5-minute windows over smart-meter events ===
+watermark 18:05:
+  M-17 window 18:00 avg 2.30 kW
+  M-42 window 18:00 avg 6.60 kW  ALERT: possible overload
+watermark 18:10:
+  M-17 window 18:05 avg 3.00 kW
+  M-42 window 18:05 avg 4.20 kW

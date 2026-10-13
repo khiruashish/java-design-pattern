@@ -1,0 +1,6 @@
+=== LLD: Notification system ===
+  EMAIL to asha@example.com: Hi Asha, order ORD-9 is out for delivery with Imran, arriving by 18:30.
+  SMS   to +91-98450-11111: Hi Asha, order ORD-9 is out for delivery with Imran, arri...
+  EMAIL to ravi@example.com: Hi Ravi, order ORD-9 is out for delivery with Imran, arriving by 18:30.
+retry log: [retry 1 after: SMS gateway 503]
+failures : [PUSH to U1 failed: device token expired]

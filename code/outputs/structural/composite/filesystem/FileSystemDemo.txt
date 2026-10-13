@@ -1,0 +1,7 @@
+project/ (7680 B)
+  README.md (512 B)
+  pom.xml (2048 B)
+  src/ (5120 B)
+    App.java (4096 B)
+    util/ (1024 B)
+      Strings.java (1024 B)

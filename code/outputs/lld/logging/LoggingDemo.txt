@@ -1,0 +1,7 @@
+=== LLD: Logging framework (chain of appenders, logger hierarchy) ===
+[console] 10:15:30 INFO com.shop.cart - item added MANGO-1KG
+[file] {"level":"INFO","logger":"com.shop.cart","msg":"item added MANGO-1KG"}
+[console] 10:15:30 DEBUG com.shop.payment.upi - UPI intent created
+[console] 10:15:30 ERROR com.shop.payment - PayFast timeout for ORD-9
+[file] {"level":"ERROR","logger":"com.shop.payment","msg":"PayFast timeout for ORD-9"}
+pages sent to on-call: [[pager] com.shop.payment: PayFast timeout for ORD-9]

@@ -1,0 +1,11 @@
+=== Grocery: reserve stock in the inventory service ===
+    attempt 1 failed (503 service unavailable), retrying in 145 ms (max 200)
+    attempt 2 failed (503 service unavailable), retrying in 273 ms (max 400)
+Result: reserved MANGO-1KG x2 after sleeping 418 ms in total
+-- a validation error is never retried --
+Gave up immediately: 400 quantity must be positive
+-- a long outage exhausts the attempts --
+    attempt 1 failed (503 service unavailable), retrying in 61 ms (max 200)
+    attempt 2 failed (503 service unavailable), retrying in 110 ms (max 400)
+    attempt 3 failed (503 service unavailable), retrying in 532 ms (max 800)
+Gave up after 4 attempts: 503 service unavailable

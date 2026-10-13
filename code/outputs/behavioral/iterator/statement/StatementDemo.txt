@@ -1,0 +1,14 @@
+=== Banking: Statement with Lazy Pagination ===
+Mini statement (first 4 only):
+  [api] GET /accounts/SB-1001/txns?cursor=null
+  #1 UPI to grocery -450
+  #2 Salary credit 85000
+  #3 UPI to grocery -452
+  [api] GET /accounts/SB-1001/txns?cursor=3
+  #4 Salary credit 85000
+API calls so far: 2
+Full statement total:
+  [api] GET /accounts/SB-1001/txns?cursor=null
+  [api] GET /accounts/SB-1001/txns?cursor=3
+  [api] GET /accounts/SB-1001/txns?cursor=6
+  net INR 338188, API calls so far: 5

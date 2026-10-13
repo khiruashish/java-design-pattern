@@ -1,0 +1,7 @@
+=== Health Insurance: Claim Adjudication ===
+CL-1 Consultation INR   1,200 -> AUTO-APPROVE                           fraud score 5
+CL-2 Consultation INR   3,500 -> REVIEW (consultation above INR 2000)   fraud score 70
+CL-3 Surgery      INR 420,000 -> APPROVE 300000 (sum insured cap)       fraud score 10
+CL-4 Surgery      INR 150,000 -> REJECT (no pre-authorization)          fraud score 60
+CL-5 Pharmacy     INR   2,400 -> AUTO-APPROVE                           fraud score 5
+CL-6 Pharmacy     INR  26,000 -> REJECT (no prescription)               fraud score 40

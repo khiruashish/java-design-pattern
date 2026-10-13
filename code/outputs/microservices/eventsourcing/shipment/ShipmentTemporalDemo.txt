@@ -1,0 +1,5 @@
+=== Logistics: temporal queries on a shipment ===
+Now                         : State[location=Koramangala, status=DELIVERED]
+At 2026-10-12 14:00 UTC     : State[location=Pune sort centre, status=IN_TRANSIT]
+At 2026-10-12 23:59 UTC     : State[location=Pune sort centre, status=DELAYED_WEATHER]
+Customer says: "the delay was the courier's fault" -> the history shows a weather delay at Pune, 18:20.

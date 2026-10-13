@@ -1,0 +1,9 @@
+=== Banking: Personal Loan Eligibility ===
+Meena: ELIGIBLE
+Rohit: NOT ELIGIBLE
+  - credit score must be at least 700
+  - existing EMIs must be under 40% of income
+Sara: NOT ELIGIBLE
+  - age must be 21-60
+  - KYC must be complete
+  - monthly income must be at least INR 25,000

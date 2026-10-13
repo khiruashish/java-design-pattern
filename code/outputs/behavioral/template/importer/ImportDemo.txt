@@ -1,0 +1,9 @@
+=== ERP: Nightly Data Imports ===
+  rejected [C2,Ravi K,ravi-at-example.com]: invalid email
+  load {id=C1, name=Asha Rao, email=asha@example.com}
+  load {id=C3, name=Li Wei, email=li@example.com}
+CRM customers (CSV): 2 loaded, 1 rejected
+  -> sent to reconciliation queue: unknown type XX
+  load {account=SB00001001, date=20261013, amountPaise=000004500000, type=CR}
+  load {account=SB00001001, date=20261013, amountPaise=000000129900, type=DR}
+Bank statement (fixed-width): 2 loaded, 1 rejected

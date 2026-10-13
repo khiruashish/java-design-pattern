@@ -1,0 +1,4 @@
+=== Challenge: detect layer violations ===
+VIOLATION repository.OrderRepository -> web.OrderResponse (lower layer depends on a higher one)
+VIOLATION service.PricingService -> web.Pagination (lower layer depends on a higher one)
+2 violations; skipping a layer downward is allowed in relaxed layering.

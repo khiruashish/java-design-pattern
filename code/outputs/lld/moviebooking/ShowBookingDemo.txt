@@ -1,0 +1,9 @@
+=== LLD: Movie ticket booking with seat holds ===
+Asha holds A1,A2   : true
+Ravi holds A2,A3   : false (all-or-nothing)
+Ravi holds A3      : true
+seat map           : {A1=h, A2=h, A3=h, A4=.}  (h = held, X = booked)
+Asha pays at +2 min: true
+Ravi pays at +6 min: false (hold expired, refund)
+seat map at +6 min : {A1=X, A2=X, A3=., A4=.}
+50 users race for seat B7 -> holds granted: 1

@@ -1,0 +1,6 @@
+=== Grocery: refund messages credited to the wallet exactly once ===
+msg-501 ₹199 -> credited
+msg-502 ₹45 -> credited
+msg-501 ₹199 -> duplicate, skipped
+msg-502 ₹45 -> duplicate, skipped
+Wallet balance: ₹244 (expected ₹244)

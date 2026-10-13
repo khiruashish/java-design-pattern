@@ -1,0 +1,6 @@
+=== Payments: Smart Gateway Routing ===
+LOWEST_FEE           -> PayFast
+HIGHEST_SUCCESS      -> SecurePay
+LOWEST_EXPECTED_COST -> ValueGate
+ValueGate success rate drops to 0.80 during a bank outage:
+LOWEST_EXPECTED_COST -> SecurePay

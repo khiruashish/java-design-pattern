@@ -1,0 +1,3 @@
+SELECT * FROM products WHERE ((stock >= ? AND price_inr <= ?) AND (brand = ? OR rating >= ?))
+params: [1, 2000, Pulse, 4.5]
+Injection attempt stays a parameter: brand = ? [x' OR '1'='1]

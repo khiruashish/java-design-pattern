@@ -1,0 +1,6 @@
+=== Grocery: Safe Substitutions and 'Undo Clear Cart' ===
+cart             : {MILK-1L=2, PANEER-200G=1, ATTA-5KG=1}
+substitution failed (TOFU-200G also out of stock), rolled back
+cart             : {MILK-1L=2, PANEER-200G=1, ATTA-5KG=1}
+after clear      : {}   [toast: Cart cleared. UNDO]
+after UNDO       : {MILK-1L=2, PANEER-200G=1, ATTA-5KG=1}

@@ -1,0 +1,202 @@
+site_name: Java Design Patterns Handbook
+site_description: From beginner to architect, and ready for interviews. GoF, concurrency, architecture and microservice patterns in Java 21 with runnable examples.
+site_author: Java Design Patterns Handbook
+repo_name: java-design-pattern
+repo_url: https://github.com/khiruashish/java-design-pattern
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2026 Java Design Patterns Handbook
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: material/book-open-page-variant
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+  features:
+    - announce.dismiss
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search
+  - tags
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/khiruashish/java-design-pattern
+
+nav:
+  - Home:
+      - index.md
+      - Roadmap & Progress: roadmap.md
+      - Tags: tags.md
+  - Getting Started:
+      - How to Use This Handbook: getting-started/how-to-use.md
+      - OOP & SOLID Refresher: getting-started/oop-solid.md
+      - UML Cheat Sheet: getting-started/uml-cheatsheet.md
+  - Creational:
+      - creational/index.md
+      - Singleton: creational/singleton.md
+      - Factory Method: creational/factory-method.md
+      - Abstract Factory: creational/abstract-factory.md
+      - Builder: creational/builder.md
+      - Prototype: creational/prototype.md
+      - Object Pool: creational/object-pool.md
+  - Structural:
+      - structural/index.md
+      - Adapter: structural/adapter.md
+      - Bridge: structural/bridge.md
+      - Composite: structural/composite.md
+      - Decorator: structural/decorator.md
+      - Facade: structural/facade.md
+      - Flyweight: structural/flyweight.md
+      - Proxy: structural/proxy.md
+  - Behavioral:
+      - behavioral/index.md
+      - Chain of Responsibility: behavioral/chain-of-responsibility.md
+      - Command: behavioral/command.md
+      - Interpreter: behavioral/interpreter.md
+      - Iterator: behavioral/iterator.md
+      - Mediator: behavioral/mediator.md
+      - Memento: behavioral/memento.md
+      - Observer: behavioral/observer.md
+      - State: behavioral/state.md
+      - Strategy: behavioral/strategy.md
+      - Template Method: behavioral/template-method.md
+      - Visitor: behavioral/visitor.md
+      - Null Object: behavioral/null-object.md
+      - Specification: behavioral/specification.md
+  - Concurrency:
+      - concurrency/index.md
+      - Producer-Consumer: concurrency/producer-consumer.md
+      - Thread Pool: concurrency/thread-pool.md
+      - Future / Promise: concurrency/future-promise.md
+      - Read-Write Lock: concurrency/read-write-lock.md
+      - Immutable Object: concurrency/immutable-object.md
+      - Double-Checked Locking: concurrency/double-checked-locking.md
+      - Virtual Threads: concurrency/virtual-threads.md
+  - Microservices:
+      - microservices/index.md
+      - Decomposition (DDD): microservices/decomposition.md
+      - API Gateway: microservices/api-gateway.md
+      - Backend for Frontend: microservices/backend-for-frontend.md
+      - Service Discovery: microservices/service-discovery.md
+      - Circuit Breaker: microservices/circuit-breaker.md
+      - Retry / Timeout / Bulkhead: microservices/retry-timeout-bulkhead.md
+      - Rate Limiter: microservices/rate-limiter.md
+      - Saga: microservices/saga.md
+      - Transactional Outbox: microservices/transactional-outbox.md
+      - CQRS: microservices/cqrs.md
+      - Event Sourcing: microservices/event-sourcing.md
+      - Database per Service: microservices/database-per-service.md
+      - Strangler Fig: microservices/strangler-fig.md
+      - Sidecar / Service Mesh: microservices/sidecar-service-mesh.md
+      - Idempotent Consumer: microservices/idempotent-consumer.md
+      - Distributed Tracing: microservices/distributed-tracing.md
+      - Config Server: microservices/config-server.md
+      - Anti-Corruption Layer: microservices/anti-corruption-layer.md
+  - Architecture:
+      - architecture/index.md
+      - Layered: architecture/layered.md
+      - Hexagonal (Ports & Adapters): architecture/hexagonal.md
+      - Clean Architecture: architecture/clean.md
+      - Event-Driven: architecture/event-driven.md
+      - Modular Monolith: architecture/modular-monolith.md
+  - Guides:
+      - Pattern Selection Guide: pattern-selection-guide.md
+      - Pattern Comparisons: comparisons.md
+      - Anti-Patterns: anti-patterns.md
+      - Glossary: glossary.md
+  - Interview:
+      - interview/index.md
+      - Google: interview/google.md
+      - Microsoft: interview/microsoft.md
+      - Amazon: interview/amazon.md
+      - SAP: interview/sap.md
+      - Service Companies: interview/service-companies.md
+      - LLD Problems: interview/lld-problems.md
+      - System Design Patterns: interview/system-design-patterns.md
+      - Top 100 Questions: interview/top-100-questions.md
+      - Revision Cheat Sheet: interview/revision-cheatsheet.md
+  - Projects:
+      - "Capstone: FreshCart": projects/grocery-platform.md

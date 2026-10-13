@@ -1,0 +1,3 @@
+relevance  [Glass Bottle 750ml, Steel Bottle 1L, Copper Bottle 1L, Plastic Bottle 1L]
+price_asc  [Plastic Bottle 1L, Glass Bottle 750ml, Steel Bottle 1L, Copper Bottle 1L]
+rating     [Copper Bottle 1L, Glass Bottle 750ml, Steel Bottle 1L, Plastic Bottle 1L]

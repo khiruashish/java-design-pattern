@@ -1,0 +1,4 @@
+=== Ride-hailing: One Word, Two Bounded Contexts ===
+  [dispatch] TRIP-77 completed by driver DRV-12 (ETA was 4 min)
+  [billing] invoice Trip[id=TRIP-77, riderId=RIDER-5, baseFare=50, distanceFare=118, timeFare=46, surge=20, totalInr=234]
+Dispatch's Trip has GPS + ETA; Billing's Trip has fare components. Neither knows the other's model.

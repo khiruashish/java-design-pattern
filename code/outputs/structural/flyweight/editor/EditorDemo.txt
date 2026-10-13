@@ -1,0 +1,5 @@
+=== Docs SaaS: Styled Text in a 3-Page Contract ===
+Characters in document   : 3006
+Style objects referenced : 3
+Styles in the pool       : 3
+Bold style interned?     : true

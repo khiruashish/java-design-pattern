@@ -1,0 +1,2 @@
+Last week: CUST-42 [MILK-1Lx2, EGGS-12x1]
+Reorder:   CUST-42 [MILK-1Lx4, EGGS-12x1, BREAD-WWx1]

@@ -1,0 +1,7 @@
+=== Banking: Open-Banking API Gateway for Fintech Partners ===
+BudgetApp call 1 -> 200 balance for BudgetApp {X-RateLimit-Remaining=2}
+BudgetApp call 2 -> 200 balance for BudgetApp {X-RateLimit-Remaining=1}
+BudgetApp call 3 -> 200 balance for BudgetApp {X-RateLimit-Remaining=0}
+BudgetApp call 4 -> 429 quota exceeded {Retry-After=40}
+Unknown key       -> 401 invalid API key
+Next minute       -> 200 balance for BudgetApp {X-RateLimit-Remaining=2}

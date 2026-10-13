@@ -1,0 +1,5 @@
+=== Grocery: zero-trust calls to payment-service through sidecars ===
+checkout  -> POST /charges : 200 payment-app handled POST /charges
+reporting -> POST /charges : 403 RBAC: reporting may not call /charges
+reporting -> GET /reports  : 200 payment-app handled GET /reports/daily
+attacker pod (no cert)     : 403 rejected: no mTLS client certificate

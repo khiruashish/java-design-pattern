@@ -1,0 +1,17 @@
+=== Banking: Connection Pool for the Ledger Service ===
+  [db] opening connection #1 (TCP + TLS + auth, ~50 ms)
+conn#1 ran: SELECT balance FROM accounts WHERE id=1
+conn#1 ran: SELECT balance FROM accounts WHERE id=2  <- reused
+Stats: created=1 idle=1 max=2
+-- two transfers at once, then a third request --
+  [db] opening connection #2 (TCP + TLS + auth, ~50 ms)
+conn#1 ran: BEGIN; UPDATE accounts ...
+conn#2 ran: BEGIN; UPDATE accounts ...
+Third request: No connection available within 100 ms (max 2)
+Returned connection reset (no open transaction)? true
+-- after a network drop --
+conn#1 ran: SELECT 1
+  [pool] evicting broken connection #2
+  [db] opening connection #3 (TCP + TLS + auth, ~50 ms)
+Healthy pair: #1 and #3
+Stats: created=2 idle=2 max=2

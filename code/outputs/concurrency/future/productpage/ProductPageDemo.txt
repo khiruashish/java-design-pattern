@@ -1,0 +1,4 @@
+=== E-commerce: Product Page Composition ===
+  reviews unavailable (reviews service returned 503), showing page without them
+Rendered: Page[sku=HEADPHONES-42, priceInr=1299, stock=14, reviews=[]]
+Price and stock were essential; reviews were optional.

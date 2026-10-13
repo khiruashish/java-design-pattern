@@ -1,0 +1,3 @@
+=== Payments: zone-aware routing from a caller in zone-a ===
+Both zone-a instances healthy -> [ledger-a1, ledger-a2, ledger-a1, ledger-a2]
+Only 1 left in zone-a (min 2) -> [ledger-b1, ledger-c1, ledger-a1, ledger-b1]

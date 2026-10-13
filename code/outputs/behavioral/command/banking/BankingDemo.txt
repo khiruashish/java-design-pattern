@@ -1,0 +1,9 @@
+=== Banking: Nightly Batch of Scheduled Payments ===
+Running batch:
+  done Transfer[id=CMD-1, from=ACC-1, to=ACC-2, amountInr=2000]
+  done PayBill[id=CMD-2, from=ACC-1, biller=ELECTRICITY-BESCOM, amountInr=1450]
+  FAILED CMD-3 -> dead-letter queue
+  skip duplicate CMD-1
+ACC-1 balance: INR 6550
+ACC-2 balance: INR 2500
+Dead letters : [CMD-3: insufficient funds in ACC-2]

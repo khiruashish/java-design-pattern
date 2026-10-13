@@ -1,0 +1,7 @@
+=== Ride-hailing: trip completion -> async billing, one trace ===
+message headers: {traceparent=00-bab66d36a16606e830490b8d6f70abfb-2d5a670a88b89bb4-01}
+  trip-service: POST /trips/TRIP-5/complete             29 ms |#
+    trip-service: kafka send trips.completed             4 ms |#
+      billing-service: kafka receive trips.completed    42 ms |                                       #
+        billing-service: INSERT invoice                 12 ms |                                       #
+billing-service joined trace bab66d36... 2 s after the HTTP request ended.

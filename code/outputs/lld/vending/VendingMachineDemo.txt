@@ -1,0 +1,12 @@
+=== LLD: Vending machine (State pattern) ===
+select A1       -> insert coins first
+insert ₹10      -> credit ₹10
+select A1       -> Masala chips costs ₹20, insert ₹10 more
+insert ₹3       -> rejected coin ₹3
+insert ₹10      -> credit ₹20
+insert ₹5       -> credit ₹25
+insert ₹2       -> credit ₹27
+select B1       -> Mango juice sold out, credit ₹27 kept
+select A1       -> dispensed Masala chips, change [5, 2]
+insert ₹10      -> credit ₹10
+cancel          -> refunded, change [10]

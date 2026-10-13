@@ -1,0 +1,5 @@
+=== Insurance: claims service reads policies from a legacy XML system ===
+Policy: Policy[number=MTR-2025-004417, holder=Ravi Kumar, cover=COMPREHENSIVE, validUntil=2026-12-31, namedDrivers=[Ravi Kumar, Anita Kumar]]
+Accident on 2026-11-02 covered? true
+Accident on 2027-01-05 covered? false
+Unknown code rejected at the boundary: cannot translate policy XML: unknown cover code 07

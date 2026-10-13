@@ -1,0 +1,8 @@
+=== Grocery: orders_db and customers_db are separate databases ===
+SQL JOIN across services fails: Table "CUSTOMERS" not found
+API composition instead:
+  ORD-1 Asha Rao ₹798
+  ORD-2 Vikram Singh ₹649
+  ORD-3 Asha Rao ₹129
+  ORD-4 Vikram Singh ₹399
+customer-service API calls: 4 (one per order, see the coding challenge)

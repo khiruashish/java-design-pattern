@@ -1,0 +1,4 @@
+=== Challenge: add a new read model by replaying history ===
+Rebuilt from 6 stored events -> top 2: [MILK-1L=8, MANGO-1KG=5], checkpoint=6
+Live events continue; event 6 is redelivered by the broker:
+top 2: [MANGO-1KG=9, MILK-1L=8], checkpoint=7

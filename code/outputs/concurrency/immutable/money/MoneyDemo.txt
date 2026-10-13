@@ -1,0 +1,6 @@
+=== Banking: Splitting a Bill and Summing in Parallel ===
+INR 100 split 3 ways : [INR 33.34, INR 33.33, INR 33.33]
+Shares add back up   : INR 100.00
+1,000,000 x INR 1 in parallel: INR 1000000.00
+Original still INR 1.00      : INR 1.00
+Rejected INR 10.005: fractions of a paisa are not money

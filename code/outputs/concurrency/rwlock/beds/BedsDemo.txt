@@ -1,0 +1,4 @@
+=== Hospital: Bed Board ===
+after admitting P-2042: {ICU-1=P-2042, ICU-2=P-1001, WARD-7=free}
+ICU-2 is occupied
+Upgrade read lock -> write lock succeeded? false (with lock() instead of tryLock() this thread would wait forever)

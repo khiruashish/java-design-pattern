@@ -1,0 +1,5 @@
+=== Grocery: catalog writes vs. search reads ===
+applied 3 events -> cheapest fruit: [Robusta bananas x12 ₹69, Shimla apples 1 kg ₹99]
+Price changed, projection not yet caught up -> [Robusta bananas x12 ₹69, Shimla apples 1 kg ₹99]  (stale read)
+applied 1 event  -> cheapest fruit: [Shimla apples 1 kg ₹59, Robusta bananas x12 ₹69]
+Command rejected by the write model: price cut over 50% needs approval

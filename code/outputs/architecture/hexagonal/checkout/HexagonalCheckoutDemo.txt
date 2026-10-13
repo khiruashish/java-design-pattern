@@ -1,0 +1,9 @@
+=== Grocery: one core, two driving adapters, three driven adapters ===
+    PayFast API <- {amount=1447.00, customer_ref=CUST-42, merchant_key=MK-GROCERY, txn_ref=ORD-1}
+    sms to +91-98450-11111: Order ORD-1 confirmed
+201 Order[id=ORD-1, customerId=CUST-42, totalPaise=144700, status=PAID]
+    PayFast API <- {amount=8990.00, customer_ref=CUST-77, merchant_key=MK-GROCERY, txn_ref=ORD-2}
+    sms to +91-98450-22222: Payment for ORD-2 declined
+cli> PAYMENT_DECLINED
+400 total must be positive
+Orders saved: 2

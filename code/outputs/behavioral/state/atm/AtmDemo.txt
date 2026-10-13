@@ -1,0 +1,15 @@
+=== Banking: ATM Session ===
+Customer 1:
+  ATM: insert a card first
+  ATM: card XXXX-1111 read, enter PIN
+  ATM: wrong PIN, 2 attempt(s) left
+  ATM: PIN ok
+  ATM: amount must be a multiple of 100
+  ATM: dispensed INR 2500, balance INR 9500
+  ATM: card returned, thank you
+Customer 2 (forgot PIN):
+  ATM: card XXXX-2222 read, enter PIN
+  ATM: wrong PIN, 2 attempt(s) left
+  ATM: wrong PIN, 1 attempt(s) left
+  ATM: card retained after 3 wrong PINs, please contact your branch
+  ATM: insert a card first

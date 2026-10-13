@@ -1,0 +1,4 @@
+=== Challenge: 3 relay instances, 500 outbox rows ===
+Rows published      : 500
+Published twice     : 0
+Every row claimed   : true

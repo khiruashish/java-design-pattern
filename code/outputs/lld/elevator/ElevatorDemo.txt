@@ -1,0 +1,12 @@
+=== LLD: Elevator system (2 cars, SCAN scheduling) ===
+hall call 3 UP -> E1
+hall call 7 DOWN -> E2
+t=1 [E1@1 moving UP, E2@7 doors open]
+   (passenger in E1 presses 6)
+t=2 [E1@2 moving UP, E2@7 idle]
+t=3 [E1@3 doors open, E2@7 idle]
+t=4 [E1@4 moving UP, E2@7 idle]
+hall call 5 UP -> E1  (E1 is moving up past 5)
+t=5 [E1@5 doors open, E2@7 idle]
+t=6 [E1@6 doors open, E2@7 idle]
+t=7 [E1@6 idle, E2@7 idle]

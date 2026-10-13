@@ -1,0 +1,12 @@
+=== Grocery: order + OrderPlaced event in one transaction ===
+Duplicate ORD-1 rejected; transaction rolled back (no order, no event)
+orders=2 outbox=2 unpublished=2
+-- relay polls while Kafka is down --
+  relay: broker unavailable (connection refused), will retry
+published 0
+orders=2 outbox=2 unpublished=2
+-- Kafka is back --
+  kafka: orders.events key=ORD-1 {"orderId":"ORD-1","total":79800}
+  kafka: orders.events key=ORD-2 {"orderId":"ORD-2","total":64900}
+published 2
+orders=2 outbox=2 unpublished=0

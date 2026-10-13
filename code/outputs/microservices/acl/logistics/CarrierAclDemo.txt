@@ -1,0 +1,7 @@
+=== Logistics: two carriers, one status model ===
+QuickDrop 771020  'OFD' -> TrackingUpdate[trackingId=QuickDrop:771020, status=OUT_FOR_DELIVERY]
+BlueKite  BK-55   '3'  -> TrackingUpdate[trackingId=BlueKite:BK-55, status=OUT_FOR_DELIVERY]
+QuickDrop 771020  'dl ' -> TrackingUpdate[trackingId=QuickDrop:771020, status=DELIVERED]
+BlueKite  BK-56   '9'  -> TrackingUpdate[trackingId=BlueKite:BK-56, status=FAILED_ATTEMPT]
+    ALERT: unmapped status '7' from BlueKite
+BlueKite  BK-57   '7'  -> TrackingUpdate[trackingId=BlueKite:BK-57, status=UNKNOWN]

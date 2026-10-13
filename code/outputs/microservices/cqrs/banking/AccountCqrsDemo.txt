@@ -1,0 +1,7 @@
+=== Banking: one write model, two read models ===
+Withdraw ₹99,999 rejected: insufficient funds
+Balance tile   : ₹36,151.00
+Mini statement :
+  Electricity       -450.00
+  Groceries         -899.00
+  Rent           -12,500.00

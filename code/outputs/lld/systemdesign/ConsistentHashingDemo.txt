@@ -1,0 +1,4 @@
+=== System design: consistent hashing for a cart cache cluster ===
+4 nodes, 200 virtual nodes each: {cache-1=25169, cache-2=23658, cache-3=24689, cache-4=26484}
+add cache-5 -> 21.5% of keys moved (ideal 1/5 = 20%)
+with hash % N instead: 80.1% of keys would move

@@ -1,0 +1,5 @@
+=== Challenge: outbound translation to a fixed-width legacy format ===
+|01234567890123456789012345678901234567890|
+|ORD1      ASHA RAO            00002261013|
+|ORD1234567ZOE FERNANDES-D'SOUZ00012261013|
+Every record is 41 characters: true

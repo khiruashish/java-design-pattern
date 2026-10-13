@@ -1,0 +1,5 @@
+=== Education platform: verifying module boundaries in CI ===
+FAIL CertificatePdf: undeclared dependency certificates -> courses
+FAIL SeatChecker: uses internal package lms.courses.internal.jpa
+FAIL RefundPolicy: undeclared dependency payments -> enrollment
+3 violations: build fails

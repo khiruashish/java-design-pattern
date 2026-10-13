@@ -1,0 +1,3 @@
+=== Challenge: detect module cycles, compute a build order ===
+cycle: none, build order: [customers, billing, catalog, ordering, shipping]
+cycle: billing -> shipping -> ordering -> billing  (break it with an event or by moving the shared concept)

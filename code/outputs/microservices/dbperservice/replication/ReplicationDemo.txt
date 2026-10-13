@@ -1,0 +1,5 @@
+=== Food delivery: shipping keeps its own copy of addresses ===
+LABEL ORD-1 -> 12 MG Road, Bengaluru
+v3 then a late v2 event arrive -> LABEL ORD-2 -> 7 Lake View, Bengaluru
+customer-service is down for maintenance...
+LABEL ORD-3 -> 7 Lake View, Bengaluru   (no remote call needed)

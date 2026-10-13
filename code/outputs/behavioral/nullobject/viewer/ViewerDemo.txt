@@ -1,0 +1,5 @@
+=== Streaming: Members and Guests, One Code Path ===
+Signed-in member:
+  Welcome back, Kavya | next: [Because you watched City of Rain: Season 2] | download: yes
+Guest (no session):
+  Hello! Sign in for personalised picks | next: [Trending: Monsoon Express, Top 10 in India] | download: sign in required

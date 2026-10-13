@@ -1,0 +1,15 @@
+=== Banking: inter-bank transfer as a choreographed saga ===
+  [bus] transfers <- TransferRequested[id=TX-1, from=A-100, to=B-200, amount=1500]
+  [bus] accounts.debited <- AccountDebited[id=TX-1, from=A-100, to=B-200, amount=1500]
+  [bus] accounts.credited <- AccountCredited[id=TX-1]
+A-100 balance: 3500
+
+  [bus] transfers <- TransferRequested[id=TX-2, from=A-100, to=B-CLOSED-9, amount=2000]
+  [bus] accounts.debited <- AccountDebited[id=TX-2, from=A-100, to=B-CLOSED-9, amount=2000]
+  [bus] credits.failed <- CreditFailed[id=TX-2, from=A-100, amount=2000, reason=account closed]
+  [bus] transfers.failed <- TransferFailed[id=TX-2, reason=account closed, refunded]
+A-100 balance: 3500 (debit compensated by refund)
+
+  [bus] transfers <- TransferRequested[id=TX-3, from=A-100, to=B-200, amount=9999]
+  [bus] transfers.failed <- TransferFailed[id=TX-3, reason=insufficient funds]
+A-100 balance: 3500

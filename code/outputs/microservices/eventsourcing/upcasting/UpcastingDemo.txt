@@ -1,0 +1,7 @@
+=== Challenge: upcasting old event versions on read ===
+stored  {type=PriceSet, version=1, sku=MANGO-1KG, price=399.00}
+  read  {type=PriceSet, version=2, sku=MANGO-1KG, amountPaise=39900, currency=INR}
+stored  {type=PriceSet, version=1, sku=RICE-5KG, price=649.50}
+  read  {type=PriceSet, version=2, sku=RICE-5KG, amountPaise=64950, currency=INR}
+stored  {type=PriceSet, version=2, sku=MANGO-1KG, amountPaise=34900, currency=INR}
+  read  {type=PriceSet, version=2, sku=MANGO-1KG, amountPaise=34900, currency=INR}

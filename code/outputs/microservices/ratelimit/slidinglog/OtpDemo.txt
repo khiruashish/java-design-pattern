@@ -1,0 +1,8 @@
+=== Fintech login: max 3 OTP SMS per phone per 10 minutes ===
+t= 0 min  send OTP -> SMS sent
+t= 1 min  send OTP -> SMS sent
+t= 2 min  send OTP -> SMS sent
+t= 3 min  send OTP -> 429, try again in 420 s
+t= 9 min  send OTP -> 429, try again in 60 s
+t=10 min  send OTP -> SMS sent
+t=11 min  send OTP -> SMS sent

@@ -1,0 +1,7 @@
+=== Challenge: retries + dead-letter queue for poison messages ===
+    attempt 1 failed for ORD-2 amount=abc: cannot parse amount
+    attempt 2 failed for ORD-2 amount=abc: cannot parse amount
+    -> DLQ after 3 attempts: ORD-2 amount=abc
+    attempt 1 failed for ORD-3 amount=129: invoice DB timeout
+invoiced: [ORD-1, ORD-3, ORD-4]
+dead letters: [DeadLetter[event=ORD-2 amount=abc, error=cannot parse amount, attempts=3]]

@@ -1,0 +1,10 @@
+=== Challenge: one contract test suite for every PaymentPort adapter ===
+PASS PayFastAdapter: small payment is captured
+PASS PayFastAdapter: payment above the limit is declined
+PASS PayFastAdapter: boundary ₹5,000.00 is captured
+PASS InMemoryFake: small payment is captured
+PASS InMemoryFake: payment above the limit is declined
+PASS InMemoryFake: boundary ₹5,000.00 is captured
+PASS BuggyFake: small payment is captured
+PASS BuggyFake: payment above the limit is declined
+FAIL BuggyFake: boundary ₹5,000.00 is captured

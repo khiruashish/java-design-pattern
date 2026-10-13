@@ -1,0 +1,5 @@
+=== Healthcare: refill use case returning a sealed Result ===
+RX-1 by PAT-5 -> 200 refill approved: Metformin 500 mg (2 left)
+RX-2 by PAT-5 -> 202 sent to your doctor: controlled substance: doctor must approve each refill
+RX-3 by PAT-5 -> 202 sent to your doctor: prescription expired on 2026-09-30
+RX-1 by PAT-9 -> 404 no such prescription for this patient

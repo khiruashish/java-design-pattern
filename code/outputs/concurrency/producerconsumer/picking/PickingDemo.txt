@@ -1,0 +1,5 @@
+=== Grocery Dark Store: Order Picking ===
+Orders picked       : 30
+Items picked        : 75
+Queue never above 5 : true
+All pickers worked  : true

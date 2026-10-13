@@ -1,0 +1,7 @@
+=== Challenge: outlier detection (3 consecutive 5xx, max 50% ejected) ===
+healthy: [pod-a, pod-b, pod-c, pod-d]
+    ejected pod-b for 30s
+healthy: [pod-a, pod-c, pod-d]
+    ejected pod-c for 30s
+healthy: [pod-a, pod-d]  (pod-d kept: ejecting it would exceed 50%)
+30 s later healthy: [pod-a, pod-b, pod-c, pod-d]

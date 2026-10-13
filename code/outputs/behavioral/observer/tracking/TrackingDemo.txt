@@ -1,0 +1,11 @@
+=== Grocery Delivery: Live Tracking ===
+  [app] rider is 2.4 km away
+  [eta] GRO-981 ETA 6 min
+  [app] rider is 1.9 km away
+  [eta] GRO-981 ETA 5 min
+  [app] rider is 1.8 km away
+  [app] rider is 0.3 km away
+  [eta] GRO-981 ETA 1 min
+  [app] Delivered! Rate your order
+  [eta] closed tracking for GRO-981
+observers left: 0
