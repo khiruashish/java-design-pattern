@@ -1,0 +1,90 @@
+/* ---------- Hero ---------- */
+.hero {
+  padding: 2.5rem 2rem;
+  margin: 0 0 2rem;
+  border-radius: 1rem;
+  color: #fff;
+  background: linear-gradient(135deg, #3949ab 0%, #5e35b1 55%, #8e24aa 100%);
+  box-shadow: 0 10px 30px rgba(63, 81, 181, 0.25);
+}
+.hero h1 {
+  color: #fff;
+  margin: 0 0 0.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.hero p {
+  font-size: 1.05rem;
+  opacity: 0.92;
+  margin: 0 0 1.25rem;
+}
+.hero .md-button {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+  margin: 0.25rem 0.5rem 0.25rem 0;
+}
+.hero .md-button--primary {
+  background: #fff;
+  color: #3949ab;
+  border-color: #fff;
+}
+.hero .md-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.hero .md-button--primary:hover {
+  background: #ede7f6;
+  color: #3949ab;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  margin: 0 0.3rem 0.3rem 0;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.badge--beginner     { background: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
+.badge--intermediate { background: #fff8e1; color: #8d6e00; border-color: #ffe082; }
+.badge--advanced     { background: #ffebee; color: #b71c1c; border-color: #ef9a9a; }
+.badge--category     { background: #e8eaf6; color: #283593; border-color: #9fa8da; }
+.badge--interview    { background: #f3e5f5; color: #6a1b9a; border-color: #ce93d8; }
+
+[data-md-color-scheme="slate"] .badge--beginner     { background: #1b3a1f; color: #a5d6a7; border-color: #2e7d32; }
+[data-md-color-scheme="slate"] .badge--intermediate { background: #3a2f0b; color: #ffe082; border-color: #8d6e00; }
+[data-md-color-scheme="slate"] .badge--advanced     { background: #3d1515; color: #ef9a9a; border-color: #b71c1c; }
+[data-md-color-scheme="slate"] .badge--category     { background: #1f2547; color: #c5cae9; border-color: #3949ab; }
+[data-md-color-scheme="slate"] .badge--interview    { background: #331a3d; color: #e1bee7; border-color: #8e24aa; }
+
+/* ---------- Cards ---------- */
+.md-typeset .grid.cards > ul > li {
+  border-radius: 0.8rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------- Tables ---------- */
+.md-typeset table:not([class]) {
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
+.md-typeset table:not([class]) th {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+/* ---------- Output blocks ---------- */
+.md-typeset .output-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-default-fg-color--light);
+}
