@@ -1,0 +1,5 @@
+100 concurrent getInstance() calls -> same object: true
+reflection attack blocked: use Config.getInstance()
+deserialized copy is the same instance: true
+enum singleton: INSTANCE (reflection on enums throws by design)
+PASS

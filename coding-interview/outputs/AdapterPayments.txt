@@ -1,0 +1,6 @@
+paid A-1 ref=BANK-A-1
+failed A-2 (LIMIT_EXCEEDED)
+failed A-3 (UNSUPPORTED_CURRENCY)
+paid A-4 ref=ch_A-4
+failed A-5 (DECLINED)
+PASS

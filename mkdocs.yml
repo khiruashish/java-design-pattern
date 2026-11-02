@@ -207,6 +207,21 @@ nav:
       - System Design Patterns: interview/system-design-patterns.md
       - Top 100 Questions: interview/top-100-questions.md
       - Revision Cheat Sheet: interview/revision-cheatsheet.md
+  - Coding Interview:
+      - coding-interview/index.md
+      - "1. Unbreakable Thread-Safe Singleton": coding-interview/01-singleton.md
+      - "2. Builder with Validation": coding-interview/02-builder.md
+      - "3. Factory Without a Switch": coding-interview/03-factory-registry.md
+      - "4. Strategy: Pluggable Discount Rules": coding-interview/04-strategy.md
+      - "5. Observer: Type-Safe Event Bus": coding-interview/05-observer.md
+      - "6. Decorator: Retry + Cache + Log": coding-interview/06-decorator.md
+      - "7. Command: Undo / Redo Editor": coding-interview/07-command-undo.md
+      - "8. State: Vending Machine": coding-interview/08-state-machine.md
+      - "9. Chain of Responsibility: Request Pipeline": coding-interview/09-chain-of-responsibility.md
+      - "10. Composite + Visitor: Expression Tree": coding-interview/10-composite-visitor.md
+      - "11. Proxy: Caching & Lazy Loading": coding-interview/11-dynamic-proxy.md
+      - "12. Adapter: Integrating Payment SDKs": coding-interview/12-adapter.md
+
   - Projects:
       - "Capstone: FreshCart": projects/grocery-platform.md
 

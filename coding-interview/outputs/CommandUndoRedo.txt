@@ -1,0 +1,7 @@
+after 3 commands : 'World'
+undo             : 'Hello World'
+undo             : 'Hello'
+redo             : 'Hello World'
+new command      : 'Hello World!'  (redo history cleared: redo() = false)
+undo everything  : ''
+PASS

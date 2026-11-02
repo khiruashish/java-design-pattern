@@ -1,0 +1,12 @@
+Idle[]                 cannot select in Idle[]
+Idle[]                 credit 100
+HasMoney[credit=100]   need 50 more
+HasMoney[credit=100]   credit 200
+HasMoney[credit=200]   dispensed, change 50
+Idle[]                 credit 50
+HasMoney[credit=50]    refunded 50
+Idle[]                 credit 200
+HasMoney[credit=200]   dispensed, change 50
+SoldOut[]              sold out, returned 100
+final state: SoldOut[]
+PASS
