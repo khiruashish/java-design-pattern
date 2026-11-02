@@ -1,19 +1,42 @@
 ---
+title: Home
 hide:
   - navigation
   - toc
 ---
 
-<div class="hero" markdown>
+<div class="pb-hero" markdown>
+<div markdown>
 
-# Java Design Patterns Handbook
+<span class="pb-kicker">Java 21 · Spring Boot 3 · GoF to microservices</span>
 
-From your first `new` keyword to defending architecture choices in a design review. GoF, concurrency, architecture and microservice patterns in **Java 21** and **Spring Boot 3**, with **3 real-world examples per pattern**, runnable code, exact output and interview prep.
+<h1>Java Design Patterns Handbook</h1>
 
-[Start learning :material-arrow-right:](getting-started/how-to-use.md){ .md-button .md-button--primary }
+<p class="pb-lead">From your first <code>new</code> keyword to defending architecture choices in a design review. GoF, concurrency, architecture and microservice patterns, with <b>3 real-world examples per pattern</b>, runnable code, exact output and interview prep.</p>
+
+[Start learning](getting-started/how-to-use.md){ .md-button .md-button--primary }
 [Jump to Singleton](creational/singleton.md){ .md-button }
+[Pattern selection guide](pattern-selection-guide.md){ .md-button }
 
 </div>
+<div class="pb-stack" aria-hidden="true">
+<div class="pb-stack-plane">
+<div class="pb-layer l-cpu">GoF patterns<small>creational · structural · behavioral</small></div>
+<div class="pb-layer l-car">Concurrency patterns<small>safe sharing · coordination</small></div>
+<div class="pb-layer l-fjp">Architecture patterns<small>layers · hexagonal · CQRS</small></div>
+<div class="pb-layer l-vt">Microservice patterns<small>saga · outbox · gateway</small></div>
+</div>
+<div class="pb-stack-legend">Patterns stack up: objects, threads,<br>applications, then whole systems</div>
+</div>
+</div>
+
+<div class="pb-stats">
+<div class="pb-stat"><b>83</b><span>pages</span></div>
+<div class="pb-stat"><b>10</b><span>sections</span></div>
+<div class="pb-stat"><b>210</b><span>diagrams</span></div>
+<div class="pb-stat"><b>726</b><span>Java source files</span></div>
+</div>
+
 
 ## Choose your path
 
