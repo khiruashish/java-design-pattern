@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4083,7 +4085,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
 <p>At a sandwich counter you say: "Wheat bread, chicken, add cheese, no onions, toast it." You add choices one at a time, in any order, and skip what you don't want. Only when you say "that's it" does the staff check the order (no meat on the vegan bread) and hand you the finished sandwich. You never receive half a sandwich.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class Product {
         -final fields
         -Product(Builder)
@@ -4099,7 +4101,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
     class Client
     Product *-- Builder : static nested
     Client ..&gt; Builder : chains calls
-    Builder ..&gt; Product : build() validates and creates</code></pre>
+    Builder ..&gt; Product : build() validates and creates</div>
 <table>
 <thead>
 <tr>
@@ -4150,7 +4152,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
 <h3 id="example-1-building-grocery-orders-grocery-delivery">Example 1: Building Grocery Orders (Grocery Delivery)<a class="headerlink" href="#example-1-building-grocery-orders-grocery-delivery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A grocery app builds an order from what's in the cart, the chosen slot, an optional coupon and delivery notes. Orders are passed between threads (checkout, pricing, dispatch), so they must be <strong>immutable</strong>. Some rules involve several fields at once: an order needs at least one item, and 10-minute express delivery is only allowed up to INR 2,000 (bigger orders don't fit a scooter). Bad orders must be rejected <strong>before</strong> they exist.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant C as Cart screen
     participant B as GroceryOrder.Builder
@@ -4162,7 +4164,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
     C-&gt;&gt;B: build()
     B-&gt;&gt;B: validate (items, express limit)
     B-&gt;&gt;O: new GroceryOrder(this)
-    O--&gt;&gt;C: immutable order</code></pre>
+    O--&gt;&gt;C: immutable order</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">GroceryOrder.java</label><label for="__tabbed_1_2">GroceryOrderDemo.java</label></div>
 <div class="tabbed-content">
@@ -4346,14 +4348,14 @@ Use it when an object has many parameters (especially optional ones), needs vali
 <h3 id="example-2-flight-search-with-a-step-builder-travel-booking">Example 2: Flight Search with a Step Builder (Travel Booking)<a class="headerlink" href="#example-2-flight-search-with-a-step-builder-travel-booking" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A travel booking site sends flight searches to airline and aggregator APIs. A search <strong>must</strong> have an origin, a destination and a departure date, in that order. Return date, passengers, cabin and "non-stop only" are optional. With a normal builder, forgetting <code>to(...)</code> is a runtime error discovered in production logs. The team wants the <strong>compiler</strong> to enforce the required steps, so the IDE's autocomplete only offers the next valid step.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>stateDiagram-v2
+<div class="diagram">stateDiagram-v2
     direction LR
     [*] --&gt; FromStep : builder()
     FromStep --&gt; ToStep : from()
     ToStep --&gt; DepartingStep : to()
     DepartingStep --&gt; OptionalStep : departing()
     OptionalStep --&gt; OptionalStep : returning() / passengers() / cabin() / nonStopOnly()
-    OptionalStep --&gt; [*] : build()</code></pre>
+    OptionalStep --&gt; [*] : build()</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">FlightSearch.java</label><label for="__tabbed_2_2">TravelDemo.java</label></div>
 <div class="tabbed-content">
@@ -4498,7 +4500,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
 <h3 id="example-3-mobile-plans-with-a-director-telecom">Example 3: Mobile Plans with a Director (Telecom)<a class="headerlink" href="#example-3-mobile-plans-with-a-director-telecom" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A telecom operator defines plans (Student Saver, Family Max) that appear in <strong>two places</strong>: the billing system needs a structured record, and the website needs marketing copy. Product managers change plan contents often, and in the past the website and billing drifted apart ("the site says 3 GB/day, my bill says 2"). The recipe for each plan must live in <strong>one place</strong>, with each output format produced from it.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class PlanDirector {
         +studentPlan(PlanBuilder)
         +familyPlan(PlanBuilder)
@@ -4520,7 +4522,7 @@ Use it when an object has many parameters (especially optional ones), needs vali
     }
     PlanDirector ..&gt; PlanBuilder : drives steps
     PlanBuilder &lt;|.. MobilePlanBuilder
-    PlanBuilder &lt;|.. BrochureBuilder</code></pre>
+    PlanBuilder &lt;|.. BrochureBuilder</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:5"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><input id="__tabbed_3_5" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">PlanDirector.java</label><label for="__tabbed_3_2">PlanBuilder.java</label><label for="__tabbed_3_3">MobilePlanBuilder.java</label><label for="__tabbed_3_4">BrochureBuilder.java</label><label for="__tabbed_3_5">TelecomDemo.java</label></div>
 <div class="tabbed-content">
@@ -5278,6 +5280,10 @@ Use it when an object has many parameters (especially optional ones), needs vali
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

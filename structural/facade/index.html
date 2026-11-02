@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4082,7 +4084,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
 <p>You tell the concierge "I'd like dinner at 8 and a taxi to the airport tomorrow at 6." They call the restaurant, the taxi company and the front desk. You never deal with any of them directly, though you still <em>could</em> if you wanted to.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class Client
     class Facade {
         +doTask()
@@ -4095,7 +4097,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
     Facade --&gt; SubsystemA
     Facade --&gt; SubsystemB
     Facade --&gt; SubsystemC
-    Facade --&gt; SubsystemD</code></pre>
+    Facade --&gt; SubsystemD</div>
 <table>
 <thead>
 <tr>
@@ -4141,7 +4143,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
 <h3 id="example-1-one-tap-checkout-grocery">Example 1: One-Tap Checkout (Grocery)<a class="headerlink" href="#example-1-one-tap-checkout-grocery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A quick-commerce app wants "one-tap reorder". Behind the button: reserve stock in the dark store, charge the saved card, book a delivery slot, notify the customer. Out-of-stock and declined cards are common, and when the payment fails, the reserved stock <strong>must</strong> be released or it shows as unavailable to other customers. Mobile, web and the voice assistant all call the same facade.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant App
     participant F as CheckoutFacade
@@ -4164,7 +4166,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
             F-&gt;&gt;N: "Order confirmed"
             F--&gt;&gt;App: success
         end
-    end</code></pre>
+    end</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CheckoutFacade.java</label><label for="__tabbed_1_2">Subsystems.java</label><label for="__tabbed_1_3">CheckoutDemo.java</label></div>
 <div class="tabbed-content">
@@ -4326,7 +4328,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
 <h3 id="example-2-press-play-streaming">Example 2: Press Play (Streaming)<a class="headerlink" href="#example-2-press-play-streaming" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Before a streaming player shows the first frame, it needs: an entitlement check (is this a premium title?), a <strong>DRM license</strong> (security level depends on the device), the best <strong>CDN edge</strong> for the viewer's city, a <strong>starting bitrate</strong> for their bandwidth and HDR support, and <strong>subtitle tracks</strong> for their locale. Smart TVs, phones and browsers each used to call all five services, and each platform team got it slightly wrong. A <code>PlaybackFacade</code> gives every player one call.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     TV[Smart TV app] --&gt; F[PlaybackFacade.start]
     Phone[Mobile app] --&gt; F
     Web[Browser] --&gt; F
@@ -4334,7 +4336,7 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
     F --&gt; D[DRM license server]
     F --&gt; C[CDN selector]
     F --&gt; B[Bitrate ladder]
-    F --&gt; S[Subtitles]</code></pre>
+    F --&gt; S[Subtitles]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">PlaybackFacade.java</label><label for="__tabbed_2_2">PlaybackSubsystems.java</label><label for="__tabbed_2_3">PlaybackDemo.java</label></div>
 <div class="tabbed-content">
@@ -4466,14 +4468,14 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
 <h3 id="example-3-open-a-bank-account-banking">Example 3: Open a Bank Account (Banking)<a class="headerlink" href="#example-3-open-a-bank-account-banking" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Opening a savings account involves KYC verification (PAN and Aadhaar format checks, in reality calls to government APIs), a credit bureau score, account creation in the core banking system, and debit card issuance (Platinum for scores of 750+). The same flow is used by the mobile app, branch tablets and partner fintech APIs. Compliance wants the KYC rule enforced identically everywhere.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart TB
+<div class="diagram">flowchart TB
     A[Applicant] --&gt; F[AccountOpeningFacade.open]
     F --&gt; K{KYC ok?}
     K -- no --&gt; R[Rejected]
     K -- yes --&gt; C[Credit bureau score]
     C --&gt; CB[Core banking: open account]
     CB --&gt; CA[Issue debit card&lt;br/&gt;Platinum if score &gt;= 750]
-    CA --&gt; OK[Account opened]</code></pre>
+    CA --&gt; OK[Account opened]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">AccountOpeningFacade.java</label><label for="__tabbed_3_2">OnboardingSubsystems.java</label><label for="__tabbed_3_3">OnboardingDemo.java</label></div>
 <div class="tabbed-content">
@@ -5042,6 +5044,10 @@ Use it when clients need to do one <em>thing</em> ("place order", "start playbac
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

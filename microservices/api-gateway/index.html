@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4177,14 +4179,14 @@ Clients see one stable API; services stay simple and can move, split or scale be
 <p>Guests don't wander the corridors looking for housekeeping or the restaurant manager. Reception checks who you are (authentication), sends your request to the right department (routing), and politely says "please wait" when the kitchen is overwhelmed (rate limiting). Departments can be reorganized without guests noticing.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     App[Mobile app] --&gt; GW[API Gateway&lt;br/&gt;TLS, auth, rate limit,&lt;br/&gt;routing, request IDs]
     Web[Web app] --&gt; GW
     Partner[Partner API client] --&gt; GW
     GW --&gt;|/catalog/**| C[Catalog service]
     GW --&gt;|/cart/**| K[Cart service]
     GW --&gt;|/orders/**| O[Order service]
-    GW --&gt;|/payments/**| P[Payment service]</code></pre>
+    GW --&gt;|/payments/**| P[Payment service]</div>
 <table>
 <thead>
 <tr>
@@ -4223,7 +4225,7 @@ Clients see one stable API; services stay simple and can move, split or scale be
 <h3 id="example-1-mobile-api-gateway-grocery">Example 1: Mobile API Gateway (Grocery)<a class="headerlink" href="#example-1-mobile-api-gateway-grocery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A grocery app has public endpoints (browse the catalog) and private ones (cart, orders). The gateway routes by path prefix, strips the prefix (services don't care about their public URL), validates the session token <strong>once</strong>, passes the customer ID downstream, and tags every request with an ID for log correlation. Unknown paths return 404 at the edge without touching any service.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant A as App
     participant G as Gateway
@@ -4232,7 +4234,7 @@ Clients see one stable API; services stay simple and can move, split or scale be
     G-&gt;&gt;G: route match /orders, validate token → CUST-42
     G-&gt;&gt;O: GET /ORD-9 + X-Customer-Id: CUST-42 + X-Request-Id: req-4
     O--&gt;&gt;G: 200
-    G--&gt;&gt;A: 200 + X-Request-Id: req-4</code></pre>
+    G--&gt;&gt;A: 200 + X-Request-Id: req-4</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">MobileGateway.java</label><label for="__tabbed_1_2">Http.java (support)</label><label for="__tabbed_1_3">MobileGatewayDemo.java</label></div>
 <div class="tabbed-content">
@@ -4395,12 +4397,12 @@ Clients see one stable API; services stay simple and can move, split or scale be
 <h3 id="example-2-open-banking-partner-gateway-banking">Example 2: Open-Banking Partner Gateway (Banking)<a class="headerlink" href="#example-2-open-banking-partner-gateway-banking" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A bank exposes account APIs to licensed fintech partners. Each partner has an <strong>API key</strong> and a <strong>quota</strong> in its contract (BudgetApp: 3 requests/minute in this demo; real quotas are higher). The gateway rejects unknown keys, counts requests per partner per minute, returns <code>X-RateLimit-Remaining</code> so partners can pace themselves, and answers <code>429 Too Many Requests</code> with <code>Retry-After</code> when the quota is used up, protecting the core banking systems behind it.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     P[Partner request + X-Api-Key] --&gt; K{Known key?}
     K --&gt;|no| E401[401]
     K --&gt;|yes| Q{Within this minute's quota?}
     Q --&gt;|no| E429["429 + Retry-After"]
-    Q --&gt;|yes| S[accounts-service] --&gt; R["200 + X-RateLimit-Remaining"]</code></pre>
+    Q --&gt;|yes| S[accounts-service] --&gt; R["200 + X-RateLimit-Remaining"]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">OpenBankingGateway.java</label><label for="__tabbed_2_2">OpenBankingDemo.java</label><label for="__tabbed_2_3">FakeClock.java (support)</label></div>
 <div class="tabbed-content">
@@ -4561,11 +4563,11 @@ Clients see one stable API; services stay simple and can move, split or scale be
 <h3 id="example-3-tenant-aware-routing-saas-erp">Example 3: Tenant-Aware Routing (SaaS ERP)<a class="headerlink" href="#example-3-tenant-aware-routing-saas-erp" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A SaaS ERP hosts tenants in regional <strong>shards</strong> for data residency (EU customers in <code>eu-1</code>, US customers in <code>us-2</code>). Each tenant has its own subdomain (<code>acme.erp.example.com</code>). The gateway resolves the tenant from the <code>Host</code> header and routes to its shard. During planned maintenance of a shard, its tenants get a clear <code>503</code> with <code>Retry-After</code>, while tenants on other shards are unaffected. Unknown subdomains get a <code>404</code> at the edge.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     A["acme.erp.example.com"] --&gt; G{Gateway: tenant from Host}
     B["globex.erp.example.com"] --&gt; G
     G --&gt;|acme → eu-1| EU[(eu-1 shard)]
-    G --&gt;|"globex → us-2 (maintenance)"| M["503 Retry-After: 120"]</code></pre>
+    G --&gt;|"globex → us-2 (maintenance)"| M["503 Retry-After: 120"]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TenantGateway.java</label><label for="__tabbed_3_2">TenantGatewayDemo.java</label></div>
 <div class="tabbed-content">
@@ -5148,6 +5150,10 @@ Clients see one stable API; services stay simple and can move, split or scale be
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

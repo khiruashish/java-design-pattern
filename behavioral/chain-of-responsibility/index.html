@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4104,7 +4106,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
 <p>Your question goes to the chatbot first. If it can't help, a level-1 agent. Then a specialist. Then engineering. You don't pick who answers; you just ask, and the request moves along until someone can deal with it.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class Handler {
         &lt;&lt;abstract&gt;&gt;
         -Handler next
@@ -4121,7 +4123,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
     Handler &lt;|-- ConcreteHandlerA
     Handler &lt;|-- ConcreteHandlerB
     Handler o--&gt; Handler : next
-    Client --&gt; Handler : first in chain</code></pre>
+    Client --&gt; Handler : first in chain</div>
 <table>
 <thead>
 <tr>
@@ -4164,12 +4166,12 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
 <h3 id="example-1-checkout-validation-chain-grocery">Example 1: Checkout Validation Chain (Grocery)<a class="headerlink" href="#example-1-checkout-validation-chain-grocery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A quick-commerce app validates every order before payment: is the pincode serviceable, is there enough stock in the nearest dark store, is the coupon valid, is the cash-on-delivery limit respected? Checks are ordered <strong>cheapest first</strong> (a pincode lookup is cheaper than a stock call). The same validators are reused in different combinations for scheduled orders and subscriptions. The customer must see the <strong>first</strong> problem in plain language.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     O[Order] --&gt; A[ServiceableArea] --&gt;|ok| B[StockAvailable] --&gt;|ok| C[CouponValid] --&gt;|ok| D[CodLimit] --&gt;|ok| P[Proceed to payment]
     A --&gt;|problem| X[Reject with message]
     B --&gt;|problem| X
     C --&gt;|problem| X
-    D --&gt;|problem| X</code></pre>
+    D --&gt;|problem| X</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CheckoutValidator.java</label><label for="__tabbed_1_2">Validators.java</label><label for="__tabbed_1_3">Order.java</label><label for="__tabbed_1_4">CheckoutDemo.java</label></div>
 <div class="tabbed-content">
@@ -4311,7 +4313,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
 <h3 id="example-2-loan-approval-escalation-banking">Example 2: Loan Approval Escalation (Banking)<a class="headerlink" href="#example-2-loan-approval-escalation-banking" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A bank's loan workflow routes each application to the <strong>lowest authority</strong> that can decide it: loan officers up to INR 5 lakh, branch managers up to INR 25 lakh, the credit committee up to INR 2 crore. Each level has its own credit-score threshold. Anything larger goes to the board. Authority limits change with regulation, so they must be easy to adjust.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant App as Application (INR 1.5 crore)
     participant LO as Loan Officer (≤ 5 lakh)
@@ -4320,7 +4322,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
     App-&gt;&gt;LO: decide()
     LO-&gt;&gt;BM: escalate
     BM-&gt;&gt;CC: escalate
-    CC--&gt;&gt;App: APPROVED (score 780 ≥ 760)</code></pre>
+    CC--&gt;&gt;App: APPROVED (score 780 ≥ 760)</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Approver.java</label><label for="__tabbed_2_2">Approvers.java</label><label for="__tabbed_2_3">LoanDemo.java</label></div>
 <div class="tabbed-content">
@@ -4432,7 +4434,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
 <h3 id="example-3-api-middleware-saas">Example 3: API Middleware (SaaS)<a class="headerlink" href="#example-3-api-middleware-saas" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A SaaS invoicing API runs every request through <strong>logging</strong>, <strong>rate limiting</strong> (here, 2 requests per IP for the demo) and <strong>authentication</strong> before the endpoint. Any step can stop the request (401, 429). Logging must see the <strong>final</strong> status, so it wraps everything. This is how servlet filters, Spring Security's filter chain, Express/Koa middleware and API gateways work.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant C as Client
     participant L as logging
@@ -4447,7 +4449,7 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
     A--&gt;&gt;R: 200
     R--&gt;&gt;L: 200
     L-&gt;&gt;L: log status 200
-    L--&gt;&gt;C: 200</code></pre>
+    L--&gt;&gt;C: 200</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Middleware.java</label><label for="__tabbed_3_2">ApiGatewayDemo.java</label></div>
 <div class="tabbed-content">
@@ -5024,6 +5026,10 @@ Use it for validation pipelines, approval escalations, middleware/filters and su
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4153,14 +4155,14 @@ In cloud environments instances come and go constantly, so addresses must be dis
 <p>Drivers radio in when they start a shift and check in every few minutes ("still available"). The dispatcher (registry) only sends rides to drivers who checked in recently. A driver who goes silent is taken off the board, even if they never said goodbye.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     subgraph Registry
       R[(Service registry&lt;br/&gt;name → instances + leases)]
     end
     O1[order-1] --&gt;|register + heartbeat| R
     O2[order-2] --&gt;|register + heartbeat| R
     C[cart-service] --&gt;|1. lookup order-service| R
-    C --&gt;|2. call chosen instance| O1</code></pre>
+    C --&gt;|2. call chosen instance| O1</div>
 <table>
 <thead>
 <tr>
@@ -4197,7 +4199,7 @@ In cloud environments instances come and go constantly, so addresses must be dis
 <h3 id="example-1-registry-with-leases-grocery">Example 1: Registry with Leases (Grocery)<a class="headerlink" href="#example-1-registry-with-leases-grocery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Three <code>order-service</code> instances register with a 30-second lease. <code>order-2</code> crashes and stops heartbeating, so after 30 s it disappears from lookups and is evicted. During a deploy, <code>order-3</code> <strong>deregisters</strong> gracefully (no 30 s of failed calls), and the autoscaler's new <code>order-4</code> registers and immediately receives traffic.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     participant O2 as order-2
     participant R as Registry
     participant C as Caller
@@ -4205,7 +4207,7 @@ In cloud environments instances come and go constantly, so addresses must be dis
     Note over O2: crashes at t=5
     C-&gt;&gt;R: lookup at t=20 → still listed (lease valid until t=30)
     C-&gt;&gt;R: lookup at t=35 → gone (lease expired)
-    R-&gt;&gt;R: evictExpired() → [order-2]</code></pre>
+    R-&gt;&gt;R: evictExpired() → [order-2]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">ServiceRegistry.java</label><label for="__tabbed_1_2">RegistryDemo.java</label></div>
 <div class="tabbed-content">
@@ -4364,11 +4366,11 @@ In cloud environments instances come and go constantly, so addresses must be dis
 <h3 id="example-2-client-side-load-balancing-ride-hailing">Example 2: Client-Side Load Balancing (Ride-hailing)<a class="headerlink" href="#example-2-client-side-load-balancing-ride-hailing" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> The trip service calls <code>eta-service</code>, which has three instances. <code>eta-2</code> crashed 5 seconds ago, so its lease is still valid and the registry still lists it. The client round-robins across instances and, on a <strong>connection failure</strong>, tries the next one, so riders never see an error.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     T[trip-service&lt;br/&gt;LoadBalancedClient] --&gt;|lookup| R[(Registry)]
     T --&gt;|round-robin| E1[eta-1]
     T -.-&gt;|connection refused| E2[eta-2 💥]
-    T --&gt;|retry next| E3[eta-3]</code></pre>
+    T --&gt;|retry next| E3[eta-3]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">LoadBalancedClient.java</label><label for="__tabbed_2_2">ClientSideDemo.java</label></div>
 <div class="tabbed-content">
@@ -4483,10 +4485,10 @@ In cloud environments instances come and go constantly, so addresses must be dis
 <h3 id="example-3-zone-aware-routing-payments">Example 3: Zone-Aware Routing (Payments)<a class="headerlink" href="#example-3-zone-aware-routing-payments" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A payments caller in <code>zone-a</code> should call <code>ledger-service</code> instances in its own zone for lower latency and to avoid cross-zone data transfer charges. But if <code>zone-a</code> drops below 2 healthy instances, the remaining one would be overloaded, so the balancer <strong>spills over</strong> to all zones.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart TB
+<div class="diagram">flowchart TB
     C[Caller in zone-a] --&gt; Z{&gt;= 2 healthy in zone-a?}
     Z --&gt;|yes| A[ledger-a1, ledger-a2]
-    Z --&gt;|no| ALL[ledger-a1, ledger-b1, ledger-c1]</code></pre>
+    Z --&gt;|no| ALL[ledger-a1, ledger-b1, ledger-c1]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">ZoneAwareBalancer.java</label><label for="__tabbed_3_2">ZoneAwareDemo.java</label></div>
 <div class="tabbed-content">
@@ -5099,6 +5101,10 @@ In cloud environments instances come and go constantly, so addresses must be dis
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

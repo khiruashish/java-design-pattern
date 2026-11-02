@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4083,7 +4085,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
 <p>A building has flats, shops and a parking lot (stable element types). Different inspectors visit: fire safety, electrical, tax assessment. Each inspector knows what to check for each kind of unit. Adding a new kind of inspection doesn't require rebuilding the units; you just send a new inspector.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class Visitor {
         &lt;&lt;interface&gt;&gt;
         +visit(ElementA)
@@ -4106,7 +4108,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
     Element &lt;|.. ElementA
     Element &lt;|.. ElementB
     ElementA ..&gt; Visitor
-    ElementB ..&gt; Visitor</code></pre>
+    ElementB ..&gt; Visitor</div>
 <table>
 <thead>
 <tr>
@@ -4152,7 +4154,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
 <h3 id="example-1-tax-and-shipping-over-a-mixed-cart-e-commerce-classic-double-dispatch">Example 1: Tax and Shipping over a Mixed Cart (E-commerce) — <em>classic double dispatch</em><a class="headerlink" href="#example-1-tax-and-shipping-over-a-mixed-cart-e-commerce-classic-double-dispatch" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> An Indian marketplace sells books (GST-exempt), electronics (18% GST, fragile items need careful packing) and fresh produce (exempt, chilled items need a cold-chain bag). Tax rules are owned by finance; shipping rules by logistics. Neither team should edit the item classes, which are shared by catalog, search and orders.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>sequenceDiagram
+<div class="diagram">sequenceDiagram
     autonumber
     participant C as Cart loop
     participant E as Electronics (element)
@@ -4161,7 +4163,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
     E-&gt;&gt;G: visit(this as Electronics)
     G-&gt;&gt;G: gst += price * 0.18
     C-&gt;&gt;E: accept(shipping)
-    E-&gt;&gt;G: (ShippingVisitor) visit(this): weight + fragile surcharge</code></pre>
+    E-&gt;&gt;G: (ShippingVisitor) visit(this): weight + fragile surcharge</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CartItems.java</label><label for="__tabbed_1_2">GstVisitor.java</label><label for="__tabbed_1_3">ShippingVisitor.java</label><label for="__tabbed_1_4">CartDemo.java</label></div>
 <div class="tabbed-content">
@@ -4298,12 +4300,12 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
 <h3 id="example-2-claim-adjudication-health-insurance-sealed-types-pattern-matching">Example 2: Claim Adjudication (Health Insurance) — <em>sealed types + pattern matching</em><a class="headerlink" href="#example-2-claim-adjudication-health-insurance-sealed-types-pattern-matching" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A health insurer processes consultation, surgery and pharmacy claims. Two operations run on every claim: <strong>adjudication</strong> (approve, reject or review, with rules like "surgery needs pre-authorization" and "cap at sum insured") and <strong>fraud scoring</strong>. More operations (reserve estimation, reinsurance split) are planned. The claim types are fixed by regulation and rarely change.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     C{{"sealed interface Claim"}} --&gt; A[Consultation]
     C --&gt; S[Surgery]
     C --&gt; P[Pharmacy]
     O1["decide(Claim) — switch"] -.-&gt; C
-    O2["fraudScore(Claim) — switch"] -.-&gt; C</code></pre>
+    O2["fraudScore(Claim) — switch"] -.-&gt; C</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Claim.java</label><label for="__tabbed_2_2">ClaimOperations.java</label><label for="__tabbed_2_3">ClaimsDemo.java</label></div>
 <div class="tabbed-content">
@@ -4408,7 +4410,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
 <h3 id="example-3-one-document-many-exports-docs-saas-visitor-with-return-values">Example 3: One Document, Many Exports (Docs SaaS) — <em>visitor with return values</em><a class="headerlink" href="#example-3-one-document-many-exports-docs-saas-visitor-with-return-values" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A docs product stores documents as a list of elements: headings, paragraphs, images, tables. Users export to <strong>Markdown</strong> and <strong>HTML</strong>; the editor shows a <strong>word count</strong>; PDF and Google-Docs export are planned. Element classes are part of a stable, versioned document model; exporters are added by different teams.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class Visitor~R~ {
         &lt;&lt;interface&gt;&gt;
         +heading(Heading) R
@@ -4421,7 +4423,7 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
     class WordCount["WordCount : Visitor&lt;Integer&gt;"]
     Visitor &lt;|.. Markdown
     Visitor &lt;|.. Html
-    Visitor &lt;|.. WordCount</code></pre>
+    Visitor &lt;|.. WordCount</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Doc.java</label><label for="__tabbed_3_2">Exporters.java</label><label for="__tabbed_3_3">DocsDemo.java</label></div>
 <div class="tabbed-content">
@@ -5034,6 +5036,10 @@ In Java 21, <strong>sealed interfaces + pattern-matching <code>switch</code></st
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

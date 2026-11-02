@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4363,60 +4365,60 @@
 </table>
 <h2 id="3-classic-designs-and-the-patterns-inside-them">3. Classic designs and the patterns inside them<a class="headerlink" href="#3-classic-designs-and-the-patterns-inside-them" title="Permanent link">&para;</a></h2>
 <h3 id="url-shortener">URL shortener<a class="headerlink" href="#url-shortener" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     C[Client] --&gt; GW[API Gateway&lt;br/&gt;rate limit per key]
     GW --&gt; W[Write service&lt;br/&gt;ID gen + base62]
     GW --&gt; R[Redirect service]
     R --&gt; CA[(Cache&lt;br/&gt;cache-aside)]
     CA -.miss.-&gt; DB[(KV store&lt;br/&gt;sharded by code)]
     W --&gt; DB
-    R --&gt;|click event| Q[[Kafka]] --&gt; AN[Analytics]</code></pre>
+    R --&gt;|click event| Q[[Kafka]] --&gt; AN[Analytics]</div>
 <ul>
 <li><strong>Estimates:</strong> 100M new URLs/month ≈ 40 writes/s; reads 100× → 4,000/s, cache hit rate &gt; 90%.</li>
 <li><strong>Patterns:</strong> <a href="../../microservices/rate-limiter/">rate limiter</a>, cache-aside, consistent hashing for the KV store, <a href="../../architecture/event-driven/">event-driven</a> analytics, 302 (trackable) vs. 301 (cacheable) redirects.</li>
 </ul>
 <h3 id="e-commerce-checkout">E-commerce checkout<a class="headerlink" href="#e-commerce-checkout" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     App --&gt; GW[Gateway] --&gt; BFF[Mobile BFF] --&gt; CO[Checkout service]
     CO --&gt;|saga| INV[Inventory]
     CO --&gt;|saga| PAY[Payment]
     CO --&gt;|saga| DEL[Delivery]
     CO --&gt;|outbox| K[[Kafka]]
     K --&gt; N[Notifications]
-    K --&gt; RM[Order history&lt;br/&gt;CQRS read model]</code></pre>
+    K --&gt; RM[Order history&lt;br/&gt;CQRS read model]</div>
 <ul>
 <li><strong>Patterns:</strong> <a href="../../microservices/backend-for-frontend/">BFF</a>, <a href="../../microservices/saga/">Saga</a> with a pivot at payment, <a href="../../microservices/transactional-outbox/">Outbox</a>, <a href="../../microservices/idempotent-consumer/">Idempotency keys</a>, <a href="../../microservices/cqrs/">CQRS</a> for order history, <a href="../../microservices/circuit-breaker/">Circuit Breaker</a> on payment, flash-sale stock with atomic conditional updates.</li>
 <li>See the <a href="../../projects/grocery-platform/">Capstone</a> for a runnable version.</li>
 </ul>
 <h3 id="news-feed-timeline">News feed / timeline<a class="headerlink" href="#news-feed-timeline" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     P[Post service] --&gt;|PostCreated| K[[Kafka]]
     K --&gt; FO[Fan-out workers]
     FO --&gt; FC[(Feed cache per user&lt;br/&gt;Redis lists)]
     U[User] --&gt; FS[Feed service] --&gt; FC
-    FS -.celebrity posts.-&gt; PS[(Posts store)]</code></pre>
+    FS -.celebrity posts.-&gt; PS[(Posts store)]</div>
 <ul>
 <li><strong>Patterns:</strong> fan-out on write for normal users, on read for celebrities (hybrid), <a href="../../concurrency/producer-consumer/">Producer-Consumer</a> workers, cache per user, ranking as a <a href="../../behavioral/strategy/">Strategy</a>, pagination with cursors.</li>
 </ul>
 <h3 id="ride-hailing-matching-and-tracking">Ride-hailing (matching and tracking)<a class="headerlink" href="#ride-hailing-matching-and-tracking" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     D[Driver app&lt;br/&gt;location every 4s] --&gt; LS[Location service] --&gt; GEO[(Geo index&lt;br/&gt;geohash/H3 cells)]
     R[Rider app] --&gt; M[Matching service] --&gt; GEO
     M --&gt; T[Trip service&lt;br/&gt;state machine]
     T --&gt;|TripCompleted| K[[Kafka]] --&gt; B[Billing]
-    M --&gt; ETA[ETA service&lt;br/&gt;circuit breaker + fallback]</code></pre>
+    M --&gt; ETA[ETA service&lt;br/&gt;circuit breaker + fallback]</div>
 <ul>
 <li><strong>Patterns:</strong> <a href="../../behavioral/state/">State</a> for trips, geo-sharding, <a href="../../microservices/circuit-breaker/">Circuit Breaker</a> with estimate fallback, <a href="../../architecture/event-driven/">event-driven</a> billing, <a href="../../microservices/idempotent-consumer/">idempotent</a> fare charging, tracing across async hops.</li>
 </ul>
 <h3 id="notification-platform">Notification platform<a class="headerlink" href="#notification-platform" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     S[Domain services] --&gt;|events| K[[Kafka]] --&gt; NS[Notification service]
     NS --&gt; PREF[(Preferences)]
     NS --&gt; D{Dedupe + rate limit}
     D --&gt; Q1[[email queue]] --&gt; E[Email provider]
     D --&gt; Q2[[sms queue]] --&gt; SMS[SMS provider]
     D --&gt; Q3[[push queue]] --&gt; PU[Push provider]
-    Q1 &amp; Q2 &amp; Q3 -.failures.-&gt; DLQ[[DLQ]]</code></pre>
+    Q1 &amp; Q2 &amp; Q3 -.failures.-&gt; DLQ[[DLQ]]</div>
 <ul>
 <li><strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> per channel, <a href="../../behavioral/template-method/">Template Method</a> for messages, <a href="../../microservices/idempotent-consumer/">idempotent</a> dedupe, <a href="../../microservices/rate-limiter/">rate limiting</a> per user, bulkheads per provider, DLQs. See the <a href="../lld-problems/#9-notification-system">Notification LLD</a>.</li>
 </ul>
@@ -4624,6 +4626,10 @@
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

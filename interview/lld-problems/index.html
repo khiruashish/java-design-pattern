@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4037,7 +4039,7 @@
 <hr />
 <h2 id="1-parking-lot">1. Parking Lot<a class="headerlink" href="#1-parking-lot" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> multiple floors; spot sizes small/medium/large; bikes, cars and trucks (a vehicle fits its size or larger); issue a ticket on entry; charge on exit (first 30 minutes free, then per started hour by vehicle type); show free spots; reject reused tickets. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> for allocation and pricing, so rules can change per lot.</p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class ParkingLot {
       +park(vehicle, time) Optional~Ticket~
       +exit(ticketId, time) Receipt
@@ -4066,7 +4068,7 @@
     ParkingLot --&gt; AllocationStrategy
     ParkingLot --&gt; PricingStrategy
     ParkingLot "1" *-- "*" Spot
-    ParkingLot --&gt; Ticket</code></pre>
+    ParkingLot --&gt; Ticket</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">ParkingLot.java</label><label for="__tabbed_1_2">ParkingLotDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4266,7 +4268,7 @@
 <hr />
 <h2 id="2-elevator-system">2. Elevator System<a class="headerlink" href="#2-elevator-system" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> N elevators; hall calls (floor + direction) and car calls (button inside); serve requests efficiently; don't reverse while there are stops ahead. <strong>Patterns:</strong> <a href="../../behavioral/state/">State</a> (direction per car), <a href="../../behavioral/strategy/">Strategy</a> (dispatcher), SCAN scheduling.</p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class ElevatorSystem {
       +hallCall(floor, dir)
       +carCall(car, floor)
@@ -4284,7 +4286,7 @@
       +choose(cars, floor, dir) Car
     }
     ElevatorSystem "1" *-- "*" Car
-    ElevatorSystem --&gt; Dispatcher</code></pre>
+    ElevatorSystem --&gt; Dispatcher</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">ElevatorSystem.java</label><label for="__tabbed_2_2">ElevatorDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4433,12 +4435,12 @@
 <hr />
 <h2 id="3-vending-machine">3. Vending Machine<a class="headerlink" href="#3-vending-machine" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> accept ₹1/2/5/10 coins; select a product; dispense if paid enough and in stock; return change with the fewest coins; cancel and refund. <strong>Pattern:</strong> <a href="../../behavioral/state/">State</a>, with sealed types and pattern matching so each state's behaviour is explicit.</p>
-<pre class="mermaid"><code>stateDiagram-v2
+<div class="diagram">stateDiagram-v2
     [*] --&gt; Idle
     Idle --&gt; HasMoney: insert coin
     HasMoney --&gt; HasMoney: insert coin / select (not enough, sold out)
     HasMoney --&gt; Idle: select (dispense + change)
-    HasMoney --&gt; Idle: cancel (refund)</code></pre>
+    HasMoney --&gt; Idle: cancel (refund)</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">VendingMachine.java</label><label for="__tabbed_3_2">VendingMachineDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4583,11 +4585,11 @@
 <hr />
 <h2 id="4-lru-cache">4. LRU Cache<a class="headerlink" href="#4-lru-cache" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> fixed capacity; <code>get</code> and <code>put</code> in O(1); evict the least recently used entry; thread-safe. <strong>Design:</strong> <code>HashMap&lt;K, Node&gt;</code> + doubly linked list with sentinel head/tail; a lock around both.</p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     H[head sentinel] &lt;--&gt; A["MANGO (MRU)"] &lt;--&gt; B[MILK] &lt;--&gt; C["RICE (LRU)"] &lt;--&gt; T[tail sentinel]
     M[(HashMap key → node)] -.-&gt; A
     M -.-&gt; B
-    M -.-&gt; C</code></pre>
+    M -.-&gt; C</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">LruCache.java</label><label for="__tabbed_4_2">LruCacheDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4771,7 +4773,7 @@
 <hr />
 <h2 id="5-splitwise-expense-sharing">5. Splitwise (Expense Sharing)<a class="headerlink" href="#5-splitwise-expense-sharing" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> groups of people; expenses paid by one person and split equally, by percentage or by exact amounts; show balances; settle up with few payments; never lose a paisa to rounding. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> for split types; a greedy max-creditor/max-debtor settlement.</p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class ExpenseSharing {
       +addExpense(paidBy, amount, participants, split)
       +balances()
@@ -4784,7 +4786,7 @@
     SplitStrategy &lt;|.. Equal
     SplitStrategy &lt;|.. Percent
     SplitStrategy &lt;|.. Exact
-    ExpenseSharing --&gt; SplitStrategy</code></pre>
+    ExpenseSharing --&gt; SplitStrategy</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">ExpenseSharing.java</label><label for="__tabbed_5_2">ExpenseSharingDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5240,12 +5242,12 @@
 <hr />
 <h2 id="8-movie-ticket-booking">8. Movie Ticket Booking<a class="headerlink" href="#8-movie-ticket-booking" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> a show's seat map; users select several seats; seats are <strong>held</strong> for 5 minutes while paying; all-or-nothing holds; confirm only while the hold is valid; expired holds become available; <strong>no double booking</strong> under concurrency. This is the core of BookMyShow-style designs.</p>
-<pre class="mermaid"><code>stateDiagram-v2
+<div class="diagram">stateDiagram-v2
     [*] --&gt; Free
     Free --&gt; Held: hold (all requested seats free)
     Held --&gt; Booked: confirm before expiry
     Held --&gt; Free: hold expires
-    Booked --&gt; [*]</code></pre>
+    Booked --&gt; [*]</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">ShowBooking.java</label><label for="__tabbed_8_2">ShowBookingDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5383,7 +5385,7 @@
 <hr />
 <h2 id="9-notification-system">9. Notification System<a class="headerlink" href="#9-notification-system" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> send order updates by email, SMS and push; respect user preferences; templates with per-channel formatting (SMS length limits); retry transient failures; one failing channel must not block the others. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> (sender per channel), <a href="../../creational/factory-method/">Factory</a>/registry, <a href="../../behavioral/template-method/">Template Method</a> (message skeleton), <a href="../../structural/decorator/">Decorator</a> (retry).</p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class NotificationService {
       +register(channel, sender)
       +notify(user, template, data)
@@ -5402,7 +5404,7 @@
     Sender &lt;|.. RetryDecorator
     RetryDecorator --&gt; Sender : wraps
     NotificationService --&gt; Sender
-    NotificationService --&gt; MessageTemplate</code></pre>
+    NotificationService --&gt; MessageTemplate</div>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">NotificationService.java</label><label for="__tabbed_9_2">NotificationDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6205,6 +6207,10 @@
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>

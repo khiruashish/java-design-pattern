@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/playbook-theme.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -139,7 +141,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
@@ -149,7 +151,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-purple"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
     
       <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
@@ -4114,7 +4116,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
 <p>Old printing presses didn't carve a new letter "e" for every "e" on the page. They had a tray of reusable metal letters (<strong>shared, intrinsic</strong>) and arranged them in positions (<strong>extrinsic</strong>). One "e" design, used thousands of times.</p>
 </div>
 <h2 id="3-structure">3. Structure<a class="headerlink" href="#3-structure" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class FlyweightFactory {
         -Map~Key, Flyweight~ pool
         +get(key) Flyweight
@@ -4132,7 +4134,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
     Client --&gt; Context
     Context --&gt; Flyweight : shares
     Client ..&gt; FlyweightFactory : get(key)
-    FlyweightFactory o--&gt; Flyweight</code></pre>
+    FlyweightFactory o--&gt; Flyweight</div>
 <table>
 <thead>
 <tr>
@@ -4176,7 +4178,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
 <h3 id="example-1-10000-live-cars-on-the-map-ride-hailing">Example 1: 10,000 Live Cars on the Map (Ride-hailing)<a class="headerlink" href="#example-1-10000-live-cars-on-the-map-ride-hailing" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A ride-hailing ops dashboard shows every active car in Bengaluru, updated every few seconds. There are three vehicle types, each with a 64×64 RGBA icon (16 KB). Cars move constantly (position and heading change), but their icons never do. The dashboard runs on modest laptops in the ops centre, so memory matters.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     subgraph Markers["10,000 CarMarker records (extrinsic)"]
         M1["D0: lat, lng, heading"]
         M2["D1: lat, lng, heading"]
@@ -4191,7 +4193,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
     M1 --&gt; A
     M2 --&gt; B
     M3 --&gt; C
-    M4 --&gt; A</code></pre>
+    M4 --&gt; A</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">VehicleIcon.java</label><label for="__tabbed_1_2">IconFactory.java</label><label for="__tabbed_1_3">CarMarker.java</label><label for="__tabbed_1_4">RideMapDemo.java</label></div>
 <div class="tabbed-content">
@@ -4319,12 +4321,12 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
 <h3 id="example-2-styled-text-in-a-collaborative-editor-saas">Example 2: Styled Text in a Collaborative Editor (SaaS)<a class="headerlink" href="#example-2-styled-text-in-a-collaborative-editor-saas" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A Google-Docs-style editor stores formatting for every character. A 3-page contract has about 3,000 characters but only <strong>3 distinct styles</strong> (bold heading, body text, grey italic footer). Storing a separate style object per character wastes memory on the server (which holds thousands of open documents) and makes "are these two runs the same style?" an expensive deep comparison.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>flowchart LR
+<div class="diagram">flowchart LR
     C1["'C' (pos 0)"] --&gt; S1["TextStyle(Inter, 12, bold)"]
     C2["'l' (pos 1)"] --&gt; S1
     C3["'T' (pos 10)"] --&gt; S2["TextStyle(Inter, 12, regular)"]
     C4["'h' (pos 11)"] --&gt; S2
-    C5["'C' (pos 1000)"] --&gt; S3["TextStyle(Inter, 10, italic, grey)"]</code></pre>
+    C5["'C' (pos 1000)"] --&gt; S3["TextStyle(Inter, 10, italic, grey)"]</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TextStyle.java</label><label for="__tabbed_2_2">Document.java</label><label for="__tabbed_2_3">EditorDemo.java</label></div>
 <div class="tabbed-content">
@@ -4429,7 +4431,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
 <h3 id="example-3-product-data-across-dark-stores-grocery">Example 3: Product Data Across Dark Stores (Grocery)<a class="headerlink" href="#example-3-product-data-across-dark-stores-grocery" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> A quick-commerce company runs 200 dark stores, each stocking the same 50 fast-moving products (in reality thousands). Name, long description, image URL and nutrition JSON are <strong>identical in every store</strong>; only <strong>price and stock</strong> differ by store. The pricing service holds every store's listings in memory for fast lookups. Without sharing, each listing carries its own copy of the catalog text.</p>
 <p><strong>Design:</strong></p>
-<pre class="mermaid"><code>classDiagram
+<div class="diagram">classDiagram
     class StoreListing {
         &lt;&lt;record&gt;&gt;
         storeId
@@ -4449,7 +4451,7 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
         +product(sku) ProductInfo
     }
     StoreListing --&gt; ProductInfo : shares
-    Catalog o--&gt; ProductInfo</code></pre>
+    Catalog o--&gt; ProductInfo</div>
 <p><strong>Full Code:</strong></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:4"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Catalog.java</label><label for="__tabbed_3_2">ProductInfo.java</label><label for="__tabbed_3_3">StoreListing.java</label><label for="__tabbed_3_4">DarkStoreDemo.java</label></div>
 <div class="tabbed-content">
@@ -5020,6 +5022,10 @@ Use it when you have a <strong>huge number</strong> of objects whose state split
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+      
+        <script src="../../javascripts/playbook-diagrams.js"></script>
       
     
   </body>
