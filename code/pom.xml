@@ -20,6 +20,7 @@
         <module>lld</module>
         <module>capstone</module>
         <module>spring-reference</module>
+        <module>principles</module>
     </modules>
 
     <properties>

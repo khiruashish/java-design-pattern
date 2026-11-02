@@ -1,0 +1,4 @@
+balance = 8500
+rejected: insufficient funds: balance 8500, requested 1000000
+history is read-only to callers
+history = [open 10000, deposit 2500, withdraw 4000]

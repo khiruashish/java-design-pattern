@@ -1,0 +1,2 @@
+over-engineered: 10000 paise -> 120 USD cents (3 interfaces + 1 class to wire)
+just enough    : 10000 paise -> 120 USD cents (1 record)

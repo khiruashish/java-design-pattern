@@ -1,0 +1,2 @@
+in-memory (1 files) -> round trip ok: true
+gzip over in-memory (1 files) -> round trip ok: true

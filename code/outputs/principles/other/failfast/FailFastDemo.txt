@@ -1,0 +1,3 @@
+fail slow: price = -15000 cents  <-- refund by accident
+fail fast: checkOut 2025-03-07 must be after checkIn 2025-03-10
+valid    : 3 nights

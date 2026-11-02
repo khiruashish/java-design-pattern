@@ -1,0 +1,19 @@
+--- Before: one class does everything ---
+INVOICE INV-1
+  Keyboard   x1     45.00
+  Mouse      x2     25.00
+  TOTAL (incl. tax)    82.60
+stored value is the printed text: true
+
+--- After: one reason to change per class ---
+INVOICE INV-1
+  Keyboard   x1     45.00
+  Mouse      x2     25.00
+  TOTAL (incl. tax)    82.60
+
+number,description,quantity,line_total_cents
+INV-1,Keyboard,1,4500
+INV-1,Mouse,2,2500
+INV-1,TOTAL,,8260
+
+tax rule changed to 5%: 7350 cents (no printer or repository edited)

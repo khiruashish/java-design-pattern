@@ -1,0 +1,2 @@
+Car KA-01-1234 (4 wheels) toll=250
+Truck MH-12-9876 (8 wheels) toll=1200

@@ -1,0 +1,7 @@
+--- Before: notifier news up EmailSender itself ---
+EMAIL to ana@example.com: Order A-100 has shipped
+
+--- After: the sender is injected ---
+EMAIL to ana@example.com: Order A-100 has shipped
+SMS to +1-555-0100: Order A-100 has shipped
+fake sender captured: [test-user|Order A-100 has shipped]
