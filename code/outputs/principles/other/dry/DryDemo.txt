@@ -1,0 +1,3 @@
+before: register(@nobody)=false, invite(@nobody)=true  <-- two copies, two answers
+after : isValid(@nobody)=false
+after : normalised=ana@example.com, domain=example.com

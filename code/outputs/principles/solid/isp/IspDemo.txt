@@ -1,0 +1,9 @@
+--- Before: one fat interface ---
+printed report.pdf
+runtime surprise: BasicPrinter cannot scan
+
+--- After: small role interfaces ---
+basic printer: printed a.pdf, printed b.pdf
+MFD          : printed a.pdf
+scanner role : scanned photo.jpg
+(asking a BasicPrinter to scan is now a compile error, not a runtime exception)

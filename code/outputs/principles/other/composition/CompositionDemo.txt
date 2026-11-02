@@ -1,0 +1,2 @@
+inheritance: added 3, addCount = 6  <-- double counted
+composition: added 3, addCount = 3  (wrapping a TreeSet: [a, b, c])

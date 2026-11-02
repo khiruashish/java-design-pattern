@@ -113,7 +113,15 @@ nav:
       - Tags: tags.md
   - Getting Started:
       - How to Use This Handbook: getting-started/how-to-use.md
-      - OOP & SOLID Refresher: getting-started/oop-solid.md
+      - OOP, SOLID & Principles: getting-started/oop-solid.md
+      - OOP Pillars: getting-started/oop-pillars.md
+      - SOLID:
+          - S · Single Responsibility: getting-started/solid/srp.md
+          - O · Open/Closed: getting-started/solid/ocp.md
+          - L · Liskov Substitution: getting-started/solid/lsp.md
+          - I · Interface Segregation: getting-started/solid/isp.md
+          - D · Dependency Inversion: getting-started/solid/dip.md
+      - Design Principles: getting-started/design-principles.md
       - UML Cheat Sheet: getting-started/uml-cheatsheet.md
   - Creational:
       - creational/index.md

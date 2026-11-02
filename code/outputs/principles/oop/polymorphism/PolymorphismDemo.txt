@@ -1,0 +1,4 @@
+card ending 4242 | amount: 10000 cents | fee: 200 cents
+UPI ana@bank | amount: 5000 cents | fee: 0 cents
+cash | amount: 700 cents | fee: 0 cents
+card fee rate: 2.0%

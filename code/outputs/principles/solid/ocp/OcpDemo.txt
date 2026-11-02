@@ -1,0 +1,9 @@
+--- Before: instanceof chain ---
+total area = 9.14
+new shape without editing the calculator -> Unsupported shape: Object
+
+--- After: depend on the Shape abstraction ---
+circle    area = 3.14
+rectangle area = 6.00
+triangle  area = 10.00
+total area = 19.14 (Triangle added without touching AreaCalculator)

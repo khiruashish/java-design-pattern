@@ -1,0 +1,3 @@
+ask : reading 20 -> heating true  (rule re-implemented by the caller)
+tell: reading 20 -> heating false (thermostat's own 1-degree hysteresis)
+tell: reading 18 -> heating true

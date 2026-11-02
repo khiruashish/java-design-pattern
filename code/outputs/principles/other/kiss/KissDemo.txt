@@ -1,0 +1,5 @@
+1900 leap? clever=false simple=false
+2000 leap? clever=true simple=true
+2024 leap? clever=true simple=true
+2026 leap? clever=false simple=false
+max: hand-rolled=9 library=9

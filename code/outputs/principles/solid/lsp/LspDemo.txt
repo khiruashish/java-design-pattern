@@ -1,0 +1,8 @@
+--- Before: Square extends Rectangle ---
+Rectangle resized to 5x4 -> area 20
+Square    resized to 5x4 -> area 16   <-- expected 20: substituting the subtype broke the caller
+
+--- After: immutable shapes share only what is true for both ---
+rectangle 5x4 -> area 20
+square 4x4 -> area 16
+rectangle 5x4 -> area 20
