@@ -21,6 +21,8 @@
         <module>capstone</module>
         <module>spring-reference</module>
         <module>principles</module>
+        <module>enterprise</module>
+        <module>testing</module>
     </modules>
 
     <properties>
