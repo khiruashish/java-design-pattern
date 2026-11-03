@@ -374,4 +374,4 @@ See [Adapter](../structural/adapter.md), [Facade](../structural/facade.md), [Str
 ---
 
 [:material-arrow-left: Config Server](config-server.md){ .md-button }
-[Next: Architecture :material-arrow-right:](../architecture/index.md){ .md-button .md-button--primary }
+[Next: Cache-Aside :material-arrow-right:](cache-aside.md){ .md-button .md-button--primary }
