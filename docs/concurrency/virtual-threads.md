@@ -393,4 +393,4 @@ flowchart LR
 ---
 
 [:material-arrow-left: Double-Checked Locking](double-checked-locking.md){ .md-button }
-[Next: Microservices :material-arrow-right:](../microservices/index.md){ .md-button .md-button--primary }
+[Next: Guarded Suspension & Balking :material-arrow-right:](guarded-suspension-balking.md){ .md-button .md-button--primary }
