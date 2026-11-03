@@ -1,0 +1,6 @@
+email: thanks for A-1
+analytics: +4200
+analytics: +1000
+refund: A-1 (changed mind)
+isolated errors: [OrderPlaced: loyalty service down, OrderPlaced: loyalty service down]
+PASS

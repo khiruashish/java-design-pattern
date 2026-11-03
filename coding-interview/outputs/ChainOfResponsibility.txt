@@ -1,0 +1,7 @@
+ana  -> 201 created for ana
+eve  -> 401 bad token
+bob  -> 400 empty body
+ana  -> 201 created for ana
+ana  -> 429 slow down
+audit (post-processing): [ana -> 201, eve -> 401, bob -> 400, ana -> 201, ana -> 429]
+PASS

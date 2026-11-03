@@ -28,6 +28,9 @@ jobs:
       - name: Check the documented outputs match the code
         run: code/run-demos.sh --check
 
+      - name: Run coding-interview solutions (each must print PASS; outputs must match the docs)
+        run: coding-interview/run-all.sh --check
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

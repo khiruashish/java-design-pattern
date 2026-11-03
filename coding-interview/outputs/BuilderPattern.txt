@@ -1,0 +1,5 @@
+HttpRequest[method=GET, url=https://api.example.com/orders, headers={Accept=application/json}, body=null, timeout=PT10S, retries=2]
+HttpRequest[method=POST, url=https://api.example.com/orders, headers={}, body={"sku":"A1"}, timeout=PT3S, retries=0]
+invalid request rejected: url must be http(s); GET must not have a body; retries must be 0..5
+built object is immutable
+PASS

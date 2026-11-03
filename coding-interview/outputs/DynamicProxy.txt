@@ -1,0 +1,10 @@
+MISS [describe, A1]
+HIT  [describe, A1]
+MISS [stock, A1]
+HIT  [stock, A1]
+MISS [describe, B2]
+real calls = 3 (5 requests)
+proxy class = generated $Proxy
+lazy created? false
+after first call, created? true
+PASS
