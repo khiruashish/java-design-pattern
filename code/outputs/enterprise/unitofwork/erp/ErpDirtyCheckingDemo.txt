@@ -1,0 +1,5 @@
+=== ERP: Annual Appraisal with Dirty Checking ===
+Loaded 5 employees, flush issues:
+  UPDATE employee SET salary_paise=132000000 WHERE id='E2'
+  UPDATE employee SET department='Treasury' WHERE id='E4'
+Second flush with no changes issues 0 statements

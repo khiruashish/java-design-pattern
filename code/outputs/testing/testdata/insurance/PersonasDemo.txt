@@ -1,0 +1,6 @@
+=== Insurance: Premium Tests Written with Personas ===
+Young driver           -> INR 14,700
+Safe driver            -> INR 7,500
+High-risk driver       -> INR 23,000
+Young driver, 1 claim  -> INR 17,700
+Personas read like the underwriting guide; builders let a test tweak one detail.

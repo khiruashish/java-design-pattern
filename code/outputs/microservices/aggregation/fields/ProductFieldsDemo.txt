@@ -1,0 +1,4 @@
+=== E-commerce: Each Screen Asks Only for the Fields It Shows ===
+Search tile   {name=Noise-cancelling earbuds, price=INR 3,999} -> called [catalog, pricing], 30 ms
+Product page  -> called 5 backends, 180 ms (reviews is the slow one)
+A fixed 'product' endpoint would make every search tile wait 180 ms for reviews it doesn't show.

@@ -1,0 +1,3 @@
+=== Travel: Identity Map in a Check-in Session ===
+Without map: reads=2, same object=false, baggage widget still sees seat 14C (stale copy)
+With map   : reads=1, same object=true, baggage widget sees seat 3A

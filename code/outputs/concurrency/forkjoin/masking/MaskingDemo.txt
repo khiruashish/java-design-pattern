@@ -1,0 +1,5 @@
+=== Healthcare: Masking National IDs Before Sharing Research Data ===
+Records scanned : 400000
+IDs masked      : 300000
+Sample          : patient=1;dx=I10;id=XXXX-XXXX-0001
+Untouched       : patient=0;dx=E11.9;note=no id recorded

@@ -1,0 +1,4 @@
+=== Challenge: An In-Memory Repository That Behaves Like a Database ===
+Leaky repo after unsaved change: [Mango]  <- tests pass, prod loses it
+Safe repo after unsaved change : []
+Safe repo after save()         : [Mango]

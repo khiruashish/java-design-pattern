@@ -1,0 +1,7 @@
+=== Grocery: The Order Aggregate Guards Its Own Rules ===
+Lines [ALPHONSO-1DZ x4, MILK-1L x3], total INR 3800
+  5th dozen of mangoes: rejected (max 4 of ALPHONSO-1DZ per order)
+  INR 18,000 TV in a grocery order: rejected (order total would exceed INR 20,000 COD cap)
+  edit lines from outside: rejected (UnsupportedOperationException)
+  add after packing: rejected (order ORD-9 is PACKED; cannot add BREAD)
+Final: PACKED [ALPHONSO-1DZ x4, MILK-1L x3], total INR 3800

@@ -1,0 +1,5 @@
+=== Banking: Injecting the Clock into Interest Accrual ===
+As of 2025-01-31: accrued INR 595.89
+As of 2025-07-01: accrued INR 3595.20
+As of 2026-01-01: accrued INR 7250.00
+Month-end batch reruns for a past date give the same answer: the clock is an input.

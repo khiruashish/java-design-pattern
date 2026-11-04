@@ -1,0 +1,4 @@
+=== Banking: A Ledger Invariant Checked on 10,000 Generated Transfers ===
+correct ledger: sum of all balances = 0 -> invariant holds
+buggy ledger  : sum of all balances = -2532 -> INVARIANT BROKEN, replay with seed 20261101
+Same seed, same 10,000 transfers: first transfer is always Transfer[from=E, to=C, paise=67735]

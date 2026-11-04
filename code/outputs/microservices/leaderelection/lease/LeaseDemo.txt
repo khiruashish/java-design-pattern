@@ -1,0 +1,8 @@
+=== Grocery: One of Three Pods Runs the Substitution Report ===
+t=0s leader(s): [pod-1]
+t=5s leader(s): [pod-1]
+t=10s pod-1 is killed (no graceful release)
+t=10s leader(s): none (lease not yet expired)
+t=15s leader(s): none (lease not yet expired)
+t=20s leader(s): none (lease not yet expired)
+t=25s leader(s): [pod-2]

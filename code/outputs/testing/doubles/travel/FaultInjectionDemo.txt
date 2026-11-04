@@ -1,0 +1,5 @@
+=== Travel: Testing Retry Paths with a Fault-Injecting Fake ===
+1 timeout   -> held HOLD-2 after 2 attempt(s), calls=2
+sold out    -> sold out, calls=1 (not retried)
+3 timeouts  -> gave up after 3 timeouts, calls=3, holds={}
+These paths are almost impossible to trigger reliably against the real partner sandbox.

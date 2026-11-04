@@ -1,0 +1,4 @@
+=== Grocery: 400 Invoice PDFs Shared by 4 Competing Workers ===
+Invoices rendered      : 400
+Rendered exactly once  : 400
+Never more than 4 at a time: true (scale by adding workers, not code)

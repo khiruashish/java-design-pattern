@@ -427,4 +427,4 @@ See [Decomposition](../microservices/decomposition.md), [Strangler Fig](../micro
 ---
 
 [:material-arrow-left: Event-Driven Architecture](event-driven.md){ .md-button }
-[Next: Pattern Selection Guide :material-arrow-right:](../pattern-selection-guide.md){ .md-button .md-button--primary }
+[Next: Enterprise & DDD :material-arrow-right:](../enterprise/index.md){ .md-button .md-button--primary }

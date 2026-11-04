@@ -1,0 +1,6 @@
+=== Ride-hailing: Map-Matching GPS Pings at the Consumer's Pace ===
+  request(3)
+  map-match [p1, p2, p3] -> request(3)
+  map-match [p4, p5, p6] -> request(3)
+  complete, last partial batch [p7, p8]
+The publisher never pushed more than the 3 pings requested at a time.

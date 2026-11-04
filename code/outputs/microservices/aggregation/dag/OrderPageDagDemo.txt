@@ -1,0 +1,8 @@
+=== Challenge: Order-Details Page with Dependent Calls ===
+  order done at 50 ms
+  customer done at 40 ms
+  shipment done at 130 ms
+  products done at 110 ms
+  driver done at 160 ms
+  refundRules done at 130 ms
+Parallel where possible: 160 ms; one call after another: 280 ms

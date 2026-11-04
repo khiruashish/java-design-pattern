@@ -1,0 +1,8 @@
+=== Grocery: Order Service's Contract with the Inventory Service ===
+Provider v1.8 (current):
+  PASS order-service -> inventory-service: stock for a known SKU
+  PASS order-service -> inventory-service: unknown SKU
+Provider v1.9 (renames 'available' to 'availableQty' in a 'harmless cleanup'):
+  FAIL order-service -> inventory-service: stock for a known SKU [missing field 'available']
+  PASS order-service -> inventory-service: unknown SKU
+v1.9 fails in the INVENTORY team's CI, before it can break order placement in production.

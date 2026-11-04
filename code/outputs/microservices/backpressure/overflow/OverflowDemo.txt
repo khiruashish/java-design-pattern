@@ -1,0 +1,14 @@
+=== Grocery: Picking API Is Slow; 7 Requests Arrive for a Buffer of 4 ===
+REJECT_NEW -> buffer [pick-1, pick-2, pick-3, pick-4]
+    pick-5: 429 Too Many Requests, Retry-After: 2
+    pick-6: 429 Too Many Requests, Retry-After: 2
+    pick-7: 429 Too Many Requests, Retry-After: 2
+DROP_OLDEST -> buffer [pick-4, pick-5, pick-6, pick-7]
+    pick-5: queued (dropped pick-1)
+    pick-6: queued (dropped pick-2)
+    pick-7: queued (dropped pick-3)
+CALLER_WAITS -> buffer [pick-1, pick-2, pick-3, pick-4]
+    pick-5: producer blocked until space frees up
+    pick-6: producer blocked until space frees up
+    pick-7: producer blocked until space frees up
+REJECT_NEW for orders (client retries), DROP_OLDEST for live location, CALLER_WAITS inside one process.

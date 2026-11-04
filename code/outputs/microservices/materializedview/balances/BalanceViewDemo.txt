@@ -1,0 +1,4 @@
+=== Banking: Account Balances Maintained Incrementally from Ledger Events ===
+Applied 4 events, ignored 1 duplicate
+Balances: {SB-1=425000, SB-2=100000}
+Balance lookup is O(1): no SUM over millions of ledger rows per app open.

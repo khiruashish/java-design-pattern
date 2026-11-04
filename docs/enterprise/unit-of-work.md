@@ -89,7 +89,7 @@ sequenceDiagram
     participant DB
     U->>W: registerNew(order), registerNew(line x2), registerDirty(stock x2)
     U->>W: commit()
-    W->>DB: BEGIN; INSERT order; INSERT lines; UPDATE stock ...
+    W->>DB: BEGIN, INSERT order, INSERT lines, UPDATE stock ...
     alt all succeed
         W->>DB: COMMIT
     else CHECK constraint fails

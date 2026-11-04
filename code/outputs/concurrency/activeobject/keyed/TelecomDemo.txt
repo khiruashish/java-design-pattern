@@ -1,0 +1,5 @@
+=== Telecom: Per-Subscriber Ordering for Recharge Events ===
++919845000001 -> [recharge INR 299, activate 1.5GB/day, send SMS]
++919845000002 -> [recharge INR 299, activate 1.5GB/day, send SMS]
++919845000003 -> [recharge INR 299, activate 1.5GB/day, send SMS]
+Each subscriber's steps stayed in order while subscribers were processed in parallel.

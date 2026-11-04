@@ -1,0 +1,7 @@
+=== Banking: Statement API Protects the Core-Banking DB (max 3 in flight) ===
+request 4 -> 503 Service Unavailable (shed, Retry-After: 1)
+request 5 -> 503 Service Unavailable (shed, Retry-After: 1)
+in-flight -> 200 statement-1
+in-flight -> 200 statement-2
+in-flight -> 200 statement-3
+request 6 -> 200 statement-6 (capacity is back)

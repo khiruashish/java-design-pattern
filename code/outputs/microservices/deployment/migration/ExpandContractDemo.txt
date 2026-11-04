@@ -1,0 +1,8 @@
+=== Challenge: Zero-Downtime Column Rename (rolling deploys run old + new together) ===
+Big-bang rename:
+  ALTER TABLE ... RENAME mobile TO phone_e164   apps {v1=false, v3=true} -> OUTAGE
+Expand / migrate / contract:
+  1. expand: ADD COLUMN phone_e164              apps {v1=true} -> ok
+  2. deploy v2 (dual-write, read new) + backfill apps {v1=true, v2=true} -> ok
+  3. deploy v3 (new column only)                apps {v2=true, v3=true} -> ok
+  4. contract: DROP COLUMN mobile               apps {v3=true} -> ok

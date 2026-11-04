@@ -1,0 +1,5 @@
+=== Payments: One Health Endpoint, Components with Different Criticality ===
+Normal day         -> UP       {ledgerDb=UP, primaryPsp=UP, fraudScoring=UP, emailReceipts=UP}
+Fraud scorer down  -> DEGRADED {ledgerDb=UP, primaryPsp=UP, fraudScoring=DOWN (optional), emailReceipts=UP}
+Ledger DB down     -> DOWN     {ledgerDb=DOWN, primaryPsp=UP, fraudScoring=UP, emailReceipts=DOWN (optional)}
+DEGRADED stays ready (fallback: rule-based fraud check) but pages the on-call; DOWN stops traffic.

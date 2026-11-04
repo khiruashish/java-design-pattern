@@ -1,0 +1,4 @@
+=== Grocery: Order + Lines + Stock in One Unit of Work ===
+O-1 committed 5 changes -> orders=1, lines=2, stock[CURD-400G=9, MANGO-1KG=1]
+O-2 failed: Rolled back 5 changes (SQLState 23513): stock would go negative
+After O-2 -> orders=1, lines=2, stock[CURD-400G=9, MANGO-1KG=1] (no orphan order, curd untouched)

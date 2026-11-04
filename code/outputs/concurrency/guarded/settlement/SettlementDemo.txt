@@ -1,0 +1,5 @@
+=== Payments: Balking Duplicate Settlement Triggers ===
+While running: 2 duplicate triggers balked immediately
+Scheduled run settled? true
+Batches settled: 1 (never twice: no double payouts)
+Next night's trigger runs again: true

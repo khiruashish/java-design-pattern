@@ -1,0 +1,3 @@
+=== Food Delivery: Riders Wait at the Counter Until the Order Is Packed ===
+Rider for ORD-501 picked up from: shelf B3
+Rider for ORD-999 got: null -> timed out, reassigned to another pickup

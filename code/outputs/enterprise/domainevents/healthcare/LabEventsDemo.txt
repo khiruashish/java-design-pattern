@@ -1,0 +1,4 @@
+=== Healthcare: Lab Results as Domain Events ===
+2026-02-10T03:15:00Z timeline: K+=4.1
+2026-02-10T03:15:00Z PAGE on-call doctor: K+=6.8 for PAT-88
+2026-02-10T03:15:00Z timeline: K+ amended 6.8 -> 5.9 (notify reviewer)

@@ -1,0 +1,5 @@
+=== Challenge: Typed IDs Instead of Strings ===
+Raw strings, swapped args : {ACC-1001=60000, ACC-2002=-10000}
+Typed values, correct call: {ACC-1001=40000, ACC-2002=10000}
+Rejected: transfer amount must be positive: -500
+transfer(paise, from, to) would not compile: the types make the order part of the API.

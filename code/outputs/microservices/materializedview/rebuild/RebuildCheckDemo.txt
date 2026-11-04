@@ -1,0 +1,3 @@
+=== Challenge: Rebuild and Compare to Catch View Drift ===
+Accounts checked: 3, drifted: {SB-0=live=1006000 expected=1002000}
+Fix: swap in the rebuilt view (blue/green tables), then alert on any future drift.

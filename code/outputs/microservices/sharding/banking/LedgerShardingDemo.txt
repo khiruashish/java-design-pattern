@@ -1,0 +1,9 @@
+=== Banking: Accounts Hash-Sharded Across 3 Databases ===
+ACC-1001 -> shard 1
+ACC-1002 -> shard 2
+ACC-1003 -> shard 0
+ACC-1004 -> shard 1
+ACC-1007 -> shard 1
+ACC-1001 -> ACC-1004: local transaction on shard 1
+  balances now 75000 / 125000
+ACC-1001 -> ACC-1002: cross-shard (1->2): start a transfer saga instead

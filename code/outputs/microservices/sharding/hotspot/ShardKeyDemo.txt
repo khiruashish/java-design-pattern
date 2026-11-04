@@ -1,0 +1,4 @@
+=== Challenge: Picking a Shard Key (today's 100,000 new orders) ===
+Range by date  : {0=0, 1=100000, 2=0, 3=0}  <- every write hits one hot shard
+Hash of orderId: {0=24998, 1=24998, 2=25002, 3=25002}  <- writes spread evenly
+But 'orders between two dates' now needs scatter-gather: pick the key for your main access path.

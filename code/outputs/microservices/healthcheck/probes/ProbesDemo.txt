@@ -1,0 +1,6 @@
+=== Grocery: Liveness vs Readiness Through a Pod's Life ===
+starting, cache cold     live=200 ready=503 -> remove from Service endpoints (no restart)
+cache warmed             live=200 ready=200 -> send traffic
+database failover (30s)  live=200 ready=503 -> remove from Service endpoints (no restart)
+database back            live=200 ready=200 -> send traffic
+thread deadlock          live=503 ready=503 -> RESTART container

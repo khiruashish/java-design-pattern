@@ -1,0 +1,4 @@
+=== Grocery: Cart Service Talks to localhost:6379, the Ambassador Shards ===
+cart:CUST-42 -> {items:0}
+Operations per shard: {0=3000, 1=3001, 2=3000}
+The cart service has no shard map, no cluster client, and no code change when shards are added.

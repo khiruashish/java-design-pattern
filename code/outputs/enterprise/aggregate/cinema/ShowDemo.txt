@@ -1,0 +1,5 @@
+=== Entertainment: Booking Seats in a Show Aggregate ===
+C-1 booked      -> STARLIGHT-AUDI3-2026-05-01-21:00 [F7, F8] (2/4)
+C-2 F9+F8       -> seat F8 already taken; nothing booked -> STARLIGHT-AUDI3-2026-05-01-21:00 [F7, F8] (2/4)
+C-2 F9+F10      -> STARLIGHT-AUDI3-2026-05-01-21:00 [F10, F7, F8, F9] (4/4)
+C-3 A1          -> show STARLIGHT-AUDI3-2026-05-01-21:00 is full

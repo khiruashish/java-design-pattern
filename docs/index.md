@@ -12,7 +12,7 @@ hide:
 
 <h1>Java Design Patterns Handbook</h1>
 
-<p class="pb-lead">From your first <code>new</code> keyword to defending architecture choices in a design review. GoF, concurrency, architecture and microservice patterns, with <b>3 real-world examples per pattern</b>, runnable code, exact output and interview prep.</p>
+<p class="pb-lead">From your first <code>new</code> keyword to defending architecture choices in a design review. GoF, concurrency, architecture, microservice, enterprise/DDD and testing patterns, with <b>3 real-world examples per pattern</b>, runnable code, exact output and interview prep.</p>
 
 [Start learning](getting-started/how-to-use.md){ .md-button .md-button--primary }
 [Jump to Singleton](creational/singleton.md){ .md-button }
@@ -31,10 +31,10 @@ hide:
 </div>
 
 <div class="pb-stats">
-<div class="pb-stat"><b>83</b><span>pages</span></div>
-<div class="pb-stat"><b>10</b><span>sections</span></div>
-<div class="pb-stat"><b>210</b><span>diagrams</span></div>
-<div class="pb-stat"><b>726</b><span>Java source files</span></div>
+<div class="pb-stat"><b>127</b><span>pages</span></div>
+<div class="pb-stat"><b>14</b><span>sections</span></div>
+<div class="pb-stat"><b>323</b><span>diagrams</span></div>
+<div class="pb-stat"><b>1,005</b><span>Java source files</span></div>
 </div>
 
 
@@ -125,6 +125,8 @@ mindmap
       Thread Pool
       Read-Write Lock
       Virtual Threads
+      Fork/Join
+      Active Object
     Microservices
       API Gateway
       Circuit Breaker
@@ -132,11 +134,21 @@ mindmap
       Outbox
       CQRS
       Event Sourcing
-      ...and 12 more
+      Cache-Aside
+      Sharding
+      ...and 20 more
     Architecture
       Hexagonal
       Clean
       Event-Driven
+    Enterprise & DDD
+      Dependency Injection
+      Repository
+      Aggregate
+      Domain Events
+    Testing
+      Test Doubles
+      Contract Testing
 ```
 
 ## How each pattern page is laid out

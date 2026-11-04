@@ -1,0 +1,6 @@
+=== Grocery: Testing Slot Reminders with a Stub, a Spy and a Fake ===
+C1 with a free slot : reminded for Today 19:00-20:00
+C2 opted out        : skipped (opted out)
+C1 with no slot     : no slot, no SMS
+Spy recorded        : [+919845000001 <- A delivery slot just opened: Today 19:00-20:00]
+No network, no database, no SMS bill: the test needs nothing but the JVM.

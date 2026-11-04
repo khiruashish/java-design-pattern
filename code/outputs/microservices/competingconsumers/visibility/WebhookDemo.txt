@@ -1,0 +1,5 @@
+=== Payments: A Worker Crashes Mid-Webhook; Another Finishes It ===
+worker-A received evt_91 (attempt 1) ... crashed before ack
+worker-B polls at +5s  : nothing (message still hidden)
+worker-B polls at +36s : evt_91 (attempt 2), settled=true, acked
+worker-C polls later   : nothing (done)

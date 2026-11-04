@@ -1,0 +1,4 @@
+=== Logistics: One Tracking Page Built from Three Services ===
+After driver event : Page[awb=AWB-77, city=?, driver=Ravi (KA-01-AB-1234), eta=?]
+After all events   : Page[awb=AWB-77, city=Bengaluru, driver=Ravi (KA-01-AB-1234), eta=14:40]
+The late, older ETA (v1) was ignored; the page answers with one key lookup, no joins across services.

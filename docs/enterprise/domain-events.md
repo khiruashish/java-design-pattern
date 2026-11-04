@@ -190,8 +190,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    P[Policy aggregate] -->|PolicyLapsed (rich, internal)| H[In-process handlers]
-    P --> M[Mapper] -->|PolicyLapsedV1 (public)| OB[(Outbox row)] --> K[[Kafka: insurance.policy.lapsed.v1]]
+    P[Policy aggregate] -->|"PolicyLapsed: rich, internal"| H[In-process handlers]
+    P --> M[Mapper] -->|"PolicyLapsedV1: public"| OB[(Outbox row)] --> K[[Kafka: insurance.policy.lapsed.v1]]
 ```
 
 **Full Code:**
