@@ -1,0 +1,5 @@
+=== Travel: BLR -> DEL Fare Search ===
+  Quote[airline=SkyIndia, fareInr=5840]
+  Quote[airline=BlueJet, fareInr=5310]
+  BudgetAir: no answer within 300 ms
+Cheapest shown to customer: BlueJet INR 5310

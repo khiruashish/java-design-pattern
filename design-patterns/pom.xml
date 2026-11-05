@@ -8,12 +8,13 @@
     <artifactId>design-patterns</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-    <name>Java Design Patterns (GoF) - Code</name>
+    <name>Java Design Patterns (GoF + Concurrency) - Code</name>
 
     <modules>
         <module>creational</module>
         <module>structural</module>
         <module>behavioral</module>
+        <module>concurrency</module>
     </modules>
 
     <properties>

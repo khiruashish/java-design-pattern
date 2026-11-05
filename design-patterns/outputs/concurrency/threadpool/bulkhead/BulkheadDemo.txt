@@ -1,0 +1,4 @@
+=== SaaS: Per-Tenant Bulkheads for Data Exports ===
+acme: 10 huge exports requested, 6 rejected (its bulkhead is full)
+globex: invoice export done (unaffected by acme)
+all pools shut down

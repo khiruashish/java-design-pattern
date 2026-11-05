@@ -1,0 +1,2 @@
+Final A + B       : 1000
+Inconsistent reads: 0

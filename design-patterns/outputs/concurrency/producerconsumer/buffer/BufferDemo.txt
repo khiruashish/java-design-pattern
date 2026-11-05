@@ -1,0 +1,2 @@
+Sum of 1..1000 received: 500500 (expected 500500)
+Buffer empty at the end: true

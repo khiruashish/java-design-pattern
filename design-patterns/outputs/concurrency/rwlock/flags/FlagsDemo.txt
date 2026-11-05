@@ -1,0 +1,4 @@
+=== SaaS: Feature-Flag Cache (8 readers, 1 refresher) ===
+Reads                  : 160000
+Refreshes              : 200
+Half-applied flag pairs: 0

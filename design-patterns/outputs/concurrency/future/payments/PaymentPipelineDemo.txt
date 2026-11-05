@@ -1,0 +1,4 @@
+=== Payments: Async Validation, Fraud Check and Charge ===
+PAY-1: CHARGED CHG-PAY-1
+PAY-2: DECLINED (fraud score 92)
+PAY-3: DECLINED (amount must be positive)

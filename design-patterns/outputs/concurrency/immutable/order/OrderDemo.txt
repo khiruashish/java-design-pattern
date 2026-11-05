@@ -1,0 +1,8 @@
+=== E-commerce: Order Snapshot Shared by Four Services ===
+Cart changed after checkout; snapshot total still INR 2398
+Snapshot lines cannot be modified
+billing  : invoice INR 2398
+warehouse: pick 2 lines
+email    : receipt for ORD-77
+analytics: revenue 2398
+Amended copy total INR 2697, original still INR 2398

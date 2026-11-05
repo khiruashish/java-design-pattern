@@ -1,0 +1,5 @@
+=== Banking: 1,000 Balance Checks, at Most 20 at the Core Banking System ===
+Virtual threads started  : 1000
+Balance checks completed : 1000
+Peak concurrent mainframe calls <= 20: true
+Limit was actually reached: true
