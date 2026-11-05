@@ -13,6 +13,12 @@ Knowing 30 patterns is easy; picking the **right** one under interview pressure 
 
 ---
 
+## Answer a few questions
+
+Not sure where to start? Pick the answer closest to your situation and the guide narrows it down to a pattern, plays its animation, and suggests close alternatives. The tables below give the same advice in more detail.
+
+<iframe class="motion-embed motion-pick" src="../motion/index.html?pick=1&amp;embed=1" title="Pattern picker: answer a few questions to find a pattern" loading="lazy"></iframe>
+
 ## 1. From code smell to pattern
 
 | You see this in the code... | Consider | Why |

@@ -21,7 +21,7 @@ tags:
 
 <iframe class="motion-embed" src="../../motion/index.html?p=sidecar-service-mesh&amp;embed=1" title="Animated walkthrough of the Sidecar / Service Mesh pattern" loading="lazy"></iframe>
 
-Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#sidecar-service-mesh){ target=_blank }
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern, or press a **Break it** button to make something fail while the pattern is in place. [Open the full explorer with all 66 patterns](../motion/index.html#sidecar-service-mesh){ target=_blank }
 
 ## 1. Intent & Problem It Solves
 
