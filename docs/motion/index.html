@@ -120,6 +120,31 @@ pre.code .c{color:var(--muted)}
 .repo a:hover{border-color:var(--cat);color:var(--cat)}
 .kbd{font:12px var(--mono);color:var(--muted)}
 
+
+/* code lit per step */
+pre.code .ln{display:block;padding:0 8px;margin:0 -8px;border-radius:4px;transition:background .25s,opacity .25s}
+pre.code.lit .ln{opacity:.5}
+pre.code .ln.hl{opacity:1;background:var(--cat-tint);box-shadow:inset 3px 0 0 var(--cat)}
+.stagecode{display:none;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:0}
+html.embed .stagecode{display:block}
+.codehead{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+/* comparison view */
+html.comparing .main,html.comparing #cats,html.comparing #chips,html.comparing #tocompare{display:none}
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+html.embed .cmp{padding:16px;border-radius:12px}
+html.embed .cmptop{display:none}
+.cdiff{margin:0;font:500 16px/1.5 var(--body);padding:10px 14px;border-radius:10px;background:var(--soft)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:18px}
+.ccol{min-width:0;display:grid;gap:8px;align-content:start}
+.chead{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.cfam{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cat)}
+.clink{font:700 20px/1.2 var(--display);color:var(--ink);text-decoration:none}
+.clink:hover{color:var(--cat)}
+.ccol .caption{min-height:3em;font-size:15.5px}
+.ccol.past .caption{opacity:.55}
+#cbar{height:100%;background:var(--cat);width:0;transition:width .35s}
+.cmptop{order:0}#cpick{order:1}#cdiff{order:2}.cmp>.controls{order:3}.cmp>.progress{order:4}.cgrid{order:5}
+
 /* diagram */
 .edge{stroke:var(--edge);stroke-width:1.5;fill:none}
 .edge.i{stroke-dasharray:6 5}
@@ -159,6 +184,7 @@ pre.code .c{color:var(--muted)}
       <span><i></i>calls / holds</span>
       <span><i class="d"></i>implements</span>
       <span><b></b>message in flight</span>
+      <a class="back" id="tocompare" href="index.html?compare=all">Compare look-alike patterns →</a>
     </div>
   </header>
 
@@ -183,6 +209,7 @@ pre.code .c{color:var(--muted)}
           <button data-s="1.6">0.5×</button><button data-s="1" aria-pressed="true">1×</button><button data-s="0.55">2×</button>
         </div>
       </div>
+      <div class="stagecode"><div class="codehead">Code for this step</div><pre class="code" id="code2"></pre></div>
       <ol class="steps" id="steps"></ol>
       <div class="kbd">Keys: ← → step · space play/pause</div>
     </section>
@@ -190,10 +217,29 @@ pre.code .c{color:var(--muted)}
       <div class="note"><h3>Use it when</h3><p id="when"></p></div>
       <div class="note"><h3>Everyday picture</h3><p id="analogy"></p></div>
       <div class="note tip" id="tipbox"><h3>Watch out</h3><p id="tip"></p></div>
-      <div class="note"><h3>Shape in Java</h3><pre class="code" id="code"></pre></div>
+      <div class="note"><h3>Code for this step</h3><pre class="code" id="code"></pre></div>
       <div class="note"><h3>Runnable examples in the repo</h3><div class="repo" id="repo"></div></div>
     </aside>
   </div>
+  <section class="cmp" id="cmp" hidden aria-live="polite">
+    <div class="cmptop"><a class="back" id="cback" href="index.html">← All patterns, one at a time</a></div>
+    <div class="chips" id="cpick"></div>
+    <p class="cdiff" id="cdiff"></p>
+    <div class="cgrid">
+      <div class="ccol" id="cmp0"><div class="chead"><span class="cfam"></span><a class="clink"><span class="cname"></span> →</a></div><div class="svgbox"><svg class="dia" viewBox="0 0 800 400" role="img"></svg></div><div class="caption"><span class="n capn"></span><span class="cap"></span></div></div>
+      <div class="ccol" id="cmp1"><div class="chead"><span class="cfam"></span><a class="clink"><span class="cname"></span> →</a></div><div class="svgbox"><svg class="dia" viewBox="0 0 800 400" role="img"></svg></div><div class="caption"><span class="n capn"></span><span class="cap"></span></div></div>
+    </div>
+    <div class="progress"><div id="cbar"></div></div>
+    <div class="controls">
+      <button class="btn" id="cprev" aria-label="Previous step">◀ Back</button>
+      <button class="btn primary" id="cplay">▶ Play both</button>
+      <button class="btn" id="cnext" aria-label="Next step">Next ▶</button>
+      <span class="kbd" id="cstep"></span>
+      <div class="speed" role="group" aria-label="Speed">speed
+        <button data-s="1.6">0.5×</button><button data-s="1" aria-pressed="true">1×</button><button data-s="0.55">2×</button>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -1554,13 +1600,117 @@ com.freshcart.ordering           <span class="c">// uses CatalogApi only</span>
  ]},
 ];
 
+/* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
+const HL={
+"singleton":[[4],[0,1,2],[4],[1]],
+"factory-method":[[2],[1,2],[4,5],[2]],
+"abstract-factory":[[0,4],[1,4],[2]],
+"builder":[[0,1],[2],[3],[4]],
+"prototype":[[0],[3],[1],[4]],
+"object-pool":[[],[0],[0],[0],[4]],
+"adapter":[[0,2],[1],[0,2],[3],[4]],
+"bridge":[[],[1,2],[3],[5],[1]],
+"composite":[[0],[3],[3],[1,3],[0]],
+"decorator":[[0,5],[1],[2],[3,4],[2],[0,5]],
+"facade":[[2,3,4,5],[1],[2,3,4,5],[5]],
+"flyweight":[[0],[3,4],[4],[0,1]],
+"proxy":[[0],[2,3,4],[3],[1]],
+"chain-of-responsibility":[[3],[4],[4],[4]],
+"command":[[1],[2],[5],[3],[0]],
+"interpreter":[[0,1,4],[2],[4],[2]],
+"iterator":[[1,2],[6],[2],[3,6]],
+"mediator":[[0],[1],[2,3],[4,5]],
+"memento":[[2],[1,2],[1],[],[3]],
+"null-object":[[5],[0,5],[1,2,3],[5]],
+"observer":[[1,2],[4,5],[2],[5]],
+"specification":[[0,1],[2,4],[1],[4]],
+"state":[[0],[0,2],[2],[3],[1]],
+"strategy":[[0],[1],[2],[3,5]],
+"template-method":[[1],[2],[3,6],[4]],
+"visitor":[[0],[2],[3,4,5],[2]],
+"producer-consumer":[[0],[3],[3],[5],[5]],
+"thread-pool":[[0],[1,2],[2],[2],[1]],
+"future-promise":[[],[0,1,2],[4],[3,4,5]],
+"read-write-lock":[[0],[3,4],[0],[0],[3,4]],
+"immutable-object":[[0],[1,2],[2],[0]],
+"double-checked-locking":[[1],[2,3],[4,5,6],[5,6],[3,9]],
+"virtual-threads":[[0],[0,1],[2],[3],[2,3]],
+"decomposition":[[],[0],[1,2,3],[4,5]],
+"api-gateway":[[0],[4],[1,2,3],[4]],
+"backend-for-frontend":[[],[0,1],[2,3,4],[]],
+"service-discovery":[[0],[1,2],[0,1],[0]],
+"circuit-breaker":[[1],[0],[3,4],[0],[1]],
+"retry-timeout-bulkhead":[[2],[0],[1],[2],[2]],
+"rate-limiter":[[0],[1,4],[3],[2]],
+"saga":[[0,1,2],[0],[1],[2],[0,1]],
+"transactional-outbox":[[],[0,2,3,4],[3],[3]],
+"cqrs":[[0,2],[0,1],[3],[4],[2]],
+"event-sourcing":[[0],[0,1],[3,4,5,6],[5]],
+"database-per-service":[[1,3],[4],[3],[4]],
+"strangler-fig":[[4],[1],[2,3],[0]],
+"sidecar-service-mesh":[[0],[1,2,3,4],[0],[0]],
+"idempotent-consumer":[[0,2,3],[1],[2]],
+"distributed-tracing":[[1],[1,2],[3],[]],
+"config-server":[[0,1,2,3],[5,6],[2],[5]],
+"anti-corruption-layer":[[3,4,5],[1],[1],[2,3,4,5]],
+"cache-aside":[[1],[3,4],[1,2],[7]],
+"sharding":[[0],[0,1,3],[3],[]],
+"materialized-view":[[],[0,1,2,3,4],[4],[3]],
+"competing-consumers":[[0],[0,2],[2],[]],
+"leader-election":[[0],[1,3],[4],[1],[3,4]],
+"backpressure":[[],[1],[2],[3]],
+"ambassador":[[0,1],[5],[6],[1]],
+"gateway-aggregation":[[],[1,2,3,4],[1],[3,5]],
+"health-check":[[4],[2,4],[4],[1,3]],
+"deployment-strategies":[[],[0],[4,5],[6,8],[5]],
+"layered":[[0,1,2],[0],[1,2],[3]],
+"hexagonal":[[0,1,2],[2],[1,5],[7]],
+"clean":[[0,1,2,3],[2,3],[0,1],[1],[3]],
+"event-driven":[[0,1],[3,4],[2,3],[3]],
+"modular-monolith":[[0,1,2],[0,2],[2],[1,4,5]]
+};
+
+/* ───────── look-alike pairs: the one-line difference ───────── */
+const PAIRS={
+"strategy~state":"Same shape. In Strategy the caller picks the behaviour; in State the object switches its own state as events happen.",
+"decorator~proxy":"Both wrap an object behind the same interface. A decorator adds behaviour you choose to stack; a proxy controls access to the one real object.",
+"adapter~facade":"An adapter turns one interface into the one your code expects; a facade puts one simple front on many subsystems.",
+"decorator~adapter":"A decorator keeps the interface and adds behaviour; an adapter changes the interface and adds none.",
+"factory-method~abstract-factory":"Factory Method lets a subclass create one product; Abstract Factory creates a whole matching family through one object.",
+"builder~prototype":"Builder assembles a new object step by step; Prototype copies an existing one and changes a little.",
+"template-method~strategy":"Template Method fixes the steps in a base class and lets subclasses fill one in; Strategy swaps a whole algorithm object at runtime.",
+"observer~mediator":"In Observer one subject broadcasts to whoever subscribed; in Mediator a central coordinator decides who talks to whom.",
+"composite~decorator":"Both build trees behind one interface. Composite groups many children and combines their answers; Decorator wraps exactly one and adds behaviour.",
+"bridge~adapter":"Bridge is designed up front so two dimensions can vary independently; Adapter is fitted afterwards to make existing pieces work together.",
+"bridge~strategy":"Bridge splits what an object is from how it's implemented for its whole life; Strategy plugs in an algorithm for one job and can swap it any time.",
+"command~strategy":"A command is a request turned into an object, so it can be queued and undone; a strategy is a way of doing a job, picked for the situation.",
+"chain-of-responsibility~decorator":"In a chain, any handler may stop the request; in a decorator stack every layer runs and passes the call on.",
+"flyweight~object-pool":"Flyweights are shared by many users at once and never change; pooled objects are lent to one user at a time and handed back.",
+"object-pool~singleton":"A pool keeps several reusable instances and lends them out; a singleton is exactly one instance that everyone shares.",
+"interpreter~specification":"Interpreter evaluates sentences of a small language parsed from text; Specification combines rule objects directly in code.",
+"thread-pool~virtual-threads":"A pool reuses a few OS threads and queues the work; virtual threads give every task its own cheap thread and park it while it waits on I/O.",
+"future-promise~virtual-threads":"Futures compose results asynchronously; virtual threads let you write the same fan-out as plain blocking code.",
+"read-write-lock~immutable-object":"A read-write lock guards data that changes in place; an immutable object never changes, so readers need no lock at all.",
+"double-checked-locking~singleton":"Both end with one shared instance. Double-checked locking builds it lazily and thread-safely by hand; an enum singleton gets that from the JVM.",
+"saga~transactional-outbox":"A saga coordinates steps across several services and undoes them on failure; an outbox makes one service's save-and-announce atomic. Sagas often use an outbox for each step.",
+"cqrs~materialized-view":"CQRS splits the whole model into a write side and a read side; a materialized view is one precomputed read table, often the read side of CQRS.",
+"event-sourcing~cqrs":"Event sourcing stores every change as an event; CQRS separates reads from writes. They pair well, but each works without the other.",
+"api-gateway~backend-for-frontend":"One gateway serves every client with shared routing and security; a BFF is a separate backend per client type that shapes data for it.",
+"circuit-breaker~retry-timeout-bulkhead":"Retry tries again, hoping the failure is brief; a circuit breaker stops trying when failures keep coming. Use both: retries inside, the breaker around them.",
+"layered~hexagonal":"In layered code the business logic depends on the data layer below it; in hexagonal the domain defines ports and the database adapter depends on the domain.",
+"hexagonal~clean":"The same core idea: dependencies point at the domain. Clean names more rings (entities, use cases, adapters, frameworks); hexagonal has just inside and outside."
+};
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
-const svg=$("#dia"), NS="http://www.w3.org/2000/svg";
+const NS="http://www.w3.org/2000/svg";
 const GH="https://github.com/khiruashish/java-design-pattern/tree/main";
 const srcDir=p=>p.mod?`${GH}/code/${p.mod}/src/main/java/com/handbook/${p.mod}/${p.pkg}`:`${GH}/design-patterns/${p.cat}/src/main/java/com/handbook/${p.cat}/${p.pkg}`;
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-let cur=P[0], step=0, playing=false, run=0, speed=1, curCat="creational";
+const EMBED=document.documentElement.classList.contains("embed");
+const Q=new URLSearchParams(location.search);
+const byId=id=>P.find(p=>p.id===id);
+let speed=1;
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function size(n,sub){const w=Math.min(300,Math.max(108,Math.max(n.label.length*8.6,(sub||"").length*6.6)+30));return{w,h:sub?54:40}}
@@ -1578,140 +1728,222 @@ function clip(a,b){ // segment from rect a edge to rect b edge
   const t=r=>{const tx=dx?(r.w/2+5)/Math.abs(dx):Infinity,ty=dy?(r.h/2+5)/Math.abs(dy):Infinity;return Math.min(tx,ty)};
   const ta=t(a),tb=t(b);return{x1:a.x+dx*ta,y1:a.y+dy*ta,x2:b.x-dx*tb,y2:b.y-dy*tb};
 }
-function draw(opts={}){
-  const p=cur, s=p.steps[step], st=stateAt(p,step,opts.partial), g=geo(p,st);
-  const prev=step>0?stateAt(p,step-1):null;
-  const on=new Set([...(s.on||[])]);flatSends(s).forEach(([a,b])=>{on.add(a);on.add(b)});
-  if(!opts.partial)Object.keys(s.tag||{}).forEach(k=>on.add(k));
-  let h=`<defs>
-  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
-  <marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path class="mk hollow" d="M1,1 L11,6 L1,11 z"/></marker>
-  <marker id="dia" viewBox="0 0 14 10" refX="1" refY="5" markerWidth="12" markerHeight="9" orient="auto"><path class="mk" d="M1,5 L7,1 L13,5 L7,9 z"/></marker></defs>`;
-  p.edges.forEach(([a,b,k="u"])=>{if(!st.vis.has(a)||!st.vis.has(b))return;const c=clip(g[a],g[b]);
-    const m=k==="i"?'marker-end="url(#tri)"':k==="h"?'marker-start="url(#dia)" marker-end="url(#arr)"':'marker-end="url(#arr)"';
-    h+=`<line class="edge ${k}" x1="${c.x1}" y1="${c.y1}" x2="${c.x2}" y2="${c.y2}" ${m}/>`});
-  p.nodes.forEach(n=>{if(!st.vis.has(n.id))return;const q=g[n.id];
-    const isNew=prev&&!prev.vis.has(n.id)&&!opts.still;
-    const changed=opts.changed&&opts.changed.has(n.id);
-    const cls=["node",n.kind||"",on.has(n.id)?"on":"",isNew?"new":"",changed?"changed":""].join(" ");
-    const rx=n.kind==="client"?q.h/2:8;
-    h+=`<g class="${cls}" data-id="${n.id}"><rect x="${q.x-q.w/2}" y="${q.y-q.h/2}" width="${q.w}" height="${q.h}" rx="${rx}"/>`;
-    if(q.sub){h+=`<text class="l" x="${q.x}" y="${q.y-5}" text-anchor="middle">${esc(n.label)}</text><text class="s" x="${q.x}" y="${q.y+14}" text-anchor="middle">${esc(q.sub)}</text>`}
-    else h+=`<text class="l" x="${q.x}" y="${q.y+5}" text-anchor="middle">${esc(n.label)}</text>`;
-    h+=`</g>`});
-  svg.innerHTML=h;
-  svg.classList.toggle("dim",on.size>0);
-  return g;
-}
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-function fly(g,[a,b,label],id){
-  return new Promise(res=>{
-    if(!g[a]||!g[b]){res();return}
-    const c=clip(g[a],g[b]);
-    const trail=document.createElementNS(NS,"line");
-    trail.setAttribute("class","trail");["x1","y1","x2","y2"].forEach(k=>trail.setAttribute(k,c[k]));
-    svg.appendChild(trail);
-    const tok=document.createElementNS(NS,"g");tok.setAttribute("class","tok");
-    const tw=Math.max(24,label.length*7.3+14);
-    tok.innerHTML=`<circle r="7"/><rect x="${-tw/2}" y="-31" width="${tw}" height="20" rx="10"/><text y="-17" text-anchor="middle">${esc(label)}</text>`;
-    svg.appendChild(tok);
-    const dur=reduce?1:780*speed, t0=performance.now();
-    const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-    function f(now){
-      if(id!==run){trail.remove();tok.remove();res();return}
-      const t=Math.min(1,(now-t0)/dur),e=ease(t);
-      tok.setAttribute("transform",`translate(${c.x1+(c.x2-c.x1)*e},${c.y1+(c.y2-c.y1)*e})`);
-      if(t<1)requestAnimationFrame(f);else setTimeout(()=>{trail.remove();tok.remove();res()},reduce?350:120*speed);
-    }
-    requestAnimationFrame(f);
-  });
+function codeHtml(p){return p.code.split("\n").map((l,i)=>`<span class="ln" data-i="${i}">${l||" "}</span>`).join("")}
+function lightCode(pre,p,step){
+  if(!pre)return;const on=new Set((HL[p.id]||[])[step]||[]);
+  pre.querySelectorAll(".ln").forEach(el=>el.classList.toggle("hl",on.has(+el.dataset.i)));
+  pre.classList.toggle("lit",on.size>0);
 }
-async function playStep(animate){
-  const id=++run, s=cur.steps[step];
-  updateText();
-  if(!animate||!(s.send&&s.send.length)){draw({changed:new Set(animate?Object.keys(s.tag||{}):[]),still:!animate});return id===run}
-  let g=draw({partial:true});
-  await wait(reduce?0:260*speed);
-  for(const it of s.send){
-    if(id!==run)return false;
-    if(it.par)await Promise.all(it.par.map(x=>fly(g,x,id)));else await fly(g,it,id);
+
+/* One animated diagram. Several can run on a page (the comparison view). */
+let stageCount=0;
+class Stage{
+  constructor(svg,onStep){this.svg=svg;this.onStep=onStep;this.p=null;this.step=0;this.run=0;this.k=++stageCount}
+  set(p){this.run++;this.p=p;this.step=0}
+  cancel(){this.run++}
+  draw(opts={}){
+    const p=this.p, k=this.k, s=p.steps[this.step], st=stateAt(p,this.step,opts.partial), g=geo(p,st);
+    const prev=this.step>0?stateAt(p,this.step-1):null;
+    const on=new Set([...(s.on||[])]);flatSends(s).forEach(([a,b])=>{on.add(a);on.add(b)});
+    if(!opts.partial)Object.keys(s.tag||{}).forEach(x=>on.add(x));
+    let h=`<defs>
+    <marker id="arr${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="tri${k}" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path class="mk hollow" d="M1,1 L11,6 L1,11 z"/></marker>
+    <marker id="dia${k}" viewBox="0 0 14 10" refX="1" refY="5" markerWidth="12" markerHeight="9" orient="auto"><path class="mk" d="M1,5 L7,1 L13,5 L7,9 z"/></marker></defs>`;
+    p.edges.forEach(([a,b,kind="u"])=>{if(!st.vis.has(a)||!st.vis.has(b))return;const c=clip(g[a],g[b]);
+      const m=kind==="i"?`marker-end="url(#tri${k})"`:kind==="h"?`marker-start="url(#dia${k})" marker-end="url(#arr${k})"`:`marker-end="url(#arr${k})"`;
+      h+=`<line class="edge ${kind}" x1="${c.x1}" y1="${c.y1}" x2="${c.x2}" y2="${c.y2}" ${m}/>`});
+    p.nodes.forEach(n=>{if(!st.vis.has(n.id))return;const q=g[n.id];
+      const isNew=prev&&!prev.vis.has(n.id)&&!opts.still;
+      const changed=opts.changed&&opts.changed.has(n.id);
+      const cls=["node",n.kind||"",on.has(n.id)?"on":"",isNew?"new":"",changed?"changed":""].join(" ");
+      const rx=n.kind==="client"?q.h/2:8;
+      h+=`<g class="${cls}" data-id="${n.id}"><rect x="${q.x-q.w/2}" y="${q.y-q.h/2}" width="${q.w}" height="${q.h}" rx="${rx}"/>`;
+      if(q.sub){h+=`<text class="l" x="${q.x}" y="${q.y-5}" text-anchor="middle">${esc(n.label)}</text><text class="s" x="${q.x}" y="${q.y+14}" text-anchor="middle">${esc(q.sub)}</text>`}
+      else h+=`<text class="l" x="${q.x}" y="${q.y+5}" text-anchor="middle">${esc(n.label)}</text>`;
+      h+=`</g>`});
+    this.svg.innerHTML=h;
+    this.svg.classList.toggle("dim",on.size>0);
+    return g;
   }
-  if(id!==run)return false;
-  draw({changed:new Set(Object.keys(s.tag||{})),still:true});
-  return true;
+  fly(g,[a,b,label],id){
+    return new Promise(res=>{
+      if(!g[a]||!g[b]){res();return}
+      const c=clip(g[a],g[b]), svg=this.svg;
+      const trail=document.createElementNS(NS,"line");
+      trail.setAttribute("class","trail");["x1","y1","x2","y2"].forEach(x=>trail.setAttribute(x,c[x]));
+      svg.appendChild(trail);
+      const tok=document.createElementNS(NS,"g");tok.setAttribute("class","tok");
+      const tw=Math.max(24,label.length*7.3+14);
+      tok.innerHTML=`<circle r="7"/><rect x="${-tw/2}" y="-31" width="${tw}" height="20" rx="10"/><text y="-17" text-anchor="middle">${esc(label)}</text>`;
+      svg.appendChild(tok);
+      const dur=reduce?1:780*speed, t0=performance.now();
+      const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      const f=now=>{
+        if(id!==this.run){trail.remove();tok.remove();res();return}
+        const t=Math.min(1,(now-t0)/dur),e=ease(t);
+        tok.setAttribute("transform",`translate(${c.x1+(c.x2-c.x1)*e},${c.y1+(c.y2-c.y1)*e})`);
+        if(t<1)requestAnimationFrame(f);else setTimeout(()=>{trail.remove();tok.remove();res()},reduce?350:120*speed);
+      };
+      requestAnimationFrame(f);
+    });
+  }
+  async playStep(animate){
+    const id=++this.run, s=this.p.steps[this.step];
+    if(this.onStep)this.onStep(this);
+    if(!animate||!(s.send&&s.send.length)){this.draw({changed:new Set(animate?Object.keys(s.tag||{}):[]),still:!animate});return id===this.run}
+    const g=this.draw({partial:true});
+    await wait(reduce?0:260*speed);
+    for(const it of s.send){
+      if(id!==this.run)return false;
+      if(it.par)await Promise.all(it.par.map(x=>this.fly(g,x,id)));else await this.fly(g,it,id);
+    }
+    if(id!==this.run)return false;
+    this.draw({changed:new Set(Object.keys(s.tag||{})),still:true});
+    return true;
+  }
+}
+
+/* ───────── single-pattern explorer ───────── */
+const main=new Stage($("#dia"),st=>updateText(st));
+let playing=false, playTok=0, curCat="creational";
+const cur=()=>main.p;
+
+function setPlayBtn(){const b=$("#play"),p=cur();if(!p)return;const end=main.step>=p.steps.length-1;
+  b.textContent=playing?"❚❚ Pause":(end?"↺ Replay":"▶ Play");
+  $("#prev").disabled=main.step===0;$("#next").disabled=end;}
+function updateText(st){
+  const p=st.p, s=p.steps[st.step];
+  $("#cap").textContent=s.say;$("#capn").textContent=`${st.step+1}/${p.steps.length}`;
+  $("#bar").style.width=((st.step+1)/p.steps.length*100)+"%";
+  [...$("#steps").children].forEach((li,i)=>{li.className=i===st.step?"cur":i<st.step?"done":"";li.setAttribute("aria-current",i===st.step?"step":"false")});
+  lightCode($("#code"),p,st.step);lightCode($("#code2"),p,st.step);
+  setPlayBtn();
 }
 async function autoplay(){
-  playing=true;setPlayBtn();
-  const id0=run+1;
-  while(playing){
-    const ok=await playStep(true);
-    if(!ok||!playing)return;
-    const id=run;
+  playing=true;const tok=++playTok;setPlayBtn();
+  while(playing&&tok===playTok){
+    const ok=await main.playStep(true);
+    if(!ok||tok!==playTok)return;
     await wait(1900*speed);
-    if(!playing||id!==run)return;
-    if(step>=cur.steps.length-1){playing=false;setPlayBtn();return}
-    step++;
+    if(!playing||tok!==playTok)return;
+    if(main.step>=cur().steps.length-1){playing=false;setPlayBtn();return}
+    main.step++;
   }
 }
-function stop(){playing=false;run++;setPlayBtn()}
-function setPlayBtn(){const b=$("#play");const end=step>=cur.steps.length-1;
-  b.textContent=playing?"❚❚ Pause":(end&&!playing&&stepPlayedLast?"↺ Replay":"▶ Play");
-  $("#prev").disabled=step===0;$("#next").disabled=step>=cur.steps.length-1;}
-let stepPlayedLast=false;
-function updateText(){
-  const s=cur.steps[step];
-  $("#cap").textContent=s.say;$("#capn").textContent=`${step+1}/${cur.steps.length}`;
-  $("#bar").style.width=((step+1)/cur.steps.length*100)+"%";
-  [...$("#steps").children].forEach((li,i)=>{li.className=i===step?"cur":i<step?"done":"";li.setAttribute("aria-current",i===step?"step":"false")});
-  stepPlayedLast=step>=cur.steps.length-1;setPlayBtn();
-}
-function go(i,animate=true){stop();step=Math.max(0,Math.min(cur.steps.length-1,i));playStep(animate)}
+function stop(){playing=false;playTok++;main.cancel();setPlayBtn()}
+function go(i,animate=true){stop();main.step=Math.max(0,Math.min(cur().steps.length-1,i));main.playStep(animate)}
 
 function selectPattern(p,{auto=true,push=true}={}){
-  stop();cur=p;step=0;curCat=p.cat;
+  stop();main.set(p);curCat=p.cat;
   document.documentElement.style.setProperty("--cat",`var(--c-${p.cat})`);
   document.documentElement.style.setProperty("--cat-tint",`var(--t-${p.cat})`);
   renderNav();
-  $("#eyebrow").textContent=`${CATS[p.cat].name} · ${P.filter(x=>x.cat===p.cat).indexOf(p)+1} of ${P.filter(x=>x.cat===p.cat).length}`;
+  const fam=P.filter(x=>x.cat===p.cat);
+  $("#eyebrow").textContent=`${CATS[p.cat].name} · ${fam.indexOf(p)+1} of ${fam.length}`;
   $("#pname").textContent=p.name;$("#intent").textContent=p.intent;
   $("#when").textContent=p.when;$("#analogy").textContent=p.analogy;
   $("#tip").textContent=p.tip||"";$("#tipbox").hidden=!p.tip;
-  $("#code").innerHTML=p.code;
+  $("#code").innerHTML=codeHtml(p);$("#code2").innerHTML=codeHtml(p);
   $("#repo").innerHTML=p.ex.map(e=>`<a href="${srcDir(p)}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
   $("#steps").innerHTML=p.steps.map((s,i)=>`<li tabindex="0" data-i="${i}">${esc(s.say)}</li>`).join("");
-  svg.setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
+  $("#dia").setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
   if(push&&!EMBED){try{history.replaceState(null,"","#"+p.id)}catch(e){location.hash=p.id}}
-  playStep(false);
-  if(auto&&!reduce)setTimeout(()=>{if(cur===p&&step===0&&!playing)autoplay()},500);
+  main.playStep(false);
+  if(auto&&!reduce)setTimeout(()=>{if(cur()===p&&main.step===0&&!playing)autoplay()},500);
 }
 function renderNav(){
   $("#cats").innerHTML=Object.entries(CATS).map(([k,c])=>`<button class="cat" style="--cc:var(--c-${k})" data-cat="${k}" aria-pressed="${k===curCat}">${c.name} <small>${P.filter(p=>p.cat===k).length} · ${c.blurb}</small></button>`).join("");
-  $("#chips").innerHTML=P.filter(p=>p.cat===curCat).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur}">${p.name}</button>`).join("");
+  $("#chips").innerHTML=P.filter(p=>p.cat===curCat).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur()}">${p.name}</button>`).join("");
 }
-$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;const first=P.find(p=>p.cat===b.dataset.cat);selectPattern(first)});
-$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selectPattern(P.find(p=>p.id===b.dataset.id))});
+$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;selectPattern(P.find(p=>p.cat===b.dataset.cat))});
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selectPattern(byId(b.dataset.id))});
 $("#steps").addEventListener("click",e=>{const li=e.target.closest("li");if(li)go(+li.dataset.i)});
 $("#steps").addEventListener("keydown",e=>{if(e.key==="Enter"){const li=e.target.closest("li");if(li)go(+li.dataset.i)}});
-$("#prev").onclick=()=>go(step-1,false);
-$("#next").onclick=()=>go(step+1);
-$("#play").onclick=()=>{if(playing){stop();return}if(step>=cur.steps.length-1)step=0;autoplay()};
+$("#prev").onclick=()=>go(main.step-1,false);
+$("#next").onclick=()=>go(main.step+1);
+$("#play").onclick=()=>{if(playing){stop();return}if(main.step>=cur().steps.length-1)main.step=0;autoplay()};
 document.querySelectorAll(".speed button").forEach(b=>b.onclick=()=>{speed=+b.dataset.s;document.querySelectorAll(".speed button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
-addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;if(typeof EMBED!=="undefined"&&EMBED&&!document.hasFocus())return;
-  if(e.key==="ArrowRight"){e.preventDefault();go(step+1)}else if(e.key==="ArrowLeft"){e.preventDefault();go(step-1,false)}
-  else if(e.key===" "&&!e.target.closest("button")){e.preventDefault();$("#play").click()}});
-const EMBED=document.documentElement.classList.contains("embed");
-function fromHash(){const id=new URLSearchParams(location.search).get("p")||location.hash.slice(1);return P.find(p=>p.id===id)}
-addEventListener("hashchange",()=>{const p=fromHash();if(p&&p!==cur)selectPattern(p,{push:false})});
+
+/* ───────── side-by-side comparison (?compare=a~b|c~d or ?compare=all) ───────── */
+function startCompare(){
+  let list=(Q.get("compare")||"").split("|").filter(k=>PAIRS[k]);
+  if(Q.get("compare")==="all"||!list.length)list=Object.keys(PAIRS);
+  document.documentElement.classList.add("comparing");
+  const root=$("#cmp");root.hidden=false;
+  const cols=[0,1].map(i=>({el:$(`#cmp${i}`)}));
+  cols.forEach((c,i)=>{c.stage=new Stage(c.el.querySelector("svg"),st=>cmpText(i))});
+  let pair=list[0], ci=0, cplaying=false, ctok=0;
+  const maxLen=()=>Math.max(...cols.map(c=>c.stage.p.steps.length));
+  function cmpText(i){const c=cols[i],st=c.stage,p=st.p,past=ci>p.steps.length-1;
+    c.el.querySelector(".capn").textContent=past?"done":`${st.step+1}/${p.steps.length}`;
+    c.el.querySelector(".cap").textContent=p.steps[st.step].say;
+    c.el.classList.toggle("past",past);}
+  function setBtns(){if(cols.some(c=>!c.stage.p))return;const end=ci>=maxLen()-1;
+    $("#cplay").textContent=cplaying?"❚❚ Pause":(end?"↺ Replay":"▶ Play both");
+    $("#cprev").disabled=ci===0;$("#cnext").disabled=end;
+    $("#cbar").style.width=((ci+1)/maxLen()*100)+"%";$("#cstep").textContent=`Step ${ci+1} of ${maxLen()}`;}
+  function playAll(animate){return Promise.all(cols.map(c=>{const st=c.stage;st.step=Math.min(ci,st.p.steps.length-1);return st.playStep(animate&&ci<st.p.steps.length)}))}
+  function cstop(){cplaying=false;ctok++;cols.forEach(c=>c.stage.cancel());setBtns()}
+  async function cauto(){cplaying=true;const tok=++ctok;setBtns();
+    while(cplaying&&tok===ctok){
+      const ok=await playAll(true);
+      if(tok!==ctok||ok.some(x=>!x))return;
+      await wait(2100*speed);
+      if(!cplaying||tok!==ctok)return;
+      if(ci>=maxLen()-1){cplaying=false;setBtns();return}
+      ci++;setBtns();
+    }}
+  function cgo(i,animate){cstop();ci=Math.max(0,Math.min(maxLen()-1,i));setBtns();playAll(animate)}
+  function choose(k,auto){
+    cstop();pair=k;ci=0;
+    k.split("~").forEach((id,i)=>{const p=byId(id),c=cols[i];c.stage.set(p);
+      c.el.style.setProperty("--cat",`var(--c-${p.cat})`);c.el.style.setProperty("--cat-tint",`var(--t-${p.cat})`);
+      c.el.querySelector(".cname").textContent=p.name;
+      c.el.querySelector(".cfam").textContent=CATS[p.cat].name;
+      const a=c.el.querySelector(".clink");a.href=EMBED?`../${p.cat}/${p.id}/`:`#${p.id}`;a.target=EMBED?"_top":"_self";
+      c.el.querySelector("svg").setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);});
+    const p0=byId(k.split("~")[0]);document.documentElement.style.setProperty("--cat",`var(--c-${p0.cat})`);document.documentElement.style.setProperty("--cat-tint",`var(--t-${p0.cat})`);
+    $("#cdiff").textContent=PAIRS[k];
+    $("#cpick").innerHTML=list.length>1?list.map(x=>`<button class="chip" data-k="${x}" aria-current="${x===k}">${x.split("~").map(id=>byId(id).name).join(" vs ")}</button>`).join(""):"";
+    $("#cpick").hidden=list.length<2;
+    setBtns();playAll(false);
+    if(auto&&!reduce)setTimeout(()=>{if(pair===k&&ci===0&&!cplaying)cauto()},500);
+  }
+  $("#cpick").addEventListener("click",e=>{const b=e.target.closest(".chip");if(b)choose(b.dataset.k,true)});
+  $("#cprev").onclick=()=>cgo(ci-1,false);
+  $("#cnext").onclick=()=>cgo(ci+1,true);
+  $("#cplay").onclick=()=>{if(cplaying){cstop();return}if(ci>=maxLen()-1){ci=0}cauto()};
+  document.querySelectorAll("#cmp .speed button").forEach(b=>b.onclick=()=>{speed=+b.dataset.s;document.querySelectorAll("#cmp .speed button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+  choose(pair,!EMBED);
+  return{autoplayOnce:()=>{if(ci===0&&!cplaying)cauto()}};
+}
+
+/* ───────── boot ───────── */
+addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;
+  const cmp=document.documentElement.classList.contains("comparing");
+  const nx=cmp?$("#cnext"):$("#next"), pv=cmp?$("#cprev"):$("#prev"), pl=cmp?$("#cplay"):$("#play");
+  if(e.key==="ArrowRight"){e.preventDefault();nx.click()}else if(e.key==="ArrowLeft"){e.preventDefault();pv.click()}
+  else if(e.key===" "&&!e.target.closest("button")){e.preventDefault();pl.click()}});
+function fromHash(){const id=Q.get("p")||location.hash.slice(1);return byId(id)}
+addEventListener("hashchange",()=>{const p=fromHash();if(p&&p!==cur()&&!document.documentElement.classList.contains("comparing"))selectPattern(p,{push:false})});
+
+let onVisible=null;
+if(Q.get("compare")){const c=startCompare();onVisible=c.autoplayOnce}
+else if(EMBED){selectPattern(fromHash()||P[0],{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
+else selectPattern(fromHash()||P[0],{push:false});
+
 if(EMBED){
-  selectPattern(fromHash()||P[0],{push:false,auto:false});
   const fit=()=>{try{if(window.frameElement)frameElement.style.height=Math.ceil(document.getElementById("app").getBoundingClientRect().height)+2+"px"}catch(e){}};
   new ResizeObserver(fit).observe(document.body);fit();
-  let seen=false;
-  if(!reduce&&"IntersectionObserver" in window){
+  if(!reduce&&onVisible){
     const target=(()=>{try{return window.frameElement}catch(e){return null}})();
-    if(target){new (parent.IntersectionObserver||IntersectionObserver)(es=>{if(!seen&&es.some(e=>e.isIntersecting)){seen=true;if(step===0&&!playing)autoplay()}},{threshold:.4}).observe(target)}
+    let seen=false;
+    if(target){const IO=(parent&&parent.IntersectionObserver)||IntersectionObserver;
+      new IO(es=>{if(!seen&&es.some(e=>e.isIntersecting)){seen=true;onVisible()}},{threshold:.35}).observe(target)}
   }
-}else selectPattern(fromHash()||P[0],{push:false});
+}
 </script>
 </body>
 </html>
