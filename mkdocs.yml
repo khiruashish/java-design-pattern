@@ -225,6 +225,7 @@ nav:
       - Glossary: glossary.md
   - Interview:
       - interview/index.md
+      - "Quiz: Name That Pattern": interview/pattern-quiz.md
       - Google: interview/google.md
       - Microsoft: interview/microsoft.md
       - Amazon: interview/amazon.md
