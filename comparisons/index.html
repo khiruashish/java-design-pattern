@@ -4465,6 +4465,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#microservices-architecture-look-alikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Microservices &amp; architecture look-alikes
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5586,6 +5597,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#microservices-architecture-look-alikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Microservices &amp; architecture look-alikes
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5631,9 +5653,11 @@
 
 
 <h1 id="pattern-comparisons">Pattern Comparisons<a class="headerlink" href="#pattern-comparisons" title="Permanent link">&para;</a></h1>
-<p>Interviewers love "X vs. Y" questions because they test <strong>understanding</strong>, not memorization. Many patterns have the <strong>same class diagram</strong> and differ only in <strong>intent</strong>. For each pair below: a table, the key difference in one line, and a sentence you can say out loud.</p>
+<p>Interviewers love "X vs. Y" questions because they test <strong>understanding</strong>, not memorization. Many patterns have the <strong>same class diagram</strong> and differ only in <strong>intent</strong>. For each pair below: a table, the key difference in one line, and a sentence you can say out loud. Most sections also have a player that runs the patterns side by side, one step at a time, so you can see exactly where they part ways.</p>
 <hr />
 <h2 id="strategy-vs-state">Strategy vs. State<a class="headerlink" href="#strategy-vs-state" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=strategy~state&amp;embed=1" title="Strategy vs. State: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5672,6 +5696,8 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">order</span><span class="p">.</span><span class="na">dispatch</span><span class="p">();</span><span class="w">                   </span><span class="c1">// State: PACKED decides the next state is OUT_FOR_DELIVERY</span>
 </span></code></pre></div>
 <h2 id="decorator-vs-proxy-vs-adapter-vs-facade">Decorator vs. Proxy vs. Adapter vs. Facade<a class="headerlink" href="#decorator-vs-proxy-vs-adapter-vs-facade" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=decorator~proxy|adapter~facade|decorator~adapter&amp;embed=1" title="Decorator vs. Proxy vs. Adapter vs. Facade: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5731,6 +5757,8 @@
 <p><strong>Say:</strong> "Adapter changes the interface, Decorator keeps it and adds behavior, Proxy keeps it and controls access, Facade gives a new, simpler interface to many classes."</p>
 </blockquote>
 <h2 id="factory-method-vs-abstract-factory-vs-builder-vs-prototype">Factory Method vs. Abstract Factory vs. Builder vs. Prototype<a class="headerlink" href="#factory-method-vs-abstract-factory-vs-builder-vs-prototype" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=factory-method~abstract-factory|builder~prototype&amp;embed=1" title="Factory Method vs. Abstract Factory vs. Builder vs. Prototype: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5776,6 +5804,8 @@
 <p><strong>Say:</strong> "Factory Method answers <em>which class</em>, Abstract Factory <em>which family</em>, Builder <em>how to assemble a complex object step by step</em>, and Prototype <em>start from a copy</em>."</p>
 </blockquote>
 <h2 id="template-method-vs-strategy">Template Method vs. Strategy<a class="headerlink" href="#template-method-vs-strategy" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=template-method~strategy&amp;embed=1" title="Template Method vs. Strategy: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5811,6 +5841,8 @@
 <p><strong>Say:</strong> "Template Method fixes the skeleton and lets subclasses fill steps; Strategy swaps the entire algorithm by composition. In modern Java I often get a template's benefits with callbacks, like <code>JdbcTemplate</code>."</p>
 </blockquote>
 <h2 id="observer-vs-mediator-vs-pubsub">Observer vs. Mediator vs. Pub/Sub<a class="headerlink" href="#observer-vs-mediator-vs-pubsub" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=observer~mediator&amp;embed=1" title="Observer vs. Mediator vs. Pub/Sub: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5851,6 +5883,8 @@
 <p><strong>Say:</strong> "Observer broadcasts changes; Mediator coordinates peers with central rules; pub/sub is Observer across processes with a broker in between."</p>
 </blockquote>
 <h2 id="composite-vs-decorator">Composite vs. Decorator<a class="headerlink" href="#composite-vs-decorator" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=composite~decorator&amp;embed=1" title="Composite vs. Decorator: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5886,6 +5920,8 @@
 <p><strong>Say:</strong> "Both use recursive composition. A composite holds many children to represent a whole; a decorator wraps exactly one object to extend it."</p>
 </blockquote>
 <h2 id="bridge-vs-adapter-vs-strategy">Bridge vs. Adapter vs. Strategy<a class="headerlink" href="#bridge-vs-adapter-vs-strategy" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=bridge~adapter|bridge~strategy&amp;embed=1" title="Bridge vs. Adapter vs. Strategy: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5926,6 +5962,8 @@
 <p><strong>Say:</strong> "Bridge separates two dimensions that both grow; Adapter retrofits an existing interface; Strategy swaps one algorithm."</p>
 </blockquote>
 <h2 id="command-vs-strategy">Command vs. Strategy<a class="headerlink" href="#command-vs-strategy" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=command~strategy&amp;embed=1" title="Command vs. Strategy: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -5956,6 +5994,8 @@
 <p><strong>Say:</strong> "A command is a request turned into data so it can be queued, undone or replayed; a strategy is an interchangeable way of computing something."</p>
 </blockquote>
 <h2 id="chain-of-responsibility-vs-decorator">Chain of Responsibility vs. Decorator<a class="headerlink" href="#chain-of-responsibility-vs-decorator" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=chain-of-responsibility~decorator&amp;embed=1" title="Chain of Responsibility vs. Decorator: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -6032,6 +6072,8 @@
 <p><strong>Say:</strong> "In Spring apps I rely on singleton-scoped beans with constructor injection; I reserve the GoF Singleton for rare per-process invariants and use enums or the holder idiom when I do."</p>
 </blockquote>
 <h2 id="flyweight-vs-object-pool-vs-singleton">Flyweight vs. Object Pool vs. Singleton<a class="headerlink" href="#flyweight-vs-object-pool-vs-singleton" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=flyweight~object-pool|object-pool~singleton&amp;embed=1" title="Flyweight vs. Object Pool vs. Singleton: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -6069,6 +6111,8 @@
 </tbody>
 </table>
 <h2 id="interpreter-vs-specification">Interpreter vs. Specification<a class="headerlink" href="#interpreter-vs-specification" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=interpreter~specification&amp;embed=1" title="Interpreter vs. Specification: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -6134,6 +6178,8 @@
 <p><strong>Say:</strong> "For closed hierarchies I own, sealed types with pattern matching give me Visitor's safety with far less code; classic visitors remain useful across library boundaries."</p>
 </blockquote>
 <h2 id="concurrency-comparisons">Concurrency comparisons<a class="headerlink" href="#concurrency-comparisons" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=thread-pool~virtual-threads|future-promise~virtual-threads|read-write-lock~immutable-object|double-checked-locking~singleton&amp;embed=1" title="Concurrency comparisons: animations played side by side" loading="lazy"></iframe>
+
 <table>
 <thead>
 <tr>
@@ -6168,6 +6214,50 @@
 </tr>
 </tbody>
 </table>
+<h2 id="microservices-architecture-look-alikes">Microservices &amp; architecture look-alikes<a class="headerlink" href="#microservices-architecture-look-alikes" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=saga~transactional-outbox|cqrs~materialized-view|event-sourcing~cqrs|api-gateway~backend-for-frontend|circuit-breaker~retry-timeout-bulkhead|layered~hexagonal|hexagonal~clean&amp;embed=1" title="Microservices and architecture look-alikes: animations played side by side" loading="lazy"></iframe>
+
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Key difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Saga vs. Transactional Outbox</strong></td>
+<td>A saga coordinates steps across services and compensates on failure; an outbox makes one service's save-and-publish atomic. Sagas usually use an outbox per step</td>
+</tr>
+<tr>
+<td><strong>CQRS vs. Materialized View</strong></td>
+<td>CQRS splits the whole model into write and read sides; a materialized view is one precomputed read table, often the read side of CQRS</td>
+</tr>
+<tr>
+<td><strong>Event Sourcing vs. CQRS</strong></td>
+<td>Event sourcing stores changes as events; CQRS separates reads from writes. They pair well but each works alone</td>
+</tr>
+<tr>
+<td><strong>API Gateway vs. BFF</strong></td>
+<td>One gateway for every client (routing, auth, limits); a BFF is one backend per client type that shapes the data</td>
+</tr>
+<tr>
+<td><strong>Circuit Breaker vs. Retry</strong></td>
+<td>Retry tries again on a brief failure; the breaker stops calling when failures persist. Put retries inside the breaker</td>
+</tr>
+<tr>
+<td><strong>Layered vs. Hexagonal</strong></td>
+<td>Layered: business logic depends on the data layer. Hexagonal: the domain owns ports and the database adapter depends on it</td>
+</tr>
+<tr>
+<td><strong>Hexagonal vs. Clean</strong></td>
+<td>Same rule (dependencies point at the domain); Clean names four rings, hexagonal just inside and outside</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Say:</strong> "A saga is about coordinating many services; an outbox is about not losing one service's event. In practice each saga step publishes through an outbox."</p>
+</blockquote>
 <hr />
 <p><a class="md-button" href="../pattern-selection-guide/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> Pattern Selection Guide</a>
 <a class="md-button md-button--primary" href="../anti-patterns/">Next: Anti-Patterns <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span></a></p>
