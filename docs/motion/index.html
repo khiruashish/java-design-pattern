@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Embed mode (?p=<pattern>&embed=1): used inside each handbook pattern page. */
+(function(){var q=new URLSearchParams(location.search);if(q.get("embed")){document.documentElement.classList.add("embed");}
+try{var pb=parent!==window&&parent.document.body;function sync(){var sc=pb&&pb.getAttribute("data-md-color-scheme");if(sc)document.documentElement.setAttribute("data-theme",sc==="slate"?"dark":"light");}
+if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFilter:["data-md-color-scheme"]});}}catch(e){}})();
+</script>
+<title>Design Patterns in Motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a workbench. Pattern picker on top, a live object diagram as the stage, notes beside it. */
+:root{
+  --paper:#eef1f4; --card:#ffffff; --soft:#e4e9ef; --ink:#151d27; --muted:#566273; --line:#c3ccd7; --edge:#8d99a8;
+  --c-creational:#2259c4; --t-creational:#e3ebfb;
+  --c-structural:#0b7a5d; --t-structural:#dcf2ea;
+  --c-behavioral:#7442c8; --t-behavioral:#eee5fb;
+  --c-concurrency:#b94a10; --t-concurrency:#fbe8dc;
+  --on-cat:#ffffff;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#11161d; --card:#1a212b; --soft:#232c38; --ink:#e6ebf1; --muted:#9aa6b5; --line:#34404f; --edge:#6c7a8c;
+  --c-creational:#7ea6ff; --t-creational:#1e2b47;
+  --c-structural:#4fd1a8; --t-structural:#15332b;
+  --c-behavioral:#b896ff; --t-behavioral:#2b2145;
+  --c-concurrency:#ff9a5c; --t-concurrency:#3a2416;
+  --on-cat:#10151c; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#11161d; --card:#1a212b; --soft:#232c38; --ink:#e6ebf1; --muted:#9aa6b5; --line:#34404f; --edge:#6c7a8c;
+  --c-creational:#7ea6ff; --t-creational:#1e2b47;
+  --c-structural:#4fd1a8; --t-structural:#15332b;
+  --c-behavioral:#b896ff; --t-behavioral:#2b2145;
+  --c-concurrency:#ff9a5c; --t-concurrency:#3a2416;
+  --on-cat:#10151c; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+.back{font:500 13px var(--body);color:var(--muted);text-decoration:none}
+.back:hover{color:var(--cat)}
+html.embed body{background:transparent}
+html.embed .wrap{padding:0;max-width:none;gap:0}
+html.embed header,html.embed #cats,html.embed #chips,html.embed aside,html.embed .stage h2,html.embed .intent,html.embed .eyebrow{display:none}
+html.embed .main{grid-template-columns:1fr}
+html.embed .stage{padding:16px;border-radius:12px}
+body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--body);}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:grid;gap:22px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 32px}
+h1{font:800 clamp(30px,4.6vw,48px)/1.02 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 span{color:var(--cat)}
+.lede{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font:12px var(--mono);color:var(--muted)}
+.legend i{display:inline-block;width:26px;height:0;border-top:1.6px solid var(--edge);vertical-align:middle;margin-right:6px}
+.legend i.d{border-top-style:dashed}
+.legend b{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--cat);vertical-align:-2px;margin-right:6px}
+
+.cats{display:flex;flex-wrap:wrap;gap:8px}
+.cat{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:600 14px var(--body);cursor:pointer;display:flex;gap:8px;align-items:center}
+.cat small{font:500 12px var(--mono);color:var(--muted)}
+.cat[aria-pressed="true"]{border-color:var(--cc);background:var(--cc);color:var(--on-cat)}
+.cat[aria-pressed="true"] small{color:var(--on-cat);opacity:.8}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:7px;padding:5px 10px;font:500 13.5px var(--body);cursor:pointer}
+.chip:hover{border-color:var(--cat)}
+.chip[aria-current="true"]{background:var(--cat-tint);border-color:var(--cat);color:var(--ink);font-weight:600}
+button:focus-visible,a:focus-visible,li:focus-visible{outline:2.5px solid var(--cat);outline-offset:2px}
+
+.main{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}
+.eyebrow{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cat)}
+.stage h2{font:700 clamp(24px,3vw,32px)/1.1 var(--display);margin:2px 0 4px;letter-spacing:-.01em}
+.intent{margin:0;color:var(--muted);max-width:68ch}
+.svgbox{overflow-x:auto;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
+svg.dia{display:block;width:100%;min-width:620px;height:auto}
+.caption{min-height:3.2em;font:500 16.5px/1.5 var(--body);display:flex;gap:12px;align-items:baseline}
+.caption .n{font:600 13px var(--mono);color:var(--cat);flex:none}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 12px;font:600 14px var(--body);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.btn.primary{background:var(--cat);border-color:var(--cat);color:var(--on-cat);min-width:96px;justify-content:center}
+.btn:disabled{opacity:.4;cursor:default}
+.speed{margin-left:auto;display:flex;gap:4px;align-items:center;font:12px var(--mono);color:var(--muted)}
+.speed button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:6px;padding:4px 8px;font:500 12px var(--mono);cursor:pointer}
+.speed button[aria-pressed="true"]{background:var(--soft);border-color:var(--edge)}
+.progress{height:4px;background:var(--soft);border-radius:4px;overflow:hidden}
+.progress div{height:100%;background:var(--cat);width:0;transition:width .35s}
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:28px 1fr;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:14px}
+ol.steps li::before{content:counter(s);font:600 12px var(--mono);color:var(--muted);padding-top:2px}
+ol.steps li:hover{background:var(--soft)}
+ol.steps li.cur{background:var(--cat-tint);color:var(--ink)}
+ol.steps li.cur::before{color:var(--cat)}
+ol.steps li.done{color:var(--ink)}
+
+aside{display:grid;gap:14px;min-width:0}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.note h3{font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.note p{margin:0}
+.note.tip{background:var(--cat-tint);border-color:transparent}
+pre.code{margin:0;font:13px/1.55 var(--mono);overflow-x:auto;white-space:pre;color:var(--ink)}
+pre.code .k{color:var(--cat);font-weight:600}
+pre.code .c{color:var(--muted)}
+.repo{display:flex;flex-wrap:wrap;gap:6px}
+.repo a{font:500 12.5px var(--mono);color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.repo a:hover{border-color:var(--cat);color:var(--cat)}
+.kbd{font:12px var(--mono);color:var(--muted)}
+
+/* diagram */
+.edge{stroke:var(--edge);stroke-width:1.5;fill:none}
+.edge.i{stroke-dasharray:6 5}
+.mk{fill:var(--edge)}
+.mk.hollow{fill:var(--paper);stroke:var(--edge);stroke-width:1.3}
+.node rect{fill:var(--card);stroke:var(--line);stroke-width:1.5;transition:fill .3s,stroke .3s}
+.node.client rect{fill:var(--soft)}
+.node.iface rect{stroke-dasharray:5 4;stroke:var(--edge)}
+.node .l{font:600 14px var(--mono);fill:var(--ink)}
+.node .s{font:12px var(--body);fill:var(--muted)}
+.node.iface .s{font-style:italic}
+.dim .node{opacity:.5;transition:opacity .3s}
+.dim .node.on{opacity:1}
+.node.on rect{stroke:var(--cat);fill:var(--cat-tint);stroke-width:2.2}
+.node.new{animation:pop .45s ease-out}
+.node.changed rect{animation:flash .7s ease-out}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+@keyframes flash{0%{stroke-width:5}100%{stroke-width:2.2}}
+.node{transform-box:fill-box;transform-origin:center}
+.trail{stroke:var(--cat);stroke-width:2.2;stroke-dasharray:3 5;opacity:.65;fill:none}
+.tok circle{fill:var(--cat)}
+.tok rect{fill:var(--cat)}
+.tok text{font:600 12px var(--mono);fill:var(--on-cat)}
+@media (prefers-reduced-motion: reduce){.node.new,.node.changed rect{animation:none}.progress div{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <div>
+      <a class="back" href="../">← Java Design Patterns Handbook</a>
+      <h1>Design Patterns <span>in Motion</span></h1>
+      <p class="lede">Each pattern is drawn as the objects it uses. Press play and watch the calls move between them, one step at a time. Examples follow a grocery app, the same domain as the runnable code in the repository.</p>
+    </div>
+    <div class="legend" aria-label="Diagram legend">
+      <span><i></i>calls / holds</span>
+      <span><i class="d"></i>implements</span>
+      <span><b></b>message in flight</span>
+    </div>
+  </header>
+
+  <nav class="cats" id="cats" aria-label="Pattern families"></nav>
+  <div class="chips" id="chips" role="list"></div>
+
+  <div class="main">
+    <section class="stage" aria-live="polite">
+      <div>
+        <div class="eyebrow" id="eyebrow"></div>
+        <h2 id="pname"></h2>
+        <p class="intent" id="intent"></p>
+      </div>
+      <div class="svgbox"><svg class="dia" id="dia" viewBox="0 0 800 400" role="img" aria-label="Animated object diagram"></svg></div>
+      <div class="progress"><div id="bar"></div></div>
+      <div class="caption"><span class="n" id="capn"></span><span id="cap"></span></div>
+      <div class="controls">
+        <button class="btn" id="prev" aria-label="Previous step">◀ Back</button>
+        <button class="btn primary" id="play">▶ Play</button>
+        <button class="btn" id="next" aria-label="Next step">Next ▶</button>
+        <div class="speed" role="group" aria-label="Speed">speed
+          <button data-s="1.6">0.5×</button><button data-s="1" aria-pressed="true">1×</button><button data-s="0.55">2×</button>
+        </div>
+      </div>
+      <ol class="steps" id="steps"></ol>
+      <div class="kbd">Keys: ← → step · space play/pause</div>
+    </section>
+    <aside>
+      <div class="note"><h3>Use it when</h3><p id="when"></p></div>
+      <div class="note"><h3>Everyday picture</h3><p id="analogy"></p></div>
+      <div class="note tip" id="tipbox"><h3>Watch out</h3><p id="tip"></p></div>
+      <div class="note"><h3>Shape in Java</h3><pre class="code" id="code"></pre></div>
+      <div class="note"><h3>Runnable examples in the repo</h3><div class="repo" id="repo"></div></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const N=(id,label,x,y,o={})=>({id,label,x,y,...o});
+const CATS={
+  creational:{name:"Creational",blurb:"how objects get made"},
+  structural:{name:"Structural",blurb:"how objects fit together"},
+  behavioral:{name:"Behavioral",blurb:"how objects share work"},
+  concurrency:{name:"Concurrency",blurb:"how threads cooperate"}
+};
+const P=[
+/* ───────── CREATIONAL ───────── */
+{id:"singleton",name:"Singleton",cat:"creational",pkg:"singleton",ex:["grocery","healthcare","payments","tenant"],
+ intent:"Make sure a class has exactly one instance, and give everyone the same way to reach it.",
+ when:"One shared thing must exist once per app: configuration, a metrics registry, a connection to a hardware device.",
+ analogy:"A store has one master key cabinet. Every employee who needs a key goes to the same cabinet instead of cutting their own.",
+ tip:"A singleton is global state in disguise and is hard to swap in tests. In Spring, a normal bean is already a singleton; prefer that.",
+ code:`<span class="k">enum</span> AppConfig {
+  INSTANCE;                 <span class="c">// JVM guarantees one</span>
+  <span class="k">private final</span> Map&lt;String,String&gt; props = load();
+}
+AppConfig.INSTANCE.get("delivery.radius");`,
+ nodes:[N("c1","CartService",110,80,{kind:"client"}),N("c2","CheckoutService",110,200,{kind:"client"}),N("c3","PricingJob",110,320,{kind:"client"}),
+  N("s","AppConfig",420,200,{sub:"static getInstance()"}),N("o","config #1",660,200,{sub:"the only instance",hidden:1})],
+ edges:[["c1","s"],["c2","s"],["c3","s"],["s","o","h"]],
+ steps:[
+  {say:"CartService asks AppConfig for its instance. None exists yet.",send:[["c1","s","getInstance()"]]},
+  {say:"The class creates its one instance and stores it in a private static field.",show:["o"],send:[["s","o","new"]]},
+  {say:"CheckoutService asks too. It gets the same object back; nothing new is built.",send:[["c2","s","getInstance()"],["s","c2","config #1"]]},
+  {say:"Every caller shares one instance. The constructor is private, so nobody else can call new.",on:["c1","c2","c3","o"],send:[["c3","s","getInstance()"],["s","c3","config #1"]]}
+ ]},
+{id:"factory-method",name:"Factory Method",cat:"creational",pkg:"factorymethod",ex:["notification","payments","logistics","ride"],
+ intent:"Let subclasses decide which concrete class to create, while the base class writes the code that uses it.",
+ when:"The code that uses an object is the same every time, but which object to build depends on the variant (SMS vs email, card vs UPI).",
+ analogy:"A franchise manual says 'prepare the house drink'. Each branch decides whether that means masala chai or cold coffee.",
+ tip:"If there's no shared algorithm around the creation, a simple static factory or a Map of suppliers is lighter than subclassing.",
+ code:`<span class="k">abstract class</span> Notifier {
+  <span class="k">abstract</span> Channel createChannel();  <span class="c">// the factory method</span>
+  <span class="k">void</span> notify(Order o) { createChannel().send(msg(o)); }
+}
+<span class="k">class</span> SmsNotifier <span class="k">extends</span> Notifier {
+  Channel createChannel() { <span class="k">return new</span> SmsChannel(); }
+}`,
+ nodes:[N("cl","OrderService",100,200,{kind:"client"}),N("cr","Notifier",340,70,{sub:"abstract createChannel()",kind:"iface"}),
+  N("sn","SmsNotifier",260,250),N("en","EmailNotifier",430,330),N("ch","Channel",650,70,{sub:"«interface»",kind:"iface"}),
+  N("sc","SmsChannel",640,200,{hidden:1}),N("ec","EmailChannel",660,330,{hidden:1})],
+ edges:[["cl","cr"],["sn","cr","i"],["en","cr","i"],["sc","ch","i"]],
+ steps:[
+  {say:"OrderService only knows the Notifier type. It calls notify() on whichever subclass it was given.",send:[["cl","sn","notify()"]]},
+  {say:"notify() is written once, in Notifier. Inside, it calls createChannel(), which each subclass overrides.",on:["sn","cr"]},
+  {say:"SmsNotifier's override returns an SmsChannel. The base class never names the concrete product.",show:["sc"],send:[["sn","sc","new SmsChannel()"]]},
+  {say:"Hand OrderService an EmailNotifier and the same notify() code sends email. Adding WhatsApp means one new subclass.",show:["ec"],send:[["cl","en","notify()"],["en","ec","new EmailChannel()"]]}
+ ]},
+{id:"abstract-factory",name:"Abstract Factory",cat:"creational",pkg:"abstractfactory",ex:["region","streaming","cloud"],
+ intent:"Create whole families of related objects through one interface, so the pieces always match each other.",
+ when:"Several products must vary together: a region's currency, payment button and tax rules; a cloud's storage, queue and database.",
+ analogy:"Furniture sets. Pick 'teak collection' and the table, chairs and shelf all come in teak. You can't end up with one plastic chair.",
+ tip:"Adding a new product type (say, a receipt printer) means changing the factory interface and every factory. Adding a new family is cheap.",
+ code:`<span class="k">interface</span> RegionFactory { Price price(long minor); PayButton payButton(); }
+<span class="k">class</span> IndiaFactory <span class="k">implements</span> RegionFactory { <span class="c">/* ₹ + UPI */</span> }
+<span class="k">class</span> JapanFactory <span class="k">implements</span> RegionFactory { <span class="c">/* ¥ + konbini */</span> }
+
+<span class="k">var</span> ui = <span class="k">new</span> CheckoutScreen(<span class="k">new</span> IndiaFactory());`,
+ nodes:[N("cl","CheckoutScreen",100,200,{kind:"client"}),N("f","RegionFactory",340,70,{sub:"«interface»",kind:"iface"}),
+  N("in","IndiaFactory",260,230),N("jp","JapanFactory",420,330),
+  N("ip","RupeePrice",640,70,{sub:"₹ 499.00",hidden:1}),N("ib","UpiPayButton",640,160,{hidden:1}),
+  N("jpr","YenPrice",650,250,{sub:"¥ 980",hidden:1}),N("jb","KonbiniButton",650,340,{hidden:1})],
+ edges:[["cl","f"],["in","f","i"],["jp","f","i"]],
+ steps:[
+  {say:"CheckoutScreen holds one RegionFactory. It never builds prices or pay buttons itself.",on:["cl","f"]},
+  {say:"Configured for India, the factory makes a matching family: a rupee price and a UPI button.",show:["ip","ib"],send:[["cl","in","createPrice()"],["in","ip","new"],["in","ib","new"]]},
+  {say:"Switch to JapanFactory and every product changes together: yen and konbini payment. ₹ next to konbini can't happen.",hide:["ip","ib"],show:["jpr","jb"],send:[["cl","jp","createPrice()"],["jp","jpr","new"],["jp","jb","new"]]}
+ ]},
+{id:"builder",name:"Builder",cat:"creational",pkg:"builder",ex:["grocery","api","telecom","travel"],
+ intent:"Build a complex object step by step with readable calls, then get a finished, valid object at the end.",
+ when:"A constructor would need many parameters, several are optional, and you want the result immutable and validated.",
+ analogy:"Ordering a sandwich at a counter. You add bread, filling, sauce one at a time; it's wrapped only when you say 'that's it'.",
+ tip:"Validate inside build(), not in each setter, so rules that involve several fields (slot required for express) are checked together.",
+ code:`Order order = Order.builder()
+    .items(List.of(milk, eggs))
+    .slot("07:00–09:00")
+    .coupon("FRESH10")        <span class="c">// optional</span>
+    .build();                 <span class="c">// validates, returns immutable Order</span>`,
+ nodes:[N("cl","CheckoutPage",100,200,{kind:"client"}),N("b","Order.Builder",400,200,{sub:"empty"}),N("p","Order",670,200,{sub:"immutable, valid",hidden:1})],
+ edges:[["cl","b"],["b","p"]],
+ steps:[
+  {say:"The page starts a builder and adds the items.",send:[["cl","b","items(milk, eggs)"]],tag:{b:"items: 2"}},
+  {say:"Then the delivery slot. Each call returns the builder, so calls chain.",send:[["cl","b","slot(7–9 am)"]],tag:{b:"items: 2 · slot"}},
+  {say:"An optional coupon. Optional parts are just calls you can skip.",send:[["cl","b","coupon(FRESH10)"]],tag:{b:"items · slot · coupon"}},
+  {say:"build() checks everything at once and returns a finished Order. Forget the slot and build() throws, so a half-filled order never exists.",show:["p"],send:[["b","p","build()"]]}
+ ]},
+{id:"prototype",name:"Prototype",cat:"creational",pkg:"prototype",ex:["cart","ecommerce","healthcare","saas"],
+ intent:"Create new objects by copying an existing one instead of building from scratch.",
+ when:"Setting an object up is expensive or fiddly, and you usually want 'one like that, with a small change'.",
+ analogy:"Duplicating last week's shopping list and crossing out one item, instead of writing the whole list again.",
+ tip:"Shallow copies share inner lists with the original. Copy mutable fields deeply, or edits to the copy leak into the original.",
+ code:`<span class="k">record</span> Cart(List&lt;Line&gt; lines) {
+  Cart copy() { <span class="k">return new</span> Cart(<span class="k">new</span> ArrayList&lt;&gt;(lines)); } <span class="c">// deep enough</span>
+}
+Cart again = lastWeek.copy();
+again.lines().add(bananas);   <span class="c">// lastWeek unchanged</span>`,
+ nodes:[N("cl","Reorder button",110,200,{kind:"client"}),N("pr","Cart #812",420,100,{sub:"12 items, saved"}),N("cp","Cart #812 copy",420,300,{sub:"12 items",hidden:1})],
+ edges:[["cl","pr"]],
+ steps:[
+  {say:"Building a cart from scratch means 12 product lookups. Last week's cart already has everything.",on:["pr"]},
+  {say:"The button asks the existing cart to copy itself.",send:[["cl","pr","clone()"]]},
+  {say:"The copy is a new object with its own item list, so changing it can't touch the original.",show:["cp"],send:[["pr","cp","deep copy"]]},
+  {say:"The customer adds bananas to the copy. The original still has 12 items.",on:["cp","pr"],tag:{cp:"13 items (+ bananas)"}}
+ ]},
+{id:"object-pool",name:"Object Pool",cat:"creational",pkg:"objectpool",ex:["banking","streaming","travel","generic"],
+ intent:"Keep a set of expensive, reusable objects ready, lend them out, and take them back.",
+ when:"Creating the object is slow or limited (database connections, sockets, licences) and many short tasks need one briefly.",
+ analogy:"Shopping trolleys at the store entrance. You take one, use it, return it. The store doesn't build a trolley per customer.",
+ tip:"Always release in a finally block, and reset the object's state before reuse. A leaked object shrinks the pool for good.",
+ code:`Connection c = pool.acquire(Duration.ofSeconds(2)); <span class="c">// may wait</span>
+<span class="k">try</span> {
+  c.query("...");
+} <span class="k">finally</span> {
+  pool.release(c);   <span class="c">// reset and hand to the next waiter</span>
+}`,
+ nodes:[N("a","Request A",100,60,{kind:"client"}),N("b","Request B",100,155,{kind:"client"}),N("c","Request C",100,250,{kind:"client"}),N("d","Request D",100,345,{kind:"client"}),
+  N("pool","ConnectionPool",390,200,{sub:"3 free"}),N("k1","Conn 1",660,85,{sub:"free"}),N("k2","Conn 2",660,200,{sub:"free"}),N("k3","Conn 3",660,315,{sub:"free"})],
+ edges:[["pool","k1","h"],["pool","k2","h"],["pool","k3","h"]],
+ steps:[
+  {say:"Opening a database connection is slow, so the pool opens three up front and keeps them.",on:["pool","k1","k2","k3"]},
+  {say:"Request A borrows one. Nothing is created; Conn 1 is just marked in use.",send:[["a","pool","acquire()"],["pool","k1","lend"]],tag:{k1:"in use · A",pool:"2 free"}},
+  {say:"B and C borrow the other two.",send:[{par:[["b","pool","acquire()"],["c","pool","acquire()"]]}],tag:{k2:"in use · B",k3:"in use · C",pool:"0 free"}},
+  {say:"D finds the pool empty. It waits (with a timeout) instead of opening a fourth connection.",send:[["d","pool","acquire()"]],tag:{d:"waiting…"}},
+  {say:"A calls release(). Conn 1 is reset and handed straight to D.",send:[["a","pool","release()"],["pool","d","Conn 1"]],tag:{k1:"in use · D",a:"done",d:"running"}}
+ ]},
+/* ───────── STRUCTURAL ───────── */
+{id:"adapter",name:"Adapter",cat:"structural",pkg:"adapter",ex:["payments","logistics","healthcare","legacy"],
+ intent:"Make a class with the wrong interface usable by translating calls into the interface your code expects.",
+ when:"You must use a library, legacy system or vendor SDK whose methods don't match the interface the rest of your code uses.",
+ analogy:"A travel plug adapter. Your charger stays the same; the adapter fits it to the foreign socket.",
+ tip:"Adapter changes the interface of one thing. Facade simplifies many things. Decorator keeps the interface and adds behaviour.",
+ code:`<span class="k">class</span> LegacyBankAdapter <span class="k">implements</span> PaymentGateway {
+  <span class="k">private final</span> LegacyBank bank;
+  <span class="k">public</span> Result pay(<span class="k">long</span> paise) {
+    String r = bank.transfer(Money.rupees(paise));  <span class="c">// "499.00"</span>
+    <span class="k">return</span> Result.from(r);
+  }
+}`,
+ nodes:[N("cl","CheckoutService",110,200,{kind:"client"}),N("it","PaymentGateway",360,70,{sub:"pay(long paise)",kind:"iface"}),
+  N("ad","LegacyBankAdapter",360,290),N("lg","LegacyBank SDK",650,290,{sub:"transfer(String rupees)"})],
+ edges:[["cl","it"],["ad","it","i"],["ad","lg","h"]],
+ steps:[
+  {say:"Checkout speaks one language: pay(49900), an amount in paise, through the PaymentGateway interface.",on:["cl","it"]},
+  {say:"The old bank SDK offers transfer(\"499.00\") instead. Checkout can't call it directly.",on:["lg"]},
+  {say:"The adapter implements PaymentGateway, so Checkout calls it like any other gateway.",send:[["cl","ad","pay(49900)"]]},
+  {say:"Inside, it converts paise to a rupee string and calls the legacy method.",send:[["ad","lg","transfer(\"499.00\")"]]},
+  {say:"The bank's reply is translated back into a PaymentResult. Neither Checkout nor the SDK changed.",send:[["lg","ad","\"OK-77\""],["ad","cl","Result.OK"]]}
+ ]},
+{id:"bridge",name:"Bridge",cat:"structural",pkg:"bridge",ex:["reporting","streaming","social","shapes"],
+ intent:"Split one class hierarchy into two independent ones (what it is, and how it's done) joined by a reference.",
+ when:"A class varies along two dimensions, like report type × output format, and subclassing every combination would explode.",
+ analogy:"A TV remote and the TV. Any remote design works with any TV brand, because they meet at a shared set of signals.",
+ tip:"Bridge is planned up front to keep two hierarchies apart. Adapter is usually bolted on later to make existing pieces fit.",
+ code:`<span class="k">abstract class</span> Report {
+  <span class="k">protected final</span> Renderer out;        <span class="c">// the bridge</span>
+  Report(Renderer out) { <span class="k">this</span>.out = out; }
+  <span class="k">abstract void</span> render();
+}
+<span class="k">new</span> SalesReport(<span class="k">new</span> CsvRenderer()).render();`,
+ nodes:[N("rep","Report",210,70,{sub:"what to show",kind:"iface"}),N("sr","SalesReport",120,250),N("ir","InventoryReport",300,330),
+  N("rr","Renderer",590,70,{sub:"how to draw it",kind:"iface"}),N("hr","HtmlRenderer",500,250),N("cr","CsvRenderer",680,330)],
+ edges:[["sr","rep","i"],["ir","rep","i"],["rep","rr","h"],["hr","rr","i"],["cr","rr","i"]],
+ steps:[
+  {say:"With inheritance alone, 2 reports × 2 formats is 4 classes, and each new format multiplies them.",on:["sr","ir","hr","cr"]},
+  {say:"Bridge splits the two dimensions. A Report holds a Renderer instead of being one.",on:["rep","rr"]},
+  {say:"SalesReport with HtmlRenderer: the report picks the rows, the renderer writes the markup.",send:[["sr","hr","row(“Milk”, 1200)"]]},
+  {say:"Same SalesReport with CsvRenderer plugged in at runtime. No new report class needed.",send:[["sr","cr","row(“Milk”, 1200)"]]},
+  {say:"A PDF renderer would be one class that works with every report: 2 + 3 classes instead of 2 × 3.",on:["hr","cr","rr"]}
+ ]},
+{id:"composite",name:"Composite",cat:"structural",pkg:"composite",ex:["ecommerce","filesystem","org","banking"],
+ intent:"Treat single objects and groups of objects the same way by giving them one shared interface, forming a tree.",
+ when:"Your data is a part–whole tree (bundles of products, folders of files, teams of people) and callers shouldn't care which they hold.",
+ analogy:"A gift hamper can contain items and smaller hampers. Asking 'what does this cost?' works the same for a single jar or the whole hamper.",
+ tip:"Deep trees and cycles need care. Keep child-management methods (add/remove) off the leaf, or leaves end up throwing 'unsupported'.",
+ code:`<span class="k">sealed interface</span> Item <span class="k">permits</span> Product, Bundle { <span class="k">long</span> price(); }
+<span class="k">record</span> Product(String name, <span class="k">long</span> price) <span class="k">implements</span> Item {}
+<span class="k">record</span> Bundle(List&lt;Item&gt; kids) <span class="k">implements</span> Item {
+  <span class="k">public long</span> price() { <span class="k">return</span> kids.stream().mapToLong(Item::price).sum(); }
+}`,
+ nodes:[N("cl","Cart",80,200,{kind:"client"}),N("root","Breakfast Box",270,200,{sub:"bundle"}),N("milk","Milk",490,65,{sub:"₹60"}),N("bread","Bread",490,165,{sub:"₹45"}),
+  N("fruit","Fruit Pack",490,290,{sub:"bundle"}),N("apple","Apples",690,230,{sub:"₹120"}),N("ban","Bananas",690,345,{sub:"₹50"})],
+ edges:[["cl","root"],["root","milk","h"],["root","bread","h"],["root","fruit","h"],["fruit","apple","h"],["fruit","ban","h"]],
+ steps:[
+  {say:"Cart calls price() on the box. It doesn't know or care whether that's one product or a bundle.",send:[["cl","root","price()"]]},
+  {say:"A bundle passes the same call to each of its children.",send:[{par:[["root","milk","price()"],["root","bread","price()"],["root","fruit","price()"]]}]},
+  {say:"The fruit pack is a bundle too, so it does the same thing one level down.",send:[{par:[["fruit","apple","price()"],["fruit","ban","price()"]]}]},
+  {say:"Leaves answer with their own price. The fruit pack adds them up: 120 + 50 = 170.",send:[{par:[["apple","fruit","120"],["ban","fruit","50"]]}],tag:{fruit:"bundle · ₹170"}},
+  {say:"60 + 45 + 170 = ₹275 comes back to the Cart, through one interface the whole way.",send:[{par:[["milk","root","60"],["bread","root","45"],["fruit","root","170"]]},["root","cl","₹275"]],tag:{root:"bundle · ₹275"}}
+ ]},
+{id:"decorator",name:"Decorator",cat:"structural",pkg:"decorator",ex:["payments","caching","pricing","healthcare"],
+ intent:"Add behaviour to an object by wrapping it in another object with the same interface. Wrappers can stack.",
+ when:"You want optional features (logging, retries, caching, encryption) that can be combined freely without a subclass per combination.",
+ analogy:"Gift wrapping. A box inside tissue inside paper inside a bag. Each layer adds something; it's still 'the gift' you hand over.",
+ tip:"Order matters: Retry outside Logging logs every attempt; Logging outside Retry logs once. Decorator adds behaviour; Proxy controls access.",
+ code:`PaymentProcessor p =
+    <span class="k">new</span> Logging(
+      <span class="k">new</span> Retrying(3,
+        <span class="k">new</span> FraudCheck(
+          <span class="k">new</span> CardGateway())));
+p.pay(order);  <span class="c">// caller sees one PaymentProcessor</span>`,
+ nodes:[N("cl","Checkout",70,200,{kind:"client"}),N("lg","Logging",240,200,{sub:"wraps →"}),N("rt","Retrying",400,200,{sub:"wraps →"}),
+  N("fr","FraudCheck",560,200,{sub:"wraps →"}),N("gw","CardGateway",715,200,{sub:"real work"}),N("pp","PaymentProcessor",400,340,{sub:"«interface»",kind:"iface"})],
+ edges:[["cl","lg"],["lg","rt","h"],["rt","fr","h"],["fr","gw","h"],["lg","pp","i"],["rt","pp","i"],["fr","pp","i"],["gw","pp","i"]],
+ steps:[
+  {say:"Checkout holds one PaymentProcessor. It doesn't know it's really a stack of wrappers.",send:[["cl","lg","pay(₹499)"]]},
+  {say:"Logging writes a log line, then passes the call to the object it wraps.",send:[["lg","rt","pay"]],tag:{lg:"logged ✓"}},
+  {say:"Retrying passes it on, ready to try again if the call below fails.",send:[["rt","fr","pay"]]},
+  {say:"FraudCheck approves, then the real gateway charges the card.",send:[["fr","gw","pay"]],tag:{fr:"approved ✓"}},
+  {say:"The gateway times out. Retrying catches the failure and sends the call again.",send:[["gw","fr","timeout"],["fr","rt","timeout"],["rt","fr","retry #2"],["fr","gw","pay"]],tag:{rt:"attempt 2 of 3"}},
+  {say:"Success travels back out through every layer. Each feature is its own class you can add, drop or reorder.",send:[["gw","fr","OK"],["fr","rt","OK"],["rt","lg","OK"],["lg","cl","OK"]]}
+ ]},
+{id:"facade",name:"Facade",cat:"structural",pkg:"facade",ex:["checkout","banking","ride","streaming"],
+ intent:"Give a simple front door to a complicated set of subsystems.",
+ when:"Callers keep repeating the same multi-step dance across several services, and only a few need the fine-grained control.",
+ analogy:"A hotel reception desk. You ask once for a late checkout and a taxi; they call housekeeping, billing and the taxi stand for you.",
+ tip:"Keep the facade thin. When it starts holding business rules of its own, it's turning into a god object.",
+ code:`<span class="k">class</span> CheckoutFacade {
+  OrderId placeOrder(Cart cart) {
+    inventory.reserve(cart);
+    payments.charge(cart.total());
+    shipping.bookRider(cart.address());
+    <span class="k">return</span> notifications.confirm(cart);
+  }
+}`,
+ nodes:[N("cl","Mobile app",100,200,{kind:"client"}),N("f","CheckoutFacade",350,200,{sub:"placeOrder(cart)"}),
+  N("inv","Inventory",640,55),N("pay","Payments",640,150),N("ship","Shipping",640,250),N("noti","Notifications",640,345)],
+ edges:[["cl","f"],["f","inv"],["f","pay"],["f","ship"],["f","noti"]],
+ steps:[
+  {say:"Placing an order touches four subsystems, each with its own API and the right order of calls.",on:["inv","pay","ship","noti"]},
+  {say:"The app makes one call to the facade.",send:[["cl","f","placeOrder(cart)"]]},
+  {say:"The facade runs the sequence: reserve stock, charge the card, book a rider, send the SMS.",send:[["f","inv","reserve"],["f","pay","charge"],["f","ship","book rider"],["f","noti","send SMS"]]},
+  {say:"The app gets one result back. The subsystems are still there for callers that need finer control.",send:[["f","cl","Order #5521"]]}
+ ]},
+{id:"flyweight",name:"Flyweight",cat:"structural",pkg:"flyweight",ex:["grocery","editor","ridemap","social"],
+ intent:"Share the identical, unchanging part of many objects instead of storing a copy in each one.",
+ when:"You have huge numbers of similar objects and most of their data is the same (product details, map icons, text styles).",
+ analogy:"A library holds one copy of a reference book. Readers keep their own bookmark (page number), not their own copy of the book.",
+ tip:"The shared part must be immutable. If one store could edit the shared ProductInfo, every store would see the change.",
+ code:`<span class="k">record</span> ProductInfo(String name, byte[] image, Nutrition n) {} <span class="c">// shared</span>
+<span class="k">record</span> Listing(ProductInfo info, <span class="k">int</span> stock) {}            <span class="c">// per store</span>
+
+ProductInfo get(String sku) {
+  <span class="k">return</span> cache.computeIfAbsent(sku, <span class="k">this</span>::load);
+}`,
+ nodes:[N("fac","Catalog",400,60,{sub:"cache of ProductInfo"}),N("pi","ProductInfo",400,190,{sub:"Amul Milk 1L · image · nutrition",hidden:1}),
+  N("l1","Store A listing",130,330,{sub:"stock 40"}),N("l2","Store B listing",400,330,{sub:"stock 12"}),N("l3","Store C listing",670,330,{sub:"stock 0"})],
+ edges:[["fac","pi","h"],["l1","pi"],["l2","pi"],["l3","pi"]],
+ steps:[
+  {say:"Every store lists Amul Milk 1L. Copying its name, image and nutrition facts into each listing repeats the same data thousands of times.",on:["l1","l2","l3"]},
+  {say:"Store A asks the Catalog for the product. It isn't cached yet, so the Catalog creates one shared ProductInfo.",show:["pi"],send:[["l1","fac","get(amul-1l)"],["fac","pi","new"]]},
+  {say:"Stores B and C ask for the same key and get that same object back. Nothing new is created.",send:[{par:[["l2","fac","get(amul-1l)"],["l3","fac","get(amul-1l)"]]}],on:["pi"]},
+  {say:"Shared data lives once in the flyweight. Data that differs per store, like stock, stays in each listing.",on:["pi","l1","l2","l3"]}
+ ]},
+{id:"proxy",name:"Proxy",cat:"structural",pkg:"proxy",ex:["banking","remote","streaming","dynamic"],
+ intent:"Put a stand-in object with the same interface in front of the real one, to control how and when it's reached.",
+ when:"You need access checks, lazy loading, caching, or hiding a network call, without changing callers or the real object.",
+ analogy:"A building's security desk. Visitors talk to the desk as if it were the office; the desk checks ID before letting anyone up.",
+ tip:"Spring's @Transactional and @PreAuthorize work through proxies. Calling a method on 'this' skips the proxy, so the annotation does nothing.",
+ code:`<span class="k">class</span> SecuredAccountService <span class="k">implements</span> AccountService {
+  <span class="k">private final</span> AccountService real;
+  <span class="k">public void</span> withdraw(Account a, Money m) {
+    <span class="k">if</span> (!user.has(TELLER)) <span class="k">throw new</span> AccessDenied();
+    real.withdraw(a, m);
+  }
+}`,
+ nodes:[N("cl","Teller",100,110,{kind:"client",sub:"role TELLER"}),N("cl2","Intern",100,300,{kind:"client",sub:"role VIEWER"}),
+  N("it","AccountService",420,60,{sub:"«interface»",kind:"iface"}),N("px","SecuredProxy",400,210,{sub:"checks role"}),N("real","CoreAccountService",670,210,{sub:"real object"})],
+ edges:[["cl","px"],["cl2","px"],["px","it","i"],["real","it","i"],["px","real","h"]],
+ steps:[
+  {say:"Both callers hold an AccountService. They're really talking to a proxy with the same interface.",on:["px","it"]},
+  {say:"The teller asks to withdraw. The proxy checks the role, allows it, and forwards the call.",send:[["cl","px","withdraw(₹5,000)"],["px","real","withdraw"]],tag:{px:"TELLER: allowed"}},
+  {say:"The intern tries the same thing. The proxy refuses before the real service is ever touched.",send:[["cl2","px","withdraw(₹5,000)"],["px","cl2","AccessDenied"]],tag:{px:"VIEWER: denied"}},
+  {say:"Other proxies use the same trick: create the real object only on first use, cache answers, or hide a remote call.",on:["px"],tag:{px:"checks role"}}
+ ]},
+/* ───────── BEHAVIORAL ───────── */
+{id:"chain-of-responsibility",name:"Chain of Responsibility",cat:"behavioral",pkg:"chain",ex:["support","checkout","loan","middleware"],
+ intent:"Pass a request along a line of handlers. Each one either handles it or hands it to the next.",
+ when:"Several objects might handle a request, the right one depends on the request, and the sender shouldn't have to choose.",
+ analogy:"A refund request at a shop: the cashier can do small ones, bigger ones go to the floor manager, the biggest to the store manager.",
+ tip:"Make sure something handles the request at the end, or it silently falls off the chain. Servlet filters and Spring Security use this pattern.",
+ code:`<span class="k">abstract class</span> Handler {
+  <span class="k">private</span> Handler next;
+  Handler then(Handler n) { next = n; <span class="k">return</span> n; }
+  <span class="k">void</span> handle(Ticket t) {
+    <span class="k">if</span> (canHandle(t)) resolve(t); <span class="k">else if</span> (next != <span class="k">null</span>) next.handle(t);
+  }
+}`,
+ nodes:[N("cl","Refund ₹2,400",80,200,{kind:"client"}),N("h1","FAQ bot",250,200,{sub:"answers FAQs"}),N("h2","Agent",420,200,{sub:"refunds ≤ ₹1,000"}),
+  N("h3","Supervisor",620,200,{sub:"refunds ≤ ₹5,000"}),N("h4","Manager",620,330,{sub:"any amount"})],
+ edges:[["cl","h1"],["h1","h2"],["h2","h3"],["h3","h4"]],
+ steps:[
+  {say:"The ticket goes to the first handler. The customer doesn't know who will deal with it.",send:[["cl","h1","ticket"]]},
+  {say:"The bot can't issue refunds, so it passes the ticket to the next handler.",send:[["h1","h2","ticket"]],tag:{h1:"passed on"}},
+  {say:"₹2,400 is over the agent's ₹1,000 limit. Passed on again.",send:[["h2","h3","ticket"]],tag:{h2:"passed on"}},
+  {say:"The supervisor can approve up to ₹5,000, so it handles the ticket and the chain stops. The manager never sees it.",on:["h3"],tag:{h3:"handled ✓"}}
+ ]},
+{id:"command",name:"Command",cat:"behavioral",pkg:"command",ex:["cart","editor","banking","offline"],
+ intent:"Turn a request into an object, so it can be stored, queued, logged, undone or replayed.",
+ when:"You need undo/redo, a job queue, an audit log of actions, or to save actions while offline and send them later.",
+ analogy:"A restaurant order slip. The waiter writes it down; the kitchen can queue it, cook it, or cancel it, and the slip is a record.",
+ tip:"Undo needs each command to remember what it changed (the previous value), not just what it was asked to do.",
+ code:`<span class="k">interface</span> Command { <span class="k">void</span> execute(); <span class="k">void</span> undo(); }
+<span class="k">record</span> AddItem(Cart cart, Sku sku) <span class="k">implements</span> Command {
+  <span class="k">public void</span> execute() { cart.add(sku); }
+  <span class="k">public void</span> undo()    { cart.remove(sku); }
+}
+history.push(cmd); cmd.execute();`,
+ nodes:[N("btn","Add button",100,100,{kind:"client",sub:"invoker"}),N("undo","Undo button",100,320,{kind:"client"}),
+  N("c1","AddItem(milk)",380,70,{sub:"command object",hidden:1}),N("hist","History",380,240,{sub:"stack: empty"}),N("cart","Cart",660,160,{sub:"0 items"})],
+ edges:[["btn","c1"],["c1","cart"],["undo","hist"],["hist","cart"]],
+ steps:[
+  {say:"Clicking the button wraps the request in an object: AddItem(milk). The button knows nothing about carts.",show:["c1"],send:[["btn","c1","new"]]},
+  {say:"The command's execute() calls the cart.",send:[["c1","cart","execute()"]],tag:{cart:"1 item: milk"}},
+  {say:"The finished command is pushed onto the history stack.",send:[["c1","hist","push"]],tag:{hist:"stack: [AddItem(milk)]"}},
+  {say:"Undo pops the last command and calls its undo(), which takes the milk back out.",hide:["c1"],send:[["undo","hist","undo()"],["hist","cart","undo()"]],tag:{hist:"stack: empty",cart:"0 items"}},
+  {say:"Because requests are objects, you can also queue them, log them, or replay them when an offline app reconnects.",on:["hist"]}
+ ]},
+{id:"interpreter",name:"Interpreter",cat:"behavioral",pkg:"interpreter",ex:["promo","billing","hours","roman"],
+ intent:"Represent a small language's grammar as classes, and evaluate sentences by walking a tree of those objects.",
+ when:"Users or admins write simple rules (promo conditions, pricing formulas, search filters) that must be evaluated at runtime.",
+ analogy:"A recipe card: 'if dough is sticky AND room is cold, add flour'. Each phrase is a small check; together they decide the action.",
+ tip:"Fine for small grammars. For anything bigger, use a parser generator or an existing expression language instead of hand-writing classes.",
+ code:`<span class="k">sealed interface</span> Expr { <span class="k">boolean</span> eval(Ctx c); }
+<span class="k">record</span> And(Expr l, Expr r) <span class="k">implements</span> Expr {
+  <span class="k">public boolean</span> eval(Ctx c) { <span class="k">return</span> l.eval(c) &amp;&amp; r.eval(c); }
+}
+<span class="k">record</span> TotalOver(<span class="k">long</span> min) <span class="k">implements</span> Expr { <span class="c">/* c.total() &gt; min */</span> }`,
+ nodes:[N("txt","Rule text",120,80,{kind:"client",sub:"total > 500 and cat = dairy"}),N("ctx","Context",120,300,{sub:"cart ₹620, dairy"}),
+  N("and","And",450,80,{hidden:1}),N("gt","Total > 500",340,250,{hidden:1}),N("eq","Category = dairy",590,250,{hidden:1})],
+ edges:[["and","gt","h"],["and","eq","h"]],
+ steps:[
+  {say:"A promo rule arrives as text. A parser turns it into a tree of objects, one class per grammar rule.",show:["and","gt","eq"],send:[["txt","and","parse"]]},
+  {say:"interpret(context) starts at the root. And asks both of its children.",send:[["ctx","and","interpret(ctx)"],{par:[["and","gt","eval"],["and","eq","eval"]]}]},
+  {say:"Each leaf checks the context: ₹620 is more than 500, and the category is dairy.",send:[{par:[["gt","and","true"],["eq","and","true"]]}],tag:{gt:"620 > 500 → true",eq:"dairy → true"}},
+  {say:"And combines them: true and true, so the promo applies. A new operator like Or is one new class.",on:["and"],tag:{and:"true → apply promo"}}
+ ]},
+{id:"iterator",name:"Iterator",cat:"behavioral",pkg:"iterator",ex:["statement","feed","playlist","ring"],
+ intent:"Walk through a collection one element at a time without knowing how it's stored or fetched.",
+ when:"Data comes from pages, a tree, a file or a stream, and callers should just loop over it.",
+ analogy:"A playlist's Next button. You don't care whether the next song is on your phone or streamed; you just press Next.",
+ tip:"Don't modify a collection while iterating it with a plain loop; use the iterator's remove() or collect changes first.",
+ code:`<span class="k">class</span> StatementIterator <span class="k">implements</span> Iterator&lt;Txn&gt; {
+  <span class="k">public boolean</span> hasNext() {
+    <span class="k">if</span> (!page.hasNext() &amp;&amp; cursor != <span class="k">null</span>) page = api.fetch(cursor);
+    <span class="k">return</span> page.hasNext();
+  }
+}
+<span class="k">for</span> (Txn t : statement) print(t);   <span class="c">// pages are invisible</span>`,
+ nodes:[N("cl","for (txn : statement)",130,200,{kind:"client"}),N("it","StatementIterator",410,200,{sub:"no page loaded"}),N("api","Bank API",670,200,{sub:"3 txns per page"})],
+ edges:[["cl","it"],["it","api"]],
+ steps:[
+  {say:"The loop asks hasNext(). The iterator has nothing loaded, so it fetches page 1.",send:[["cl","it","hasNext()"],["it","api","GET page 1"],["api","it","3 txns"]],tag:{it:"page 1 · 0 of 3 read"}},
+  {say:"next() hands out one transaction at a time.",send:[["it","cl","txn #1"],["it","cl","txn #2"],["it","cl","txn #3"]],tag:{it:"page 1 · 3 of 3 read"}},
+  {say:"Page used up, so the iterator quietly fetches the next one. The loop never knows pages exist.",send:[["cl","it","hasNext()"],["it","api","GET page 2"],["api","it","3 txns"]],tag:{it:"page 2 · 0 of 3 read"}},
+  {say:"When the API says there are no more pages, hasNext() returns false and the loop ends.",send:[["it","api","GET page 3"],["api","it","empty"],["it","cl","false"]],tag:{it:"finished"}}
+ ]},
+{id:"mediator",name:"Mediator",cat:"behavioral",pkg:"mediator",ex:["dispatch","chat","auction","form"],
+ intent:"Have objects talk through one central coordinator instead of referencing each other directly.",
+ when:"Many objects interact in tangled ways, and every change ripples through all of them.",
+ analogy:"Air traffic control. Planes don't radio each other; they all talk to the tower, which decides who lands next.",
+ tip:"The mediator can grow into a giant class that knows everything. Split it by use case when it gets large.",
+ code:`<span class="k">class</span> DispatchCenter {
+  <span class="k">void</span> orderPlaced(Order o) {
+    Rider r = riders.stream().filter(Rider::isFree)
+                    .min(byDistanceTo(o.store())).orElseThrow();
+    r.assign(o);
+    o.store().prepareBy(r.eta());
+  }
+}`,
+ nodes:[N("m","DispatchCenter",400,200,{sub:"mediator"}),N("ord","New order",150,75,{kind:"client"}),N("st","Store",150,325,{sub:"waiting"}),
+  N("ra","Rider A",650,75,{sub:"on a trip"}),N("rb","Rider B",650,325,{sub:"free · 1.2 km"})],
+ edges:[["ord","m"],["st","m"],["ra","m"],["rb","m"]],
+ steps:[
+  {say:"Without a coordinator, every order would need to know every rider and every store.",on:["ord","st","ra","rb"]},
+  {say:"The order only tells the dispatch center that it exists.",send:[["ord","m","orderPlaced"]]},
+  {say:"The center asks the riders. A is on a trip; B is free and closest.",send:[{par:[["m","ra","available?"],["m","rb","available?"]]},{par:[["ra","m","no"],["rb","m","yes"]]}]},
+  {say:"It assigns B and tells the store when to have the bag ready. Riders and stores never reference each other.",send:[{par:[["m","rb","assign #5521"],["m","st","ready by 7:40"]]}],tag:{rb:"assigned #5521",st:"packing"}}
+ ]},
+{id:"memento",name:"Memento",cat:"behavioral",pkg:"memento",ex:["cart","booking","canvas","history"],
+ intent:"Save an object's state in a sealed snapshot so it can be restored later, without exposing its internals.",
+ when:"You need undo, rollback or 'restore draft', and the object's fields should stay private.",
+ analogy:"A save point in a game. The game stores everything about your progress; you just pick 'load save 3'.",
+ tip:"Snapshots of big objects get expensive. Keep a bounded history, or store diffs instead of full copies.",
+ code:`<span class="k">class</span> Cart {
+  <span class="k">record</span> Snapshot(List&lt;Line&gt; lines) {}   <span class="c">// opaque to outsiders</span>
+  Snapshot save()            { <span class="k">return new</span> Snapshot(List.copyOf(lines)); }
+  <span class="k">void</span> restore(Snapshot s)  { lines = <span class="k">new</span> ArrayList&lt;&gt;(s.lines()); }
+}`,
+ nodes:[N("cart","Cart",150,200,{sub:"milk, eggs"}),N("snap","Snapshot #1",410,80,{sub:"sealed: milk, eggs",hidden:1}),N("hist","UndoHistory",660,200,{sub:"0 saved"})],
+ edges:[["hist","cart"]],
+ steps:[
+  {say:"Before applying a coupon, the app asks the cart to save its state.",send:[["hist","cart","save()"]]},
+  {say:"The cart writes its own state into a sealed snapshot. Only Cart can read what's inside.",show:["snap"],send:[["cart","snap","snapshot"]]},
+  {say:"The history keeps the snapshot but can't open it, so the cart's fields stay private.",send:[["snap","hist","store"]],tag:{hist:"1 saved"}},
+  {say:"The coupon logic goes wrong and drops the eggs.",on:["cart"],tag:{cart:"milk (eggs lost!)"}},
+  {say:"Restore: the history hands the snapshot back and the cart resets itself from it.",send:[["hist","cart","restore(#1)"]],tag:{cart:"milk, eggs"}}
+ ]},
+{id:"null-object",name:"Null Object",cat:"behavioral",pkg:"nullobject",ex:["coupon","customer","audit","viewer"],
+ intent:"Use an object that does nothing, safely, in place of null.",
+ when:"'Nothing here' is a normal case (no coupon, guest user, no-op logger) and null checks are spreading everywhere.",
+ analogy:"A 'No discount' line on a receipt showing ₹0, instead of the cashier stopping to ask whether there's a discount at all.",
+ tip:"Don't hide real errors. A missing customer during payment is a bug, not a case for a silent 'NoCustomer'.",
+ code:`<span class="k">interface</span> Coupon { <span class="k">long</span> discount(<span class="k">long</span> total); }
+<span class="k">enum</span> NoCoupon <span class="k">implements</span> Coupon {
+  INSTANCE;
+  <span class="k">public long</span> discount(<span class="k">long</span> total) { <span class="k">return</span> 0; }
+}
+<span class="k">long</span> pay = total - coupons.find(code).discount(total);  <span class="c">// no null check</span>`,
+ nodes:[N("co","Checkout",130,200,{kind:"client",sub:"total − coupon.discount()"}),N("ifc","Coupon",430,70,{sub:"«interface»",kind:"iface"}),
+  N("real","FRESH10",330,310,{sub:"10% off"}),N("none","NoCoupon",590,310,{sub:"always ₹0"})],
+ edges:[["co","ifc"],["real","ifc","i"],["none","ifc","i"]],
+ steps:[
+  {say:"Most shoppers have no coupon. Returning null forces 'if coupon != null' everywhere, and one missed check crashes.",on:["co"]},
+  {say:"With a coupon, checkout calls discount() and gets ₹50 off.",send:[["co","real","discount()"],["real","co","₹50"]]},
+  {say:"Without one, the lookup returns NoCoupon instead of null. Same call, safe answer.",send:[["co","none","discount()"],["none","co","₹0"]]},
+  {say:"Checkout contains no null checks at all. NoCoupon correctly does nothing.",on:["co","none"]}
+ ]},
+{id:"observer",name:"Observer",cat:"behavioral",pkg:"observer",ex:["orders","tracking","trading","bus"],
+ intent:"Let objects subscribe to another object and get told automatically when it changes.",
+ when:"One change should trigger several reactions, and the thing that changes shouldn't know who's listening.",
+ analogy:"Following a delivery. You, the shop and the delivery app all get the 'out for delivery' update without asking.",
+ tip:"Unsubscribe listeners you no longer need, or they leak. A slow or throwing listener shouldn't stop the others.",
+ code:`<span class="k">class</span> Order {
+  <span class="k">private final</span> List&lt;OrderListener&gt; listeners = <span class="k">new</span> CopyOnWriteArrayList&lt;&gt;();
+  <span class="k">void</span> subscribe(OrderListener l) { listeners.add(l); }
+  <span class="k">void</span> setStatus(Status s) {
+    <span class="k">this</span>.status = s;
+    listeners.forEach(l -&gt; l.statusChanged(<span class="k">this</span>, s));
+  }
+}`,
+ nodes:[N("sub","Order #5521",190,200,{sub:"status: PACKED"}),N("o1","SMS sender",620,55),N("o2","Customer app",620,150),N("o3","Analytics",620,250),N("o4","Loyalty points",620,345,{hidden:1})],
+ edges:[["sub","o1"],["sub","o2"],["sub","o3"],["sub","o4"]],
+ steps:[
+  {say:"Three listeners subscribe to the order. The order keeps them in a list, typed only as OrderListener.",on:["sub","o1","o2","o3"]},
+  {say:"The status changes to Out for delivery. The order notifies every subscriber.",send:[{par:[["sub","o1","OUT_FOR_DELIVERY"],["sub","o2","OUT_FOR_DELIVERY"],["sub","o3","OUT_FOR_DELIVERY"]]}],tag:{sub:"status: OUT_FOR_DELIVERY"}},
+  {say:"Loyalty points subscribes while the app is running. The Order class didn't change.",show:["o4"],send:[["o4","sub","subscribe()"]]},
+  {say:"On the next change all four hear it.",send:[{par:[["sub","o1","DELIVERED"],["sub","o2","DELIVERED"],["sub","o3","DELIVERED"],["sub","o4","DELIVERED"]]}],tag:{sub:"status: DELIVERED",o4:"+25 points"}}
+ ]},
+{id:"specification",name:"Specification",cat:"behavioral",pkg:"specification",ex:["catalog","core","courier","loan","sql"],
+ intent:"Wrap each business rule in a small object with one yes/no method, and combine rules with and/or/not.",
+ when:"Filtering or eligibility rules keep changing and getting combined in new ways.",
+ analogy:"Filter checkboxes on a shopping site: 'in stock', 'organic', 'under ₹200'. Tick any mix and the list updates.",
+ tip:"Spring Data JPA's Specification interface turns these into SQL WHERE clauses, so rules run in the database, not in memory.",
+ code:`<span class="k">interface</span> Spec&lt;T&gt; {
+  <span class="k">boolean</span> isSatisfiedBy(T t);
+  <span class="k">default</span> Spec&lt;T&gt; and(Spec&lt;T&gt; o) { <span class="k">return</span> t -&gt; isSatisfiedBy(t) &amp;&amp; o.isSatisfiedBy(t); }
+}
+<span class="k">var</span> rule = inStock.and(organic).and(priceBelow(200_00));`,
+ nodes:[N("s1","InStock",110,70),N("s2","IsOrganic",110,190),N("s3","Price < ₹200",110,310),
+  N("comb","inStock.and(organic).and(cheap)",390,190,{sub:"one Specification"}),
+  N("p1","Spinach ₹40",670,70,{sub:"organic · in stock"}),N("p2","Paneer ₹90",670,190,{sub:"in stock"}),N("p3","Quinoa ₹320",670,310,{sub:"organic · in stock"})],
+ edges:[["s1","comb"],["s2","comb"],["s3","comb"],["comb","p1"],["comb","p2"],["comb","p3"]],
+ steps:[
+  {say:"Each business rule is a tiny object with one method: isSatisfiedBy(product).",on:["s1","s2","s3"]},
+  {say:"Rules combine with and(), or() and not() into a new rule, without writing a new class.",send:[{par:[["s1","comb","and"],["s2","comb","and"],["s3","comb","and"]]}]},
+  {say:"Each product is tested against the combined rule.",send:[{par:[["comb","p1","test"],["comb","p2","test"],["comb","p3","test"]]}],tag:{p1:"✓ matches",p2:"✗ not organic",p3:"✗ over ₹200"}},
+  {say:"The same rule object can filter a list in memory or become a SQL WHERE clause.",on:["comb","p1"]}
+ ]},
+{id:"state",name:"State",cat:"behavioral",pkg:"state",ex:["order","trip","atm","approval"],
+ intent:"Let an object change its behaviour when its internal state changes, by delegating to a state object.",
+ when:"Methods are full of 'if status == ...' branches, and each status allows different actions.",
+ analogy:"A traffic light. Pressing the crossing button does something different on red, amber and green.",
+ tip:"State and Strategy look the same in code. In State, the states switch themselves; in Strategy, the caller picks one.",
+ code:`<span class="k">sealed interface</span> OrderState { OrderState next(); OrderState cancel(); }
+<span class="k">record</span> OutForDelivery() <span class="k">implements</span> OrderState {
+  <span class="k">public</span> OrderState next()   { <span class="k">return new</span> Delivered(); }
+  <span class="k">public</span> OrderState cancel() { <span class="k">throw new</span> IllegalStateException("on the way"); }
+}`,
+ nodes:[N("ctx","Order",130,200,{sub:"state: Placed"}),N("s1","Placed",440,55,{sub:"cancel → full refund"}),N("s2","Packed",440,150,{sub:"cancel → restock fee"}),
+  N("s3","OutForDelivery",440,250,{sub:"cancel → refused"}),N("s4","Delivered",440,345,{sub:"cancel → start a return"})],
+ edges:[["s1","s2"],["s2","s3"],["s3","s4"]],
+ steps:[
+  {say:"The order passes every action to its current state object. Right now that's Placed.",on:["ctx","s1"]},
+  {say:"pack() is handled by Placed, which moves the order to Packed.",send:[["ctx","s1","pack()"],["s1","s2","next state"]],tag:{ctx:"state: Packed"}},
+  {say:"The rider picks it up: Packed moves the order to OutForDelivery.",send:[["ctx","s2","dispatch()"],["s2","s3","next state"]],tag:{ctx:"state: OutForDelivery"}},
+  {say:"Now the customer calls cancel(). OutForDelivery refuses. There's no if/else on a status field anywhere.",send:[["ctx","s3","cancel()"],["s3","ctx","refused"]]},
+  {say:"Each state is its own class with its own rules, so adding a Returned state doesn't touch the others.",on:["s1","s2","s3","s4"]}
+ ]},
+{id:"strategy",name:"Strategy",cat:"behavioral",pkg:"strategy",ex:["delivery","routing","matching","sorting"],
+ intent:"Put each variant of an algorithm in its own class behind one interface, and pick one at runtime.",
+ when:"There are several ways to do one job (fee rules, routing, sorting) and the choice depends on the customer or the situation.",
+ analogy:"Getting to the airport: taxi, metro or bus. Same goal, different method, chosen based on time and budget.",
+ tip:"With Java lambdas, a strategy is often just a Function or a small interface. You don't need a class per variant.",
+ code:`<span class="k">interface</span> FeeStrategy { <span class="k">long</span> fee(Cart c); }
+FeeStrategy standard = c -&gt; 40_00;
+FeeStrategy express  = c -&gt; 99_00;
+FeeStrategy member   = c -&gt; 0;
+
+<span class="k">long</span> fee = strategyFor(customer, slot).fee(cart);`,
+ nodes:[N("ctx","FeeCalculator",130,200,{sub:"holds a FeeStrategy"}),N("ifc","FeeStrategy",450,70,{sub:"«interface»",kind:"iface"}),
+  N("st","Standard",320,310,{sub:"₹40"}),N("ex","Express 30 min",500,310,{sub:"₹99"}),N("fr","Pass member",680,310,{sub:"₹0"})],
+ edges:[["ctx","ifc","h"],["st","ifc","i"],["ex","ifc","i"],["fr","ifc","i"]],
+ steps:[
+  {say:"The calculator holds one FeeStrategy. It contains no fee rules itself.",on:["ctx","ifc"]},
+  {say:"By default it uses Standard delivery: ₹40.",send:[["ctx","st","fee(cart)"],["st","ctx","₹40"]]},
+  {say:"The customer picks 30-minute delivery, so the app swaps in Express.",send:[["ctx","ex","fee(cart)"],["ex","ctx","₹99"]]},
+  {say:"A Pass member gets the Member strategy. A new pricing rule is a new class; the calculator never changes.",send:[["ctx","fr","fee(cart)"],["fr","ctx","₹0"]]}
+ ]},
+{id:"template-method",name:"Template Method",cat:"behavioral",pkg:"template",ex:["importer","payment","jobs","admission"],
+ intent:"Fix the steps of an algorithm in a base class, and let subclasses fill in only the steps that differ.",
+ when:"Several processes follow the same outline (open, parse, validate, save) and differ in one or two steps.",
+ analogy:"A tax form. The sections and their order are fixed; you fill in your own numbers.",
+ tip:"Inheritance ties subclasses tightly to the base class. If only one step varies, passing that step in as a Strategy is often simpler.",
+ code:`<span class="k">abstract class</span> Importer {
+  <span class="k">public final void</span> run(Path f) {        <span class="c">// the template</span>
+    <span class="k">var</span> in = open(f);
+    <span class="k">var</span> rows = in.lines().map(<span class="k">this</span>::parseRow).toList();
+    validate(rows); save(rows);
+  }
+  <span class="k">protected abstract</span> Row parseRow(String line);  <span class="c">// the varying step</span>
+}`,
+ nodes:[N("base","Importer.run()",400,60,{sub:"final: fixed order"}),N("r","open()",120,200,{sub:"shared"}),N("p","parseRow()",300,200,{sub:"subclass fills in",kind:"iface"}),
+  N("v","validate()",480,200,{sub:"shared"}),N("sv","save()",660,200,{sub:"shared"}),N("csv","CsvImporter",220,330),N("xl","ExcelImporter",400,330)],
+ edges:[["r","p"],["p","v"],["v","sv"],["csv","p","i"],["xl","p","i"]],
+ steps:[
+  {say:"The base class owns the algorithm. run() is final and always calls the steps in the same order.",on:["base"]},
+  {say:"Step 1, open the file: shared code, written once.",send:[["base","r","step 1"]]},
+  {say:"Step 2, parseRow(), is the only step that differs. CsvImporter splits on commas; ExcelImporter reads cells.",send:[["base","p","step 2"],["csv","p","override"]]},
+  {say:"Steps 3 and 4 are shared again. Subclasses can't reorder or skip them.",send:[["base","v","step 3"],["base","sv","step 4"]]}
+ ]},
+{id:"visitor",name:"Visitor",cat:"behavioral",pkg:"visitor",ex:["cart","claims","docs","shapes"],
+ intent:"Add new operations to a fixed set of classes without editing them, by putting each operation in a visitor.",
+ when:"The set of types rarely changes, but you keep adding operations over them (tax, shipping weight, export).",
+ analogy:"A tax inspector visiting different shops. The inspector brings the rules; each shop just lets them in.",
+ tip:"Adding a new item type means updating every visitor. With Java 21, a sealed interface plus switch pattern matching often replaces Visitor.",
+ code:`<span class="k">sealed interface</span> Item <span class="k">permits</span> Veg, Gadget, Medicine {}
+
+<span class="k">long</span> tax(Item i) { <span class="k">return switch</span> (i) {     <span class="c">// Java 21 alternative</span>
+  <span class="k">case</span> Veg v      -&gt; 0;
+  <span class="k">case</span> Gadget g   -&gt; g.price() * 18 / 100;
+  <span class="k">case</span> Medicine m -&gt; m.price() * 5 / 100;
+}; }`,
+ nodes:[N("g","Vegetables",130,75,{sub:"accept(v)"}),N("e","Headphones",130,200,{sub:"accept(v)"}),N("m","Medicine",130,325,{sub:"accept(v)"}),
+  N("tax","TaxVisitor",580,120,{sub:"visit(each type)"}),N("wt","WeightVisitor",580,290,{sub:"visit(each type)",hidden:1})],
+ edges:[],
+ steps:[
+  {say:"The cart holds different item types. You want to add tax calculation without editing each item class.",on:["g","e","m"]},
+  {say:"Each item has one accept(visitor) method. It calls back visitor.visit(this), so the right overload runs for its type.",send:[["tax","g","accept"],["g","tax","visit(Veg)"]]},
+  {say:"TaxVisitor keeps all tax rules in one place: 0% on vegetables, 18% on electronics, 5% on medicine.",send:[["tax","e","accept"],["e","tax","visit(Gadget)"],["tax","m","accept"],["m","tax","visit(Medicine)"]],tag:{tax:"total tax ₹412"}},
+  {say:"A new operation is a new visitor. Shipping weight is added without touching any item class.",show:["wt"],send:[{par:[["wt","g","accept"],["wt","e","accept"],["wt","m","accept"]]}],tag:{wt:"total 2.4 kg"}}
+ ]},
+/* ───────── CONCURRENCY ───────── */
+{id:"producer-consumer",name:"Producer–Consumer",cat:"concurrency",pkg:"producerconsumer",ex:["picking","gps","webhooks","buffer"],
+ intent:"Decouple threads that create work from threads that do it, using a bounded queue between them.",
+ when:"Work arrives in bursts or at a different speed than it can be processed: order intake vs pickers, GPS pings vs storage.",
+ analogy:"A sushi conveyor belt. The chef puts plates on, diners take them off, and when the belt is full the chef pauses.",
+ tip:"Always bound the queue. An unbounded queue hides overload until the app runs out of memory.",
+ code:`BlockingQueue&lt;PickTask&gt; q = <span class="k">new</span> ArrayBlockingQueue&lt;&gt;(3);
+
+<span class="c">// producer</span>
+q.put(task);              <span class="c">// blocks when full</span>
+<span class="c">// consumer</span>
+PickTask t = q.take();    <span class="c">// blocks when empty</span>`,
+ nodes:[N("p1","Order intake 1",110,110),N("p2","Order intake 2",110,290),N("q","BlockingQueue",400,200,{sub:"0 of 3 slots used"}),
+  N("c1","Picker 1",690,110,{sub:"idle"}),N("c2","Picker 2",690,290,{sub:"idle"})],
+ edges:[["p1","q"],["p2","q"],["q","c1"],["q","c2"]],
+ steps:[
+  {say:"Producers and consumers never call each other. They only share a bounded queue.",on:["q"]},
+  {say:"Orders arrive faster than pickers can work. Producers put() tasks into the queue.",send:[["p1","q","task A"],["p2","q","task B"],["p1","q","task C"]],tag:{q:"3 of 3: full"}},
+  {say:"The queue is full, so the next put() blocks. That back-pressure stops producers from flooding memory.",send:[["p2","q","task D"]],tag:{p2:"blocked on put()"}},
+  {say:"Pickers take() tasks at their own pace. A freed slot lets the blocked producer continue.",send:[{par:[["q","c1","task A"],["q","c2","task B"]]}],tag:{c1:"picking A",c2:"picking B",q:"2 of 3: C, D",p2:"put D ✓"}},
+  {say:"When the queue is empty, take() blocks instead, so idle pickers don't burn CPU checking for work.",on:["q","c1","c2"]}
+ ]},
+{id:"thread-pool",name:"Thread Pool",cat:"concurrency",pkg:"threadpool",ex:["images","reports","bulkhead","custom"],
+ intent:"Reuse a fixed set of worker threads to run many tasks from a queue.",
+ when:"You have many short CPU-bound tasks and want to cap how many run at once.",
+ analogy:"A bank with three counters. Customers take a token and wait; whichever counter frees up calls the next token.",
+ tip:"Size pools to the work: about the number of cores for CPU-bound tasks. For blocking I/O, virtual threads are usually a better fit now.",
+ code:`<span class="k">try</span> (<span class="k">var</span> pool = Executors.newFixedThreadPool(3)) {
+  List&lt;Future&lt;Thumb&gt;&gt; out = images.stream()
+      .map(img -&gt; pool.submit(() -&gt; resize(img)))
+      .toList();
+}  <span class="c">// close() waits for tasks to finish</span>`,
+ nodes:[N("sub","Upload service",110,200,{kind:"client",sub:"submit(task)"}),N("q","Task queue",370,200,{sub:"0 waiting"}),
+  N("w1","Worker 1",660,80,{sub:"idle"}),N("w2","Worker 2",660,200,{sub:"idle"}),N("w3","Worker 3",660,320,{sub:"idle"})],
+ edges:[["sub","q"],["q","w1"],["q","w2"],["q","w3"]],
+ steps:[
+  {say:"The pool starts 3 worker threads once and reuses them. A new thread per task would be slow and unbounded.",on:["w1","w2","w3"]},
+  {say:"Six image-resize tasks are submitted. They go into the queue.",send:[["sub","q","6 tasks"]],tag:{q:"6 waiting"}},
+  {say:"Each free worker takes a task.",send:[{par:[["q","w1","img 1"],["q","w2","img 2"],["q","w3","img 3"]]}],tag:{w1:"resizing img 1",w2:"resizing img 2",w3:"resizing img 3",q:"3 waiting"}},
+  {say:"Worker 2 finishes first and takes the next task right away. No thread is created or destroyed.",send:[["q","w2","img 4"]],tag:{w2:"resizing img 4",q:"2 waiting"}},
+  {say:"submit() returned a Future for each task, so the caller collects results whenever it's ready.",on:["sub"]}
+ ]},
+{id:"future-promise",name:"Future / Promise",cat:"concurrency",pkg:"future",ex:["productpage","flights","payments","mirrors"],
+ intent:"Start work now and get a placeholder for its result, so you can run several things at once and combine them later.",
+ when:"A page or request needs data from several slow services that don't depend on each other.",
+ analogy:"Ordering at a food court. You get a buzzer for each stall, find a seat, and collect food as each buzzer goes off.",
+ tip:"Add timeouts (orTimeout) and fallbacks (exceptionally). One slow service shouldn't hang the whole page.",
+ code:`<span class="k">var</span> price   = supplyAsync(() -&gt; pricing.get(id));
+<span class="k">var</span> stock   = supplyAsync(() -&gt; inventory.get(id));
+<span class="k">var</span> reviews = supplyAsync(() -&gt; reviewSvc.get(id))
+                .exceptionally(e -&gt; Reviews.none());
+allOf(price, stock, reviews).join();
+<span class="k">return new</span> Page(price.join(), stock.join(), reviews.join());`,
+ nodes:[N("pg","Product page",110,200,{kind:"client"}),N("pr","Pricing service",420,70,{sub:"takes 120 ms"}),N("st","Stock service",420,200,{sub:"takes 80 ms"}),
+  N("rv","Reviews service",420,330,{sub:"takes 300 ms"}),N("comb","allOf → page",680,200,{sub:"waiting…",hidden:1})],
+ edges:[["pg","pr"],["pg","st"],["pg","rv"],["pr","comb"],["st","comb"],["rv","comb"]],
+ steps:[
+  {say:"Called one after another, the page would wait 120 + 80 + 300 = 500 ms.",on:["pr","st","rv"]},
+  {say:"supplyAsync() starts all three at once. Each call returns a Future right away: a placeholder for a value that isn't ready yet.",send:[{par:[["pg","pr","supplyAsync"],["pg","st","supplyAsync"],["pg","rv","supplyAsync"]]}]},
+  {say:"Results arrive in whatever order they finish: stock at 80 ms, then price at 120 ms.",show:["comb"],send:[["st","comb","stock"],["pr","comb","price"]],tag:{comb:"2 of 3 ready"}},
+  {say:"allOf() completes when the slowest one does: 300 ms instead of 500. If reviews fail, a fallback shows 'no reviews'.",send:[["rv","comb","reviews"]],tag:{comb:"ready at 300 ms"}}
+ ]},
+{id:"read-write-lock",name:"Read-Write Lock",cat:"concurrency",pkg:"rwlock",ex:["location","flags","beds","custom"],
+ intent:"Let many readers share data at the same time, but give a writer exclusive access.",
+ when:"Data is read far more often than it is written: rider locations, feature flags, a hospital bed board.",
+ analogy:"A museum exhibit. Any number of visitors can look at once, but it closes to everyone while staff rearrange it.",
+ tip:"If writes are frequent, readers and writers just take turns and you gain little. Copy-on-write or immutable snapshots may suit better.",
+ code:`ReadWriteLock rw = <span class="k">new</span> ReentrantReadWriteLock();
+
+Location read(RiderId id) {
+  rw.readLock().lock();
+  <span class="k">try</span> { <span class="k">return</span> map.get(id); } <span class="k">finally</span> { rw.readLock().unlock(); }
+}`,
+ nodes:[N("r1","Customer app 1",110,70,{kind:"client",sub:"reader"}),N("r2","Customer app 2",110,200,{kind:"client",sub:"reader"}),N("r3","Ops dashboard",110,330,{kind:"client",sub:"reader"}),
+  N("lock","Rider locations",410,200,{sub:"lock: free"}),N("w","GPS updater",690,200,{sub:"writer · idle"})],
+ edges:[["r1","lock"],["r2","lock"],["r3","lock"],["w","lock"]],
+ steps:[
+  {say:"Many threads read rider locations; one thread updates them. A plain lock would make readers queue behind each other.",on:["lock"]},
+  {say:"Three readers take the read lock at the same time. Reads don't conflict, so none of them waits.",send:[{par:[["r1","lock","readLock()"],["r2","lock","readLock()"],["r3","lock","readLock()"]]}],tag:{lock:"lock: 3 readers"}},
+  {say:"The GPS updater asks for the write lock. It waits until the current readers finish.",send:[["w","lock","writeLock()"]],tag:{w:"writer · waiting"}},
+  {say:"The readers finish. The writer gets exclusive access; new readers wait for this short update.",on:["lock","w"],tag:{lock:"lock: writer only",w:"writer · updating"}},
+  {say:"The write is done and readers flow back in together.",send:[{par:[["r1","lock","readLock()"],["r2","lock","readLock()"],["r3","lock","readLock()"]]}],tag:{lock:"lock: 3 readers",w:"writer · idle"}}
+ ]},
+{id:"immutable-object",name:"Immutable Object",cat:"concurrency",pkg:"immutable",ex:["money","order","config","booking"],
+ intent:"Make objects that can't change after they're built, so threads can share them without locks.",
+ when:"Values are passed between threads: money amounts, configuration, finalised orders, event payloads.",
+ analogy:"A printed receipt. Nobody edits it; if the amount changes, a new receipt is printed.",
+ tip:"final fields aren't enough if a field holds a mutable List. Copy it in with List.copyOf(), and never hand out the original.",
+ code:`<span class="k">public record</span> Money(<span class="k">long</span> paise, Currency cur) {
+  Money plus(Money o) {
+    <span class="k">return new</span> Money(paise + o.paise, cur);   <span class="c">// new object</span>
+  }
+}`,
+ nodes:[N("t1","Thread A",110,100),N("t2","Thread B",110,300),N("m1","Money ₹100",400,200,{sub:"final fields, no setters"}),
+  N("m2","Money ₹150",680,100,{sub:"new object",hidden:1}),N("m3","Money ₹80",680,300,{sub:"new object",hidden:1})],
+ edges:[["t1","m1"],["t2","m1"]],
+ steps:[
+  {say:"Both threads hold the same Money object. Its fields are final and it has no setters.",on:["m1","t1","t2"]},
+  {say:"Thread A adds ₹50. Instead of changing the object, plus() returns a new one.",show:["m2"],send:[["t1","m1","plus(₹50)"],["m1","m2","new"]]},
+  {say:"Thread B subtracts ₹20 at the same moment and gets its own new object.",show:["m3"],send:[["t2","m1","minus(₹20)"],["m1","m3","new"]]},
+  {say:"The original is still ₹100. Nothing can change under a reader, so no locks are needed.",on:["m1"]}
+ ]},
+{id:"double-checked-locking",name:"Double-Checked Locking",cat:"concurrency",pkg:"dcl",ex:["lazy","fraud","manifest","tenants"],
+ intent:"Create an expensive shared object lazily, taking a lock only the first time.",
+ when:"Something is costly to build, may never be needed, and is read constantly once it exists.",
+ analogy:"Two staff reach a locked supply room at once. One goes in to restock; the other waits, then sees the shelves are already full.",
+ tip:"The field must be volatile, or a thread can see a half-built object. A holder class or enum singleton is simpler and just as lazy.",
+ code:`<span class="k">private volatile</span> FraudModel model;
+FraudModel model() {
+  <span class="k">var</span> m = model;
+  <span class="k">if</span> (m == <span class="k">null</span>) {                      <span class="c">// 1st check, no lock</span>
+    <span class="k">synchronized</span> (<span class="k">this</span>) {
+      m = model;
+      <span class="k">if</span> (m == <span class="k">null</span>) model = m = load();  <span class="c">// 2nd check</span>
+    }
+  }
+  <span class="k">return</span> m;
+}`,
+ nodes:[N("t1","Thread A",100,100),N("t2","Thread B",100,300),N("chk","if (model == null)",320,200,{sub:"1st check, no lock"}),
+  N("lk","synchronized",530,200,{sub:"2nd check inside lock"}),N("mdl","FraudModel",700,330,{sub:"volatile field",hidden:1})],
+ edges:[["t1","chk"],["t2","chk"],["chk","lk"],["lk","mdl"]],
+ steps:[
+  {say:"Loading the fraud model takes seconds, so it's built on first use. Two threads need it at the same moment.",on:["t1","t2"]},
+  {say:"Both pass the first check without locking: the model is still null.",send:[{par:[["t1","chk","null?"],["t2","chk","null?"]]}]},
+  {say:"Only one thread can enter the lock. A checks again, finds null, and builds the model.",show:["mdl"],send:[["chk","lk","A enters"],["lk","mdl","load()"]],tag:{t2:"waiting for lock"}},
+  {say:"B enters next and checks again. The model exists now, so no second copy is built.",send:[["chk","lk","B enters"]],tag:{t2:"uses A's model",lk:"2nd check: not null"}},
+  {say:"Every later call returns at the first check, with no locking at all.",send:[{par:[["t1","chk","get"],["t2","chk","get"]]}],on:["mdl","chk"]}
+ ]},
+{id:"virtual-threads",name:"Virtual Threads",cat:"concurrency",pkg:"virtualthreads",ex:["blocking","fanout","sessions","semaphore"],
+ intent:"Run one cheap thread per task. When it blocks on I/O, the JVM parks it and frees the real OS thread for others.",
+ when:"A server spends most of its time waiting on databases and HTTP calls, and you want simple blocking code that still scales.",
+ analogy:"A waiter who puts in your order and serves other tables while the kitchen cooks, instead of standing by the stove.",
+ tip:"Don't pool virtual threads; create one per task. To limit access to a scarce resource, use a Semaphore rather than a small pool.",
+ code:`<span class="k">try</span> (<span class="k">var</span> ex = Executors.newVirtualThreadPerTaskExecutor()) {
+  sessions.forEach(s -&gt; ex.submit(() -&gt; {
+    <span class="k">var</span> pos = http.get(s.riderUrl());   <span class="c">// blocks cheaply</span>
+    s.push(pos);
+  }));
+}`,
+ nodes:[N("v1","Virtual thread 1",110,60,{sub:"ready"}),N("v2","Virtual thread 2",110,160,{sub:"ready"}),N("v3","Virtual thread 3",110,260,{sub:"ready"}),
+  N("vn","…10,000 more",110,350,{kind:"client"}),N("sch","JVM scheduler",400,200,{sub:"mounts and parks"}),
+  N("c1","Carrier thread 1",680,120,{sub:"OS thread · free"}),N("c2","Carrier thread 2",680,290,{sub:"OS thread · free"})],
+ edges:[["sch","c1"],["sch","c2"]],
+ steps:[
+  {say:"Each request gets its own virtual thread. They're small objects on the heap, so 10,000 of them is normal.",on:["v1","v2","v3","vn"]},
+  {say:"To run, a virtual thread mounts on a carrier, a real OS thread. There are only about as many carriers as CPU cores.",send:[["v1","sch","mount"],["sch","c1","v1"],["v2","sch","mount"],["sch","c2","v2"]],tag:{c1:"running v1",c2:"running v2",v1:"running",v2:"running"}},
+  {say:"v1 calls a slow HTTP API. Instead of blocking the OS thread, it unmounts and parks, freeing the carrier.",send:[["c1","sch","unmount v1"]],tag:{v1:"parked: waiting on HTTP",c1:"OS thread · free"}},
+  {say:"v3 mounts on the freed carrier right away. The code is plain blocking code, but it scales like async code.",send:[["v3","sch","mount"],["sch","c1","v3"]],tag:{c1:"running v3",v3:"running"}},
+  {say:"When the HTTP response arrives, v1 is scheduled again on whichever carrier is free next.",send:[["sch","v1","resume"]],tag:{v1:"ready to resume"}}
+ ]}
+];
+
+/* ───────── engine ───────── */
+const $=s=>document.querySelector(s);
+const svg=$("#dia"), NS="http://www.w3.org/2000/svg";
+const REPO="https://github.com/khiruashish/java-design-pattern/tree/main/design-patterns";
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let cur=P[0], step=0, playing=false, run=0, speed=1, curCat="creational";
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function size(n,sub){const w=Math.min(300,Math.max(108,Math.max(n.label.length*8.6,(sub||"").length*6.6)+30));return{w,h:sub?54:40}}
+function stateAt(p,i,partial){ // partial: apply show/hide of step i but not its tags
+  const vis=new Set(p.nodes.filter(n=>!n.hidden).map(n=>n.id)), tags={};
+  for(let k=0;k<=i;k++){const s=p.steps[k];
+    (s.show||[]).forEach(x=>vis.add(x));(s.hide||[]).forEach(x=>vis.delete(x));
+    if(!(partial&&k===i))Object.assign(tags,s.tag||{});}
+  return{vis,tags};
+}
+function flatSends(s){const out=[];(s.send||[]).forEach(it=>{if(it.par)out.push(...it.par);else out.push(it)});return out}
+function geo(p,st){const g={};p.nodes.forEach(n=>{const sub=st.tags[n.id]??n.sub;g[n.id]={...size(n,sub),x:n.x,y:n.y,sub}});return g}
+function clip(a,b){ // segment from rect a edge to rect b edge
+  const dx=b.x-a.x,dy=b.y-a.y;
+  const t=r=>{const tx=dx?(r.w/2+5)/Math.abs(dx):Infinity,ty=dy?(r.h/2+5)/Math.abs(dy):Infinity;return Math.min(tx,ty)};
+  const ta=t(a),tb=t(b);return{x1:a.x+dx*ta,y1:a.y+dy*ta,x2:b.x-dx*tb,y2:b.y-dy*tb};
+}
+function draw(opts={}){
+  const p=cur, s=p.steps[step], st=stateAt(p,step,opts.partial), g=geo(p,st);
+  const prev=step>0?stateAt(p,step-1):null;
+  const on=new Set([...(s.on||[])]);flatSends(s).forEach(([a,b])=>{on.add(a);on.add(b)});
+  if(!opts.partial)Object.keys(s.tag||{}).forEach(k=>on.add(k));
+  let h=`<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path class="mk hollow" d="M1,1 L11,6 L1,11 z"/></marker>
+  <marker id="dia" viewBox="0 0 14 10" refX="1" refY="5" markerWidth="12" markerHeight="9" orient="auto"><path class="mk" d="M1,5 L7,1 L13,5 L7,9 z"/></marker></defs>`;
+  p.edges.forEach(([a,b,k="u"])=>{if(!st.vis.has(a)||!st.vis.has(b))return;const c=clip(g[a],g[b]);
+    const m=k==="i"?'marker-end="url(#tri)"':k==="h"?'marker-start="url(#dia)" marker-end="url(#arr)"':'marker-end="url(#arr)"';
+    h+=`<line class="edge ${k}" x1="${c.x1}" y1="${c.y1}" x2="${c.x2}" y2="${c.y2}" ${m}/>`});
+  p.nodes.forEach(n=>{if(!st.vis.has(n.id))return;const q=g[n.id];
+    const isNew=prev&&!prev.vis.has(n.id)&&!opts.still;
+    const changed=opts.changed&&opts.changed.has(n.id);
+    const cls=["node",n.kind||"",on.has(n.id)?"on":"",isNew?"new":"",changed?"changed":""].join(" ");
+    const rx=n.kind==="client"?q.h/2:8;
+    h+=`<g class="${cls}" data-id="${n.id}"><rect x="${q.x-q.w/2}" y="${q.y-q.h/2}" width="${q.w}" height="${q.h}" rx="${rx}"/>`;
+    if(q.sub){h+=`<text class="l" x="${q.x}" y="${q.y-5}" text-anchor="middle">${esc(n.label)}</text><text class="s" x="${q.x}" y="${q.y+14}" text-anchor="middle">${esc(q.sub)}</text>`}
+    else h+=`<text class="l" x="${q.x}" y="${q.y+5}" text-anchor="middle">${esc(n.label)}</text>`;
+    h+=`</g>`});
+  svg.innerHTML=h;
+  svg.classList.toggle("dim",on.size>0);
+  return g;
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function fly(g,[a,b,label],id){
+  return new Promise(res=>{
+    if(!g[a]||!g[b]){res();return}
+    const c=clip(g[a],g[b]);
+    const trail=document.createElementNS(NS,"line");
+    trail.setAttribute("class","trail");["x1","y1","x2","y2"].forEach(k=>trail.setAttribute(k,c[k]));
+    svg.appendChild(trail);
+    const tok=document.createElementNS(NS,"g");tok.setAttribute("class","tok");
+    const tw=Math.max(24,label.length*7.3+14);
+    tok.innerHTML=`<circle r="7"/><rect x="${-tw/2}" y="-31" width="${tw}" height="20" rx="10"/><text y="-17" text-anchor="middle">${esc(label)}</text>`;
+    svg.appendChild(tok);
+    const dur=reduce?1:780*speed, t0=performance.now();
+    const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    function f(now){
+      if(id!==run){trail.remove();tok.remove();res();return}
+      const t=Math.min(1,(now-t0)/dur),e=ease(t);
+      tok.setAttribute("transform",`translate(${c.x1+(c.x2-c.x1)*e},${c.y1+(c.y2-c.y1)*e})`);
+      if(t<1)requestAnimationFrame(f);else setTimeout(()=>{trail.remove();tok.remove();res()},reduce?350:120*speed);
+    }
+    requestAnimationFrame(f);
+  });
+}
+async function playStep(animate){
+  const id=++run, s=cur.steps[step];
+  updateText();
+  if(!animate||!(s.send&&s.send.length)){draw({changed:new Set(animate?Object.keys(s.tag||{}):[]),still:!animate});return id===run}
+  let g=draw({partial:true});
+  await wait(reduce?0:260*speed);
+  for(const it of s.send){
+    if(id!==run)return false;
+    if(it.par)await Promise.all(it.par.map(x=>fly(g,x,id)));else await fly(g,it,id);
+  }
+  if(id!==run)return false;
+  draw({changed:new Set(Object.keys(s.tag||{})),still:true});
+  return true;
+}
+async function autoplay(){
+  playing=true;setPlayBtn();
+  const id0=run+1;
+  while(playing){
+    const ok=await playStep(true);
+    if(!ok||!playing)return;
+    const id=run;
+    await wait(1900*speed);
+    if(!playing||id!==run)return;
+    if(step>=cur.steps.length-1){playing=false;setPlayBtn();return}
+    step++;
+  }
+}
+function stop(){playing=false;run++;setPlayBtn()}
+function setPlayBtn(){const b=$("#play");const end=step>=cur.steps.length-1;
+  b.textContent=playing?"❚❚ Pause":(end&&!playing&&stepPlayedLast?"↺ Replay":"▶ Play");
+  $("#prev").disabled=step===0;$("#next").disabled=step>=cur.steps.length-1;}
+let stepPlayedLast=false;
+function updateText(){
+  const s=cur.steps[step];
+  $("#cap").textContent=s.say;$("#capn").textContent=`${step+1}/${cur.steps.length}`;
+  $("#bar").style.width=((step+1)/cur.steps.length*100)+"%";
+  [...$("#steps").children].forEach((li,i)=>{li.className=i===step?"cur":i<step?"done":"";li.setAttribute("aria-current",i===step?"step":"false")});
+  stepPlayedLast=step>=cur.steps.length-1;setPlayBtn();
+}
+function go(i,animate=true){stop();step=Math.max(0,Math.min(cur.steps.length-1,i));playStep(animate)}
+
+function selectPattern(p,{auto=true,push=true}={}){
+  stop();cur=p;step=0;curCat=p.cat;
+  document.documentElement.style.setProperty("--cat",`var(--c-${p.cat})`);
+  document.documentElement.style.setProperty("--cat-tint",`var(--t-${p.cat})`);
+  renderNav();
+  $("#eyebrow").textContent=`${CATS[p.cat].name} · ${P.filter(x=>x.cat===p.cat).indexOf(p)+1} of ${P.filter(x=>x.cat===p.cat).length}`;
+  $("#pname").textContent=p.name;$("#intent").textContent=p.intent;
+  $("#when").textContent=p.when;$("#analogy").textContent=p.analogy;
+  $("#tip").textContent=p.tip||"";$("#tipbox").hidden=!p.tip;
+  $("#code").innerHTML=p.code;
+  $("#repo").innerHTML=p.ex.map(e=>`<a href="${REPO}/${p.cat}/src/main/java/com/handbook/${p.cat}/${p.pkg}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
+  $("#steps").innerHTML=p.steps.map((s,i)=>`<li tabindex="0" data-i="${i}">${esc(s.say)}</li>`).join("");
+  svg.setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
+  if(push&&!EMBED){try{history.replaceState(null,"","#"+p.id)}catch(e){location.hash=p.id}}
+  playStep(false);
+  if(auto&&!reduce)setTimeout(()=>{if(cur===p&&step===0&&!playing)autoplay()},500);
+}
+function renderNav(){
+  $("#cats").innerHTML=Object.entries(CATS).map(([k,c])=>`<button class="cat" style="--cc:var(--c-${k})" data-cat="${k}" aria-pressed="${k===curCat}">${c.name} <small>${P.filter(p=>p.cat===k).length} · ${c.blurb}</small></button>`).join("");
+  $("#chips").innerHTML=P.filter(p=>p.cat===curCat).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur}">${p.name}</button>`).join("");
+}
+$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;const first=P.find(p=>p.cat===b.dataset.cat);selectPattern(first)});
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selectPattern(P.find(p=>p.id===b.dataset.id))});
+$("#steps").addEventListener("click",e=>{const li=e.target.closest("li");if(li)go(+li.dataset.i)});
+$("#steps").addEventListener("keydown",e=>{if(e.key==="Enter"){const li=e.target.closest("li");if(li)go(+li.dataset.i)}});
+$("#prev").onclick=()=>go(step-1,false);
+$("#next").onclick=()=>go(step+1);
+$("#play").onclick=()=>{if(playing){stop();return}if(step>=cur.steps.length-1)step=0;autoplay()};
+document.querySelectorAll(".speed button").forEach(b=>b.onclick=()=>{speed=+b.dataset.s;document.querySelectorAll(".speed button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;if(typeof EMBED!=="undefined"&&EMBED&&!document.hasFocus())return;
+  if(e.key==="ArrowRight"){e.preventDefault();go(step+1)}else if(e.key==="ArrowLeft"){e.preventDefault();go(step-1,false)}
+  else if(e.key===" "&&!e.target.closest("button")){e.preventDefault();$("#play").click()}});
+const EMBED=document.documentElement.classList.contains("embed");
+function fromHash(){const id=new URLSearchParams(location.search).get("p")||location.hash.slice(1);return P.find(p=>p.id===id)}
+addEventListener("hashchange",()=>{const p=fromHash();if(p&&p!==cur)selectPattern(p,{push:false})});
+if(EMBED){
+  selectPattern(fromHash()||P[0],{push:false,auto:false});
+  const fit=()=>{try{if(window.frameElement)frameElement.style.height=Math.ceil(document.getElementById("app").getBoundingClientRect().height)+2+"px"}catch(e){}};
+  new ResizeObserver(fit).observe(document.body);fit();
+  let seen=false;
+  if(!reduce&&"IntersectionObserver" in window){
+    const target=(()=>{try{return window.frameElement}catch(e){return null}})();
+    if(target){new (parent.IntersectionObserver||IntersectionObserver)(es=>{if(!seen&&es.some(e=>e.isIntersecting)){seen=true;if(step===0&&!playing)autoplay()}},{threshold:.4}).observe(target)}
+  }
+}else selectPattern(fromHash()||P[0],{push:false});
+</script>
+</body>
+</html>

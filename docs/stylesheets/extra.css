@@ -88,3 +88,14 @@
   letter-spacing: 0.08em;
   color: var(--md-default-fg-color--light);
 }
+
+/* "See It in Motion" animated pattern walkthroughs (docs/motion/index.html) */
+.md-typeset iframe.motion-embed {
+  display: block;
+  width: 100%;
+  height: 860px; /* replaced by the embed's own height once it loads */
+  border: 0;
+  margin: 0.5em 0 0.8em;
+  background: transparent;
+  color-scheme: normal;
+}

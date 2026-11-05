@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=prototype&amp;embed=1" title="Animated walkthrough of the Prototype pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#prototype){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a hospital's "Complete Blood Count" report has a fixed list of tests and reference ranges, loaded from a slow master-data service. Every patient gets one. Rebuilding it from scratch for each patient is slow and repetitive. Copying a ready-made template and filling in the patient details is fast and simple, **as long as the copy doesn't share anything mutable with the template**.

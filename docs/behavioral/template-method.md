@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=template-method&amp;embed=1" title="Animated walkthrough of the Template Method pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#template-method){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** every data import does the same thing: read lines, parse, validate, reject bad rows, load good rows, report. CSV customers and fixed-width bank files differ only in *parsing* and *validation*. Copy-pasting the whole loop into each importer means the next fix (say, counting rejections) must be applied to every copy, and someone will forget one.

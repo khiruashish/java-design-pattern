@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=facade&amp;embed=1" title="Animated walkthrough of the Facade pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#facade){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** placing a grocery order means reserving stock, charging the card, booking a delivery slot and notifying the customer, and if the payment fails, releasing the stock. If the Android app, the iOS app and the web app each do these steps themselves, you get three slightly different checkouts, three places to fix bugs, and clients coupled to four services.

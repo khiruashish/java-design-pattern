@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=observer&amp;embed=1" title="Animated walkthrough of the Observer pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#observer){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** when an order is placed, the system must send an email, reserve inventory, record analytics and add loyalty points, and next month, notify the warehouse too. If `OrderService.place()` calls all of these directly, it depends on every one of them, a slow analytics call delays checkout, and every new reaction means editing the order code.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=adapter&amp;embed=1" title="Animated walkthrough of the Adapter pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#adapter){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** your checkout is written against a clean `PaymentGateway.charge(orderId, BigDecimal)` interface. The bank gives you an SDK where amounts are strings in paise, currencies are numeric codes and results are magic numbers like `51`. You can't change the SDK, and you don't want `"356"` and `51` scattered across your business code.

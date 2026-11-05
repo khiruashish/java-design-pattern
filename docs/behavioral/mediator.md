@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=mediator&amp;embed=1" title="Animated walkthrough of the Mediator pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#mediator){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** on a checkout form, choosing a country must reset the state list, change the postcode hint and disable the Pay button; choosing a state and a valid postcode must enable Pay. If each widget calls the others directly, every widget knows every other widget: N widgets means up to N×(N−1) dependencies, and adding one field means editing all of them.

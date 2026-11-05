@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=double-checked-locking&amp;embed=1" title="Animated walkthrough of the Double-Checked Locking pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#double-checked-locking){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a fraud model takes seconds to load and uses 400 MB. Loading it at start-up slows every deploy, even for instances that never score a payment. Loading it on first use is better, but 500 payments may arrive at the same instant, and you must load it **exactly once**. Making `model()` `synchronized` works, but then every call (millions per day) takes a lock forever, just to protect something that only matters for the first few milliseconds.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=null-object&amp;embed=1" title="Animated walkthrough of the Null Object pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#null-object){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a cart may or may not have a coupon. If the coupon is `null`, every piece of code that touches it needs `if (coupon != null)`: price calculation, receipts, analytics, emails. Forget one check and you get a `NullPointerException` in production. Tony Hoare, who invented null references, called them his "billion-dollar mistake".

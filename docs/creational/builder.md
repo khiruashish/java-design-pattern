@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=builder&amp;embed=1" title="Animated walkthrough of the Builder pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#builder){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** an order has a customer, an address, a list of items, a delivery slot, a coupon, instructions and a contactless flag. Most are optional. With constructors you end up with either 7-argument constructors where nobody remembers which `null` is which, or setters that leave the object half-built and mutable.

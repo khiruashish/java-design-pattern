@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=producer-consumer&amp;embed=1" title="Animated walkthrough of the Producer–Consumer pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#producer-consumer){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** orders arrive at a dark store in bursts (a hundred at 7 pm, ten at 3 pm). Pickers work at a steady pace. If the order system hands each order directly to a picker, it has to wait when all pickers are busy, or orders get lost. A queue between them lets orders arrive at any rate and lets pickers take the next one when they're free. If the queue fills up, the system knows it's overloaded and can slow intake.

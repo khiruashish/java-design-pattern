@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=singleton&amp;embed=1" title="Animated walkthrough of the Singleton pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#singleton){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** some objects only make sense once. If two parts of your app each build their own configuration object, they might read different values. If two threads each create their own ID generator, they'll hand out duplicate IDs. If every service writes to its own audit log, auditors can't see one ordered trail.

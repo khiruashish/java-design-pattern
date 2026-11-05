@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=abstract-factory&amp;embed=1" title="Animated walkthrough of the Abstract Factory pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#abstract-factory){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a grocery checkout needs a tax policy, a price formatter and delivery rules. In India that's GST, `INR 182.50` and 10-minute delivery. In Germany it's VAT (MwSt), `53,50 EUR` and a 2-hour slot. If each piece is chosen separately, sooner or later someone combines **German tax with Indian formatting**, and customers see wrong prices.

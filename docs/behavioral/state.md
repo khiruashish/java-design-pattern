@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=state&amp;embed=1" title="Animated walkthrough of the State pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#state){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** an order can be cancelled when placed or packed, but not once the rider has left. Delivery is only possible when it's out for delivery. Without the pattern, every method becomes `if (status == PLACED) ... else if (status == PACKED) ...`, repeated in `cancel()`, `dispatch()`, `deliver()`, refunds and notifications. Adding a status ("READY_FOR_PICKUP") means editing every one of those switches.

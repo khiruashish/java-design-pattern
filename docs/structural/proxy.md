@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=proxy&amp;embed=1" title="Animated walkthrough of the Proxy pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#proxy){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** sometimes you can't, or shouldn't, hand clients the real object directly. It may be expensive to create (an 8 MB image), sensitive (a bank account), or in another process (a remote service). You want clients to use it **as if it were the real thing**, while something in between decides **when, whether, and how** the real object is used.

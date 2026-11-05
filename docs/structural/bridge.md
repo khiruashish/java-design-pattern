@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=bridge&amp;embed=1" title="Animated walkthrough of the Bridge pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#bridge){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** an ERP has report types (sales, inventory, payroll...) and output formats (CSV, HTML, PDF...). With inheritance alone you write `SalesCsvReport`, `SalesHtmlReport`, `SalesPdfReport`, `InventoryCsvReport`... That's **reports × formats** classes. Add one format and you write one class *per report*. This is the "class explosion" problem.

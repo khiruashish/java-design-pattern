@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=read-write-lock&amp;embed=1" title="Animated walkthrough of the Read-Write Lock pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#read-write-lock){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a feature-flag cache is read thousands of times per second and refreshed every few seconds. With a plain `synchronized` lock, readers block **each other**, though reading never conflicts with reading. With **no** lock, a reader can see a half-applied refresh: `checkout-v2` on but `payments-v2` still off, a combination that was never released. A read-write lock allows concurrent reads and exclusive, atomic writes.

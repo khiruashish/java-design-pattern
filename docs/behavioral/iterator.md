@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=iterator&amp;embed=1" title="Animated walkthrough of the Iterator pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#iterator){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a bank statement lives behind an API that returns 50 transactions per page. Callers want "all transactions" in a simple loop. They shouldn't handle cursors, page boundaries, or when to fetch the next page, and they shouldn't download all 10,000 transactions if they only show the first 4.

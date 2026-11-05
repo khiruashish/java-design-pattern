@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=composite&amp;embed=1" title="Animated walkthrough of the Composite pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#composite){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a shop sells products, but also bundles, and bundles can contain other bundles. The cart wants to ask "what's your price?" without caring whether it's holding a mouse or a "Home Office Combo" with a nested "Accessories Pack". Without Composite, every caller needs `if (item instanceof Bundle) { loop... recurse... }`.
