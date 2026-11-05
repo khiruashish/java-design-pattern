@@ -1,0 +1,7 @@
+=== Grocery: Coupons without Null Checks ===
+INR  800 with FRESH20 (20% up to INR 100)            -> pay INR 700
+INR  300 with FRESH20 (20% up to INR 100)            -> pay INR 240
+INR  600 with SAVE50 (INR 50 off above INR 499)      -> pay INR 550
+INR  400 with SAVE50 (INR 50 off above INR 499)      -> pay INR 400
+INR  600 with no coupon                              -> pay INR 600
+INR  600 with no coupon                              -> pay INR 600

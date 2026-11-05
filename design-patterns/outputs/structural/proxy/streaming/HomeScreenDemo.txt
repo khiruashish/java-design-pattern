@@ -1,0 +1,12 @@
+=== Streaming: Home Screen with 40 Titles ===
+Home screen built with 40 posters (nothing downloaded yet)
+User sees the first 3 tiles:
+  [download] 8 MB poster for 'Title 1'
+  [poster: Title 1, 8K px]
+  [download] 8 MB poster for 'Title 2'
+  [poster: Title 2, 8K px]
+  [download] 8 MB poster for 'Title 3'
+  [poster: Title 3, 8K px]
+User scrolls back to tile 1:
+  [poster: Title 1, 8K px]  <- no second download
+Search index uses titles only: Title 40

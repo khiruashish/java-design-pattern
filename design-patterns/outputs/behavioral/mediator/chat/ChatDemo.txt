@@ -1,0 +1,8 @@
+=== SaaS: #incident-payments Channel ===
+  [priya's screen] system: priya joined #incident-payments
+  [priya's screen] system: arjun joined #incident-payments
+  [priya's screen] system: alertbot joined #incident-payments
+  [priya's screen] alertbot: p99 latency on /charge is 4.2s
+  [priya's screen] arjun: @priya can you check the gateway dashboard?
+  [push to priya] arjun mentioned you in #incident-payments
+  [room] blocked message from muted member alertbot

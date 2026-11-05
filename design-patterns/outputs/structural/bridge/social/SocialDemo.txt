@@ -1,0 +1,5 @@
+=== Social Media Scheduler: Post Types x Platforms ===
+Microblog: POST /statuses text(80 chars) media=0
+Microblog: POST /statuses text(26 chars) media=1
+ProNet: POST /ugcPosts visibility=PUBLIC text(97 chars) media=[]
+ProNet: POST /ugcPosts visibility=PUBLIC text(26 chars) media=[team.jpg]

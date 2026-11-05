@@ -1,0 +1,5 @@
+[audit] AccountService.balance(SB-1001) -> 250000
+[audit] AccountService.withdraw(SB-1001, 1000) -> withdrew INR 1000, new balance INR 249000
+[audit] Greeter.greet(Asha) -> Namaste, Asha
+[audit] Greeter.languages() -> [hi, en]
+Proxy class: $ProxyN (generated at runtime)

@@ -1,0 +1,4 @@
+=== Streaming: Transcoding Uploads with 3 Pooled Workers ===
+Uploads transcoded : 30
+Transcoders created: 3
+Never more than 3 busy at once: true

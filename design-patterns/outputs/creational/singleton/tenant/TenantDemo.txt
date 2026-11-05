@@ -1,0 +1,6 @@
+[TenantConfig] Loaded tenant IN
+[TenantConfig] Loaded tenant DE
+IN -> INR
+DE -> EUR
+Same IN instance? true
+IN and DE differ? true

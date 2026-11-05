@@ -1,0 +1,5 @@
+submitted -> IN_REVIEW
+rejected  -> DRAFT
+approved  -> APPROVED
+error     -> Cannot approve: document is APPROVED
+published -> PUBLISHED

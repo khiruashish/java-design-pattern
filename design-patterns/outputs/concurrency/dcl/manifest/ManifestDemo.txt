@@ -1,0 +1,4 @@
+=== Streaming: Cached ETag for a Video Manifest ===
+ETag            : def9f56914337ef0
+Distinct values : 1 (every thread saw the same ETag)
+Computed at least once, far fewer than 1000 times: true

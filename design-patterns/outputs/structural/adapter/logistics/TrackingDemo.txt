@@ -1,0 +1,3 @@
+=== Logistics: One Tracking Page, Many Couriers ===
+Tracking[carrier=GlobalExpress, trackingId=GX-7781230, status=OUT_FOR_DELIVERY, location=Pune]
+Tracking[carrier=QuickShip, trackingId=QS-554201, status=IN_TRANSIT, location=Hyderabad Hub]

@@ -28,6 +28,11 @@ jobs:
       - name: Check the documented outputs match the code
         run: code/run-demos.sh --check
 
+      - name: Build the standalone design-patterns folder and check its outputs
+        run: |
+          mvn -B -q -f design-patterns/pom.xml test
+          design-patterns/run-demos.sh --check
+
       - name: Run coding-interview solutions (each must print PASS; outputs must match the docs)
         run: coding-interview/run-all.sh --check
 

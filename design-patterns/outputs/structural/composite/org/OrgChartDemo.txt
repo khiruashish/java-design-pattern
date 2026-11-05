@@ -1,0 +1,11 @@
+=== HR SaaS: Org Chart Cost Roll-up ===
+[Engineering] headcount=6 cost=INR 273.0 lakh
+  Priya, VP Engineering
+  [Payments Team] headcount=3 cost=INR 108.0 lakh
+    Neha, Engineering Manager
+    Arjun, Senior Engineer
+    Li, Engineer
+  [Search Team] headcount=2 cost=INR 75.0 lakh
+    Fatima, Staff Engineer
+    Rohan, Engineer
+Budget check, Payments vs Engineering share: 39%

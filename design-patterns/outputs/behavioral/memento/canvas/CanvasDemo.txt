@@ -1,0 +1,5 @@
+=== Design SaaS: Named Version History ===
+current      : bg=navy [logo(pink), headline(pink), banner(pink)]
+versions     : [v1 draft, v2 dark theme]
+restore v2   : bg=navy [logo(white), headline(white)]
+restore v1   : bg=white [logo(blue), headline(black)]

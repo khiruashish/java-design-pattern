@@ -1,0 +1,4 @@
+=== Banking: Open an Account in One Call ===
+Kavya: account SB-1001 opened, credit score 790, Platinum debit card for SB-1001
+Imran: account SB-1002 opened, credit score 640, Classic debit card for SB-1002
+Test User: rejected, KYC failed

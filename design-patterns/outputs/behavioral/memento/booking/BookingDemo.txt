@@ -1,0 +1,6 @@
+=== Travel: Resume a Hotel Booking on Another Device ===
+phone  : step 3/4 {city=Goa, dates=2026-12-27..2026-12-31}
+draft token stored (64 chars)
+laptop : step 3/4 {city=Goa, dates=2026-12-27..2026-12-31}
+laptop : step 4/4 {city=Goa, dates=2026-12-27..2026-12-31, guests=2 adults}
+old draft: Draft from an older app version; please start again

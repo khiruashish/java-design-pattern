@@ -1,0 +1,8 @@
+=== Hospital: Patient Record Audit Trail ===
+[AuditLogger] Opening audit store...
+Audit trail:
+  #001 dr.mehta   VIEW_RECORD    patient=P-1001
+  #002 nurse.anna UPDATE_VITALS  patient=P-1001
+  #003 dr.mehta   PRESCRIBE      patient=P-1001
+  #004 dr.khan    VIEW_RECORD    patient=P-2002
+Single audit store? true

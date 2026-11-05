@@ -1,0 +1,5 @@
+=== Payments: Checkout with Pluggable Processors ===
+ORD-101 UPI         INR   450 -> SUCCESS ref=UPI-ORD-101 fee=INR 0
+ORD-102 CARD        INR  2400 -> SUCCESS ref=CARD-ORD-102 fee=INR 48
+ORD-103 WALLET      INR 12000 -> FAILED  wallet limit INR 10000 exceeded
+ORD-104 NET_BANKING INR   999 -> ERROR   No processor registered for NET_BANKING

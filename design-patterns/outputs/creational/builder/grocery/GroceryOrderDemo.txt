@@ -1,0 +1,5 @@
+=== Grocery: Building Orders ===
+Order[customer=CUST-42, items=2, subtotal=INR 191, slot=EXPRESS_10_MIN, coupon=-, contactless=false, note=-]
+Order[customer=CUST-7, items=3, subtotal=INR 1060, slot=TODAY_6_TO_8_PM, coupon=WEEKLY50, contactless=true, note="Leave with security"]
+Rejected: Express delivery is limited to orders up to INR 2000
+Rejected: Order needs at least one item

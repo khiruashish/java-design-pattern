@@ -1,0 +1,10 @@
+=== Ride-hailing: Driver App Through a Tunnel ===
+  server @09:00: trip TRIP-77 accepted
+  server @09:07: driver at pickup for TRIP-77
+[network] lost signal
+  queued offline: StartTrip at 09:09
+  queued offline: EndTrip at 09:31
+[network] back online, replaying 2 action(s)
+  server @09:09: trip TRIP-77 started (OTP 4821 verified)
+  server @09:31: trip TRIP-77 ended, 8.4 km, fare INR 168
+  server: ignored duplicate A4

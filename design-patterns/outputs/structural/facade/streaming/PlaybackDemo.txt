@@ -1,0 +1,4 @@
+=== Streaming: Press Play ===
+TV    : PlaybackSession[license=Widevine-L1:PREMIUM-SERIES-S2E1, cdnEdge=edge-bom-2, rendition=2160p HDR, subtitles=[hi, en]]
+Phone : PlaybackSession[license=Widevine-L3:MOVIE-1207, cdnEdge=edge-del-1, rendition=720p, subtitles=[en]]
+Phone : blocked - u77 is not entitled to PREMIUM-SERIES-S2E1

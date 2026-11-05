@@ -1,0 +1,5 @@
+=== Payments: Lazily Loaded Fraud Model ===
+Service started; model loads so far: 0
+Payments scored : 500
+Flagged as fraud: 50
+Model loads     : 1 (despite 500 concurrent first calls)

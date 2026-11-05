@@ -1,0 +1,3 @@
+Leaky booking   : check-in day 31, guests [Asha, Intruder]
+Fixed booking   : guests list is unmodifiable
+Fixed booking   : Booking[checkIn=2026-12-27, guests=[Asha]]

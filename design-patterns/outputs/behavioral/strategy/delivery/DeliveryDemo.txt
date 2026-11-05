@@ -1,0 +1,6 @@
+=== Grocery: Delivery Fee Strategies ===
+Asha   cart INR  150, 2.0 km, 18:00 -> fee INR 30, pay INR 180
+Asha   cart INR  450, 2.0 km, 18:00 -> fee INR  0, pay INR 450
+Ravi   cart INR  450, 4.5 km, 18:00 -> fee INR 59, pay INR 509
+Meera  cart INR   90, 6.0 km, 18:00 -> fee INR  0, pay INR 90
+Kabir  cart INR  150, 1.0 km, 23:00 -> fee INR 55, pay INR 205

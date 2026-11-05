@@ -1,0 +1,11 @@
+=== Payments: Webhook Intake with Back-pressure ===
+POST evt_1 -> 202 Accepted
+POST evt_2 -> 202 Accepted
+POST evt_3 -> 202 Accepted
+POST evt_4 -> 503 (gateway will retry later)
+POST evt_5 -> 503 (gateway will retry later)
+Worker catches up:
+  processed evt_1 payment.captured
+  processed evt_2 payment.failed
+  processed evt_3 refund.created
+Retry of evt_4 -> 202

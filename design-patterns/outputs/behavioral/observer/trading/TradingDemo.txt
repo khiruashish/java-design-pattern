@@ -1,0 +1,10 @@
+=== Trading App: Price Alerts and Live Portfolio ===
+TICK ACME 1875.50
+  [portfolio] value INR 18,755.00
+TICK GLOBEX 4120.00
+  [portfolio] value INR 39,355.00
+TICK ACME 1902.25
+  [portfolio] value INR 39,622.50
+  [alert] asha: ACME crossed 1900.00 (now 1902.25)
+TICK ACME 1910.00
+  [portfolio] value INR 39,700.00

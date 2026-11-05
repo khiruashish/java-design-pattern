@@ -1,0 +1,5 @@
+=== E-commerce: Generating Thumbnails for 40 Product Images ===
+Images resized          : 40
+Sum of thumbnail widths : 27800
+Threads never exceeded cores: true
+Pool terminated cleanly : true

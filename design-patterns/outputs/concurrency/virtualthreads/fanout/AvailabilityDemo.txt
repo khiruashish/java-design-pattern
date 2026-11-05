@@ -1,0 +1,5 @@
+=== E-commerce: Checking Delivery Availability for 2,000 Pincodes ===
+Serviceable pincodes (both runs agree): true, 1714 of 2000
+50 platform threads took about 4 s       : true
+Virtual threads finished in under 1.5 s  : true
+Virtual threads at least 5x faster       : true

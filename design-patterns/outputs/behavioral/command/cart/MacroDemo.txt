@@ -1,0 +1,3 @@
+Cart before        : {BANANA-6=1}
+After 'my usual'   : {BANANA-6=2, MILK-1L=2, BREAD-WW=1}
+After undo         : {BANANA-6=1}

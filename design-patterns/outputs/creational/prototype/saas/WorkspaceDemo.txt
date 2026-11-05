@@ -1,0 +1,12 @@
+=== SaaS: New Team Workspaces from a Template ===
+Payments Team Launch (3 tasks)
+  To Do: [Write PRD, Threat model, PCI checklist]
+  Doing: []
+  Done: []
+Search Team Launch (2 tasks)
+  To Do: [Write PRD, Threat model]
+  Doing: []
+  Done: []
+Template still has 2 tasks
+--- with a shallow copy (the bug) ---
+Template now has 3 tasks (leaked from 3-task copy)

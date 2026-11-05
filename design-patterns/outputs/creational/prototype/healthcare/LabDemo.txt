@@ -1,0 +1,5 @@
+=== Hospital Lab: Reports from Templates ===
+Complete Blood Count [P-1001] [Hemoglobin=14.2 (ref 13.5-17.5 g/dL), WBC=6.1 (ref 4.5-11.0 x10^9/L), Platelets=pending (ref 150-450 x10^9/L)]
+Complete Blood Count [P-1002] [Hemoglobin=11.9 (ref 13.5-17.5 g/dL), WBC=pending (ref 4.5-11.0 x10^9/L), Platelets=pending (ref 150-450 x10^9/L)]
+Lipid Profile [P-1001] [LDL=132 (ref <100 mg/dL), HDL=pending (ref >40 mg/dL)]
+Template untouched: Complete Blood Count [-] [Hemoglobin=pending (ref 13.5-17.5 g/dL), WBC=pending (ref 4.5-11.0 x10^9/L), Platelets=pending (ref 150-450 x10^9/L)]

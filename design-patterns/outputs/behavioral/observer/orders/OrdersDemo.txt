@@ -1,0 +1,11 @@
+=== E-commerce: Reacting to OrderPlaced ===
+Order ORD-1 saved
+  [email] confirmation sent to asha@example.com
+  [inventory] reserved [PHONE-CASE]
+  [analytics] revenue +499
+  [loyalty] +4 points
+Order ORD-2 saved
+  [email] confirmation sent to kabir@example.com
+  [inventory] reserved [LAPTOP-14]
+  [events] listener failed: analytics endpoint timed out (others continue)
+  [loyalty] +720 points

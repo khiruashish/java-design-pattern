@@ -1,0 +1,4 @@
+User            : Asha (Gold member)
+Recent orders   : [ORD-1, ORD-2]
+Recommendations : [Trending: Monsoon Express]
+Slow call cancelled: true
