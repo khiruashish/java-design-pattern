@@ -21,6 +21,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-structural:#0b7a5d; --t-structural:#dcf2ea;
   --c-behavioral:#7442c8; --t-behavioral:#eee5fb;
   --c-concurrency:#b94a10; --t-concurrency:#fbe8dc;
+  --c-microservices:#0a6c8c; --t-microservices:#dcf0f7;
+  --c-architecture:#b0285a; --t-architecture:#fbe3ec;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -32,6 +34,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-structural:#4fd1a8; --t-structural:#15332b;
   --c-behavioral:#b896ff; --t-behavioral:#2b2145;
   --c-concurrency:#ff9a5c; --t-concurrency:#3a2416;
+  --c-microservices:#5cc6e8; --t-microservices:#13303b;
+  --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -40,6 +44,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-structural:#4fd1a8; --t-structural:#15332b;
   --c-behavioral:#b896ff; --t-behavioral:#2b2145;
   --c-concurrency:#ff9a5c; --t-concurrency:#3a2416;
+  --c-microservices:#5cc6e8; --t-microservices:#13303b;
+  --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -196,7 +202,9 @@ const CATS={
   creational:{name:"Creational",blurb:"how objects get made"},
   structural:{name:"Structural",blurb:"how objects fit together"},
   behavioral:{name:"Behavioral",blurb:"how objects share work"},
-  concurrency:{name:"Concurrency",blurb:"how threads cooperate"}
+  concurrency:{name:"Concurrency",blurb:"how threads cooperate"},
+  microservices:{name:"Microservices",blurb:"how services work together"},
+  architecture:{name:"Architecture",blurb:"how a codebase is organized"}
 };
 const P=[
 /* ───────── CREATIONAL ───────── */
@@ -883,13 +891,674 @@ FraudModel model() {
   {say:"v1 calls a slow HTTP API. Instead of blocking the OS thread, it unmounts and parks, freeing the carrier.",send:[["c1","sch","unmount v1"]],tag:{v1:"parked: waiting on HTTP",c1:"OS thread · free"}},
   {say:"v3 mounts on the freed carrier right away. The code is plain blocking code, but it scales like async code.",send:[["v3","sch","mount"],["sch","c1","v3"]],tag:{c1:"running v3",v3:"running"}},
   {say:"When the HTTP response arrives, v1 is scheduled again on whichever carrier is free next.",send:[["sch","v1","resume"]],tag:{v1:"ready to resume"}}
- ]}
+ ]},
+/* ───────── MICROSERVICES ───────── */
+{id:"decomposition",name:"Decomposition (DDD)",cat:"microservices",mod:"microservices",pkg:"decomposition",ex:["grocery","fooddelivery","healthcare","ridehailing"],
+ intent:"Split one big application into services along business capabilities (bounded contexts), each owning its own data and rules.",
+ when:"A monolith has grown so large that teams block each other, releases are risky, and parts need to scale differently.",
+ analogy:"A supermarket split into departments: bakery, produce, billing. Each has its own staff and stock, and they hand things over at clear points.",
+ tip:"Split by business capability, not by technical layer. A 'UserService' plus an 'OrderDAOService' sharing one database is a distributed monolith.",
+ code:`<span class="c">// one bounded context = one service = one database</span>
+catalog-service   → products, prices
+ordering-service  → orders, order lines
+payment-service   → payments, refunds
+<span class="c">// they share ids, never tables</span>
+<span class="k">record</span> OrderLine(String productId, <span class="k">int</span> qty, <span class="k">long</span> pricePaise) {}`,
+ nodes:[N("mono","FreshCart monolith",150,200,{sub:"catalog + orders + payments + delivery"}),
+  N("cat","Catalog",440,100,{sub:"owns products",hidden:1}),N("ord","Ordering",650,100,{sub:"owns orders",hidden:1}),
+  N("pay","Payments",440,300,{sub:"owns payments",hidden:1}),N("del","Delivery",650,300,{sub:"owns trips",hidden:1})],
+ edges:[["ord","cat"],["ord","pay"],["ord","del"]],
+ steps:[
+  {say:"One deployable holds every feature and one shared database. A change to delivery means retesting and redeploying checkout too.",on:["mono"]},
+  {say:"Find the business capabilities: areas the business talks about separately, each with its own words and rules.",on:["mono"],tag:{mono:"4 bounded contexts found"}},
+  {say:"Each capability becomes a service with its own database. Catalog owns products; Ordering owns orders.",show:["cat","ord","pay","del"],send:[{par:[["mono","cat","products"],["mono","ord","orders"],["mono","pay","payments"],["mono","del","trips"]]}]},
+  {say:"Services refer to each other by id only and talk through APIs or events. Teams can now release and scale each one on its own.",hide:["mono"],send:[["ord","cat","GET price"],["ord","pay","charge"],["ord","del","OrderPaid"]]}
+ ]},
+{id:"api-gateway",name:"API Gateway",cat:"microservices",mod:"microservices",pkg:"gateway",ex:["grocery","canary","openbanking","tenancy"],
+ intent:"Put one entry point in front of all services that handles routing, authentication, rate limits and other shared concerns.",
+ when:"Clients would otherwise need to know many service addresses and repeat login, TLS and throttling for each one.",
+ analogy:"A mall's main entrance with a help desk. Security checks you once, then points you to the right shop.",
+ tip:"Keep business logic out of the gateway. It should route and protect, not decide prices.",
+ code:`spring.cloud.gateway.routes:
+  - id: catalog
+    uri: lb://catalog-service
+    predicates: [ Path=/api/products/** ]
+    filters:    [ TokenRelay, RequestRateLimiter ]`,
+ nodes:[N("app","Mobile app",90,200,{kind:"client"}),N("gw","API Gateway",340,200,{sub:"auth · rate limit · route"}),
+  N("cat","catalog-service",640,70),N("ord","order-service",640,200),N("pay","payment-service",640,330)],
+ edges:[["app","gw"],["gw","cat"],["gw","ord"],["gw","pay"]],
+ steps:[
+  {say:"The app knows one address, api.freshcart.in. It doesn't know where any service runs.",on:["app","gw"]},
+  {say:"The gateway checks the login token once, so no service has to repeat that logic.",send:[["app","gw","GET /api/products"]],tag:{gw:"token valid ✓"}},
+  {say:"It routes by path: /api/products goes to the catalog service, and the answer goes back to the app.",send:[["gw","cat","route"],["cat","gw","200 OK"],["gw","app","products"]]},
+  {say:"A burst from one client goes over its rate limit and gets 429 at the edge, before any service is touched.",send:[["app","gw","POST /orders ×50"],["gw","app","429 Too Many"]],tag:{gw:"limit 20/s exceeded"}}
+ ]},
+{id:"backend-for-frontend",name:"Backend for Frontend",cat:"microservices",mod:"microservices",pkg:"bff",ex:["ecommerce","partner","resilient","streaming"],
+ intent:"Give each kind of client (mobile, web, partner) its own small backend that shapes data exactly for that client.",
+ when:"Different clients need very different payloads, and one general API makes the mobile app download too much or call too often.",
+ analogy:"One kitchen serving dine-in plates and takeaway boxes, with a separate packing station for each. Same food, different packing.",
+ tip:"One BFF per client type, owned by that client's team. A BFF shared by everyone turns into a second, worse gateway.",
+ code:`@GetMapping("/mobile/home")              <span class="c">// in mobile-bff</span>
+MobileHome home(@AuthenticationPrincipal User u) {
+  <span class="k">var</span> cart  = cartClient.summary(u.id());     <span class="c">// count only</span>
+  <span class="k">var</span> deals = dealsClient.top(u.city(), 5);   <span class="c">// small images</span>
+  <span class="k">return new</span> MobileHome(cart.count(), deals);
+}`,
+ nodes:[N("mob","Mobile app",90,110,{kind:"client"}),N("web","Web app",90,300,{kind:"client"}),
+  N("mbff","Mobile BFF",330,110,{sub:"small payloads"}),N("wbff","Web BFF",330,300,{sub:"rich pages"}),
+  N("cart","cart-service",650,75),N("deals","deals-service",650,200),N("rev","reviews-service",650,325)],
+ edges:[["mob","mbff"],["web","wbff"],["mbff","cart"],["mbff","deals"],["wbff","cart"],["wbff","deals"],["wbff","rev"]],
+ steps:[
+  {say:"Phones on mobile data want a tiny response. The web shop wants rich product pages. One API can't suit both.",on:["mob","web"]},
+  {say:"The mobile app makes one call to its own BFF.",send:[["mob","mbff","GET /home"]]},
+  {say:"The Mobile BFF calls only what the home screen needs and trims it: a cart count and 5 small deal images.",send:[{par:[["mbff","cart","summary"],["mbff","deals","top 5"]]},["mbff","mob","3 KB"]]},
+  {say:"The Web BFF calls more services, reviews included, and returns a full page. Each team changes its BFF without breaking the other client.",send:[["web","wbff","GET /home"],{par:[["wbff","cart","full cart"],["wbff","deals","all deals"],["wbff","rev","reviews"]]},["wbff","web","48 KB"]]}
+ ]},
+{id:"service-discovery",name:"Service Discovery",cat:"microservices",mod:"microservices",pkg:"discovery",ex:["registry","clientside","zone","selfpreservation"],
+ intent:"Let services find each other's current addresses through a registry instead of hard-coded hosts.",
+ when:"Instances come and go (autoscaling, deploys, crashes) and their IP addresses keep changing.",
+ analogy:"A phone directory that updates itself. You look up 'pharmacy' and get today's number, not last year's.",
+ tip:"Registries cache, so a dead instance can linger for a few seconds. Callers still need timeouts and retries.",
+ code:`<span class="c">// each instance registers itself and sends heartbeats</span>
+List&lt;ServiceInstance&gt; all = discovery.getInstances("payment-service");
+ServiceInstance pick = loadBalancer.choose(all);
+http.post(pick.getUri() + "/charge", request);`,
+ nodes:[N("p1","payment #1",110,80,{sub:"10.0.1.7"}),N("p2","payment #2",110,200,{sub:"10.0.1.9"}),N("p3","payment #3",110,320,{sub:"10.0.1.12",hidden:1}),
+  N("reg","Service registry",410,200,{sub:"0 instances"}),N("ord","order-service",680,200,{kind:"client"})],
+ edges:[["p1","reg"],["p2","reg"],["p3","reg"],["ord","reg"]],
+ steps:[
+  {say:"Each payment instance registers its address when it starts, then keeps sending heartbeats.",send:[{par:[["p1","reg","register"],["p2","reg","register"]]}],tag:{reg:"2 instances"}},
+  {say:"Order service asks the registry for payment-service and picks one of the live addresses.",send:[["ord","reg","lookup payment"],["reg","ord","[.7, .9]"]],tag:{ord:"calls 10.0.1.7"}},
+  {say:"Autoscaling adds a third instance. It registers, and callers start using it with no config change.",show:["p3"],send:[["p3","reg","register"]],tag:{reg:"3 instances"}},
+  {say:"Instance #1 crashes and its heartbeats stop. After the timeout the registry drops it, so lookups stop returning it.",on:["p1","reg"],tag:{p1:"no heartbeat ✗",reg:"2 instances"}}
+ ]},
+{id:"circuit-breaker",name:"Circuit Breaker",cat:"microservices",mod:"microservices",pkg:"circuitbreaker",ex:["grocery","core","mini","ridehailing","streaming"],
+ intent:"Stop calling a failing service for a while and fail fast instead, then test it again later.",
+ when:"A downstream service is slow or down, and waiting on it would tie up your threads and spread the outage.",
+ analogy:"The breaker in a home's fuse box. It trips on a fault so the rest of the house stays safe, and you reset it once things are fixed.",
+ tip:"Always pair it with a fallback (cached data, a 'try later' message). Tune thresholds on real traffic, not guesses.",
+ code:`@CircuitBreaker(name = "payments", fallbackMethod = "payLater")
+Receipt pay(Order o) { <span class="k">return</span> paymentClient.charge(o); }
+
+Receipt payLater(Order o, Throwable t) {
+  <span class="k">return</span> Receipt.pending(o.id());   <span class="c">// queue it, don't hang</span>
+}`,
+ nodes:[N("ord","Checkout",110,200,{kind:"client"}),N("cb","Circuit breaker",390,200,{sub:"CLOSED"}),
+  N("pay","payment-service",670,200,{sub:"healthy"}),N("fb","Fallback",390,340,{sub:"'payment pending'"})],
+ edges:[["ord","cb"],["cb","pay"],["cb","fb"]],
+ steps:[
+  {say:"CLOSED: calls pass straight through while the payment service is healthy.",send:[["ord","cb","pay()"],["cb","pay","charge"],["pay","cb","OK"]]},
+  {say:"The payment service starts timing out. The breaker counts the failures in a row.",send:[["ord","cb","pay()"],["cb","pay","charge"],["pay","cb","timeout"]],tag:{pay:"timing out",cb:"CLOSED · 5 failures"}},
+  {say:"Past the threshold it trips to OPEN. Calls now fail fast to the fallback without touching the sick service.",send:[["ord","cb","pay()"],["cb","fb","fallback"],["fb","ord","pending"]],tag:{cb:"OPEN · failing fast"}},
+  {say:"After a cool-down it goes HALF-OPEN and lets one trial call through.",send:[["cb","pay","trial"],["pay","cb","OK"]],tag:{cb:"HALF-OPEN · 1 trial",pay:"recovered"}},
+  {say:"The trial succeeds, so it closes again and normal traffic resumes.",send:[["ord","cb","pay()"],["cb","pay","charge"]],tag:{cb:"CLOSED"}}
+ ]},
+{id:"retry-timeout-bulkhead",name:"Retry / Timeout / Bulkhead",cat:"microservices",mod:"microservices",pkg:"resilience",ex:["retry","backoff","timeout","bulkhead"],
+ intent:"Protect a service from slow or flaky dependencies: give up quickly, retry with backoff, and keep each dependency in its own pool.",
+ when:"Calls to other services sometimes fail briefly or hang, and one slow dependency must not take everything else down.",
+ analogy:"Compartments in a ship. A leak floods one compartment; the walls between them keep the rest of the ship dry.",
+ tip:"Only retry idempotent operations, add jitter to the backoff, and cap the attempts. Unlimited retries turn a blip into an outage.",
+ code:`@TimeLimiter(name = "reviews")                  <span class="c">// give up after 800 ms</span>
+@Retry(name = "reviews")                        <span class="c">// 3 tries, 200 → 400 ms + jitter</span>
+@Bulkhead(name = "reviews", type = THREADPOOL)  <span class="c">// at most 10 at once</span>
+CompletableFuture&lt;Reviews&gt; reviews(String id) { ... }`,
+ nodes:[N("page","Product page",100,200,{kind:"client"}),N("bh1","Pricing pool",370,100,{sub:"10 slots · 2 used"}),N("bh2","Reviews pool",370,300,{sub:"10 slots · 0 used"}),
+  N("pr","pricing-service",660,100,{sub:"healthy"}),N("rv","reviews-service",660,300,{sub:"slow"})],
+ edges:[["page","bh1"],["page","bh2"],["bh1","pr"],["bh2","rv"]],
+ steps:[
+  {say:"Each dependency gets its own small pool, called a bulkhead. Pricing and reviews can't steal each other's threads.",on:["bh1","bh2"]},
+  {say:"A reviews call hangs. The timeout gives up after 800 ms instead of waiting forever.",send:[["page","bh2","GET reviews"],["bh2","rv","GET"],["rv","bh2","timeout 800 ms"]]},
+  {say:"Retry waits 200 ms, then 400 ms plus a little random jitter, and tries again. The second retry works.",send:[["bh2","rv","retry 1"],["rv","bh2","timeout"],["bh2","rv","retry 2"],["rv","bh2","OK"]],tag:{bh2:"10 slots · retried ×2"}},
+  {say:"Reviews gets very slow and fills all 10 slots. Extra review calls are rejected at once with a fallback.",send:[["page","bh2","GET reviews"],["bh2","page","no reviews"]],tag:{rv:"very slow",bh2:"10 of 10 used: full"}},
+  {say:"Pricing still has free slots and answers normally. One slow dependency couldn't sink the whole page.",send:[["page","bh1","GET price"],["bh1","pr","GET"],["pr","bh1","₹60"],["bh1","page","₹60"]]}
+ ]},
+{id:"rate-limiter",name:"Rate Limiter",cat:"microservices",mod:"microservices",pkg:"ratelimit",ex:["tokenbucket","slidingcounter","slidinglog","distributed"],
+ intent:"Cap how many requests a client can make in a time window, so one caller can't overload the service.",
+ when:"Public APIs, OTP and login endpoints, expensive searches, partner integrations with quotas.",
+ analogy:"A ticket counter that hands out 5 tokens a second. No token, no entry until the next ones arrive.",
+ tip:"In a cluster the counts must live in a shared store such as Redis, or each instance hands out a full quota. Reply 429 with Retry-After.",
+ code:`<span class="k">class</span> TokenBucket {
+  <span class="k">synchronized boolean</span> tryAcquire() {
+    refill();                       <span class="c">// add rate × elapsed, up to capacity</span>
+    <span class="k">if</span> (tokens &lt; 1) <span class="k">return false</span>;   <span class="c">// → 429 Too Many Requests</span>
+    tokens--; <span class="k">return true</span>;
+  }
+}`,
+ nodes:[N("cl","Client",100,200,{kind:"client",sub:"user 42"}),N("tb","Token bucket",400,200,{sub:"● ● ● ● ●  5 of 5"}),
+  N("api","OTP endpoint",690,200),N("refill","Refill",400,340,{sub:"+1 token per second"})],
+ edges:[["cl","tb"],["tb","api"],["refill","tb"]],
+ steps:[
+  {say:"Each user has a bucket holding up to 5 tokens. Every request costs one token.",on:["tb"]},
+  {say:"Three quick requests each take a token and pass through.",send:[["cl","tb","3 requests"],["tb","api","3 pass"]],tag:{tb:"● ●  2 of 5"}},
+  {say:"A burst of 4 more: two pass, then the bucket is empty and the rest get 429 Too Many Requests.",send:[["cl","tb","4 requests"],{par:[["tb","api","2 pass"],["tb","cl","2 × 429"]]}],tag:{tb:"empty  0 of 5"}},
+  {say:"Tokens drip back at a steady rate. Short bursts are allowed; a sustained flood is not.",send:[["refill","tb","+1"]],tag:{tb:"●  1 of 5"}}
+ ]},
+{id:"saga",name:"Saga",cat:"microservices",mod:"microservices",pkg:"saga",ex:["grocery","banking","travel","recovery","core"],
+ intent:"Run a business transaction that spans several services as a series of local steps, and undo the finished steps with compensating actions if a later one fails.",
+ when:"One action (place an order) must change several services' databases, and a single distributed transaction isn't available.",
+ analogy:"Booking a trip: flight, hotel, cab. If no cab can be booked, you cancel the hotel and flight you already booked.",
+ tip:"Compensations are new business actions (refund, release stock), not database rollbacks. Every step and every compensation must be idempotent.",
+ code:`saga.step("reserve stock").action(inventory::reserve).compensate(inventory::release)
+    .step("charge card").action(payments::charge).compensate(payments::refund)
+    .step("book rider").action(delivery::book).compensate(delivery::cancel)
+    .run(order);`,
+ nodes:[N("orc","PlaceOrder saga",130,200,{sub:"orchestrator"}),N("inv","Inventory",480,70,{sub:"–"}),N("pay","Payments",480,200,{sub:"–"}),N("del","Delivery",480,330,{sub:"–"})],
+ edges:[["orc","inv"],["orc","pay"],["orc","del"]],
+ steps:[
+  {say:"Placing an order touches three services, each with its own database. There is no single transaction across them.",on:["inv","pay","del"]},
+  {say:"Step 1: reserve the stock. Inventory commits locally.",send:[["orc","inv","reserve"],["inv","orc","reserved ✓"]],tag:{inv:"reserved 3 items"}},
+  {say:"Step 2: charge the card. Payments commits locally.",send:[["orc","pay","charge ₹499"],["pay","orc","charged ✓"]],tag:{pay:"charged ₹499"}},
+  {say:"Step 3 fails: no rider is free within 30 minutes.",send:[["orc","del","book rider"],["del","orc","failed ✗"]],tag:{del:"no rider"}},
+  {say:"The saga runs compensations in reverse order: refund the card, then release the stock. Everything ends consistent.",send:[["orc","pay","refund"],["orc","inv","release"]],tag:{pay:"refunded",inv:"released",orc:"order cancelled"}}
+ ]},
+{id:"transactional-outbox",name:"Transactional Outbox",cat:"microservices",mod:"microservices",pkg:"outbox",ex:["grocery","claiming","insurance","ridehailing"],
+ intent:"Save a business change and the event that announces it in the same database transaction, then publish the event from that table.",
+ when:"A service must update its database and send a message, and losing either one, or announcing a change that rolled back, isn't acceptable.",
+ analogy:"Writing a letter and dropping it in your outbox tray in one motion. The mail clerk collects everything in the tray later; nothing is forgotten.",
+ tip:"The relay delivers at least once, so consumers must be idempotent. Mark or delete rows after publishing, or the table grows forever.",
+ code:`@Transactional
+<span class="k">void</span> placeOrder(Order o) {
+  orders.save(o);
+  outbox.save(<span class="k">new</span> OutboxEvent("grocery.ordering.order.placed.v1", o.id(), json(o)));
+}   <span class="c">// both rows commit, or neither does</span>`,
+ nodes:[N("svc","order-service",110,200,{kind:"client"}),N("db","orders table",380,90,{sub:"–"}),N("ob","outbox table",380,310,{sub:"0 pending"}),
+  N("relay","Relay",640,310,{sub:"polls or reads the log"}),N("kafka","Kafka topic",640,90,{sub:"order.placed"})],
+ edges:[["svc","db"],["svc","ob"],["ob","relay"],["relay","kafka"]],
+ steps:[
+  {say:"Writing to the database and then to Kafka touches two systems. A crash in between loses the event, or announces an order that never saved.",on:["svc"]},
+  {say:"Instead, one local transaction saves the order and an outbox row together. Both commit or neither does.",send:[{par:[["svc","db","INSERT order"],["svc","ob","INSERT event"]]}],tag:{db:"order #5521",ob:"1 pending"}},
+  {say:"A separate relay reads pending outbox rows and publishes them.",send:[["ob","relay","pending row"],["relay","kafka","publish"]]},
+  {say:"Once Kafka confirms, the row is marked sent. If the relay crashes first, it just publishes again; consumers ignore the duplicate.",send:[["kafka","relay","ack"]],tag:{ob:"0 pending · 1 sent"}}
+ ]},
+{id:"cqrs",name:"CQRS",cat:"microservices",mod:"microservices",pkg:"cqrs",ex:["catalog","banking","healthcare","rebuild"],
+ intent:"Use separate models for changing data (commands) and reading it (queries), each shaped for its own job.",
+ when:"Reads far outnumber writes, or screens need data shaped very differently from how it's stored and validated.",
+ analogy:"A kitchen works from order tickets (the write side), while the menu board shows customers a tidy summary (the read side).",
+ tip:"The read side lags slightly behind. Right after a change, show 'updating…' or read the user's own change from the write side.",
+ code:`<span class="c">// write side: checks rules, stores normalized data</span>
+commandBus.send(<span class="k">new</span> ChangePrice("milk-1l", 62_00));
+<span class="c">// read side: a denormalized view, updated from events</span>
+@EventListener <span class="k">void</span> on(PriceChanged e) { view.update(e.sku(), e.price()); }
+List&lt;ProductCard&gt; cards = productCards.search("milk");   <span class="c">// fast, no joins</span>`,
+ nodes:[N("admin","Admin app",100,90,{kind:"client"}),N("shop","Shopper app",100,310,{kind:"client"}),
+  N("cmd","Command model",380,90,{sub:"rules + write DB"}),N("bus","Events",640,200,{sub:"PriceChanged"}),N("q","Read model",380,310,{sub:"search view: milk ₹60"})],
+ edges:[["admin","cmd"],["cmd","bus"],["bus","q"],["shop","q"]],
+ steps:[
+  {say:"Writes and reads go to different models. The write side enforces rules; the read side is shaped for fast screens.",on:["cmd","q"]},
+  {say:"An admin changes the milk price. The command model checks it and saves it.",send:[["admin","cmd","ChangePrice ₹62"]],tag:{cmd:"milk ₹62 saved"}},
+  {say:"It publishes a PriceChanged event, which updates the read view.",send:[["cmd","bus","PriceChanged"],["bus","q","update view"]],tag:{q:"search view: milk ₹62"}},
+  {say:"Thousands of shoppers search. Their queries hit only the read view: no joins, no locks on the write side.",send:[["shop","q","search milk"],["q","shop","₹62"]]},
+  {say:"For a moment after each change the read view lags. That short delay is the price of scaling reads separately.",on:["q","bus"]}
+ ]},
+{id:"event-sourcing",name:"Event Sourcing",cat:"microservices",mod:"microservices",pkg:"eventsourcing",ex:["cart","account","shipment","upcasting"],
+ intent:"Store every change as an event in an append-only log, and rebuild the current state by replaying those events.",
+ when:"You need a full audit trail, to answer 'what did this look like on Tuesday?', or to build new views from past data.",
+ analogy:"A bank passbook. The balance is just the total of every deposit and withdrawal line.",
+ tip:"Events are kept forever, so version them and plan for upgrading old ones. Use snapshots so rebuilding a long-lived record stays fast.",
+ code:`<span class="k">record</span> ItemAdded(String sku, <span class="k">int</span> qty) <span class="k">implements</span> CartEvent {}
+<span class="k">record</span> ItemRemoved(String sku)        <span class="k">implements</span> CartEvent {}
+
+Cart replay(List&lt;CartEvent&gt; history) {
+  <span class="k">var</span> cart = <span class="k">new</span> Cart();
+  history.forEach(cart::apply);   <span class="c">// state = all events applied in order</span>
+  <span class="k">return</span> cart;
+}`,
+ nodes:[N("cmd","Cart actions",100,200,{kind:"client"}),N("log","Event store",400,200,{sub:"append-only · 0 events"}),
+  N("cart","Cart state",680,90,{sub:"empty"}),N("aud","Removed-items view",680,310,{sub:"–",hidden:1})],
+ edges:[["cmd","log"],["log","cart"],["log","aud"]],
+ steps:[
+  {say:"Instead of overwriting a cart row, every change is appended as an event.",send:[["cmd","log","ItemAdded(milk)"]],tag:{log:"append-only · 1 event"}},
+  {say:"More changes, more events. Nothing is ever updated or deleted.",send:[["cmd","log","ItemAdded(eggs)"],["cmd","log","ItemRemoved(milk)"]],tag:{log:"append-only · 3 events"}},
+  {say:"The current cart is rebuilt by replaying the events in order: add milk, add eggs, remove milk. Result: eggs.",send:[["log","cart","replay 3 events"]],tag:{cart:"eggs"}},
+  {say:"Because history is kept, new views come for free. 'Items removed before checkout' is built from the same log.",show:["aud"],send:[["log","aud","replay"]],tag:{aud:"milk removed at 7:41"}}
+ ]},
+{id:"database-per-service",name:"Database per Service",cat:"microservices",mod:"microservices",pkg:"dbperservice",ex:["grocery","polyglot","replication","batching"],
+ intent:"Give each service its own private database that only it can read and write.",
+ when:"Services are split by business capability and must change their schemas, scale and deploy independently.",
+ analogy:"Each shop in a mall keeps its own stock room. If the bakery wants to know how much milk the dairy has, it asks the dairy.",
+ tip:"You give up joins and transactions across services. Use APIs, events and local copies, never a shared database 'just this once'.",
+ code:`<span class="c"># order-service/application.yml</span>
+spring.datasource.url: jdbc:postgresql://orders-db/orders
+<span class="c"># catalog-service/application.yml</span>
+spring.datasource.url: jdbc:postgresql://catalog-db/catalog
+<span class="c">// order-service never connects to catalog-db; it calls the Catalog API</span>`,
+ nodes:[N("ord","order-service",180,100),N("cat","catalog-service",620,100),N("odb","orders DB",180,300,{sub:"PostgreSQL"}),N("cdb","catalog DB",620,300,{sub:"PostgreSQL + search"})],
+ edges:[["ord","odb","h"],["cat","cdb","h"],["ord","cat"]],
+ steps:[
+  {say:"Each service owns its own database. No other service has its credentials.",on:["ord","odb","cat","cdb"]},
+  {say:"Order service needs a product's price. It doesn't query the catalog DB; it asks the Catalog API.",send:[["ord","cat","GET /products/milk"],["cat","cdb","SELECT"],["cdb","cat","row"],["cat","ord","₹60"]]},
+  {say:"Catalog can change its schema or add a search engine without breaking anyone, because nobody else touches its tables.",on:["cat","cdb"],tag:{cdb:"schema v2 · new columns"}},
+  {say:"For data it needs constantly, order service keeps a local copy that catalog events keep up to date.",send:[["cat","ord","PriceChanged"],["ord","odb","store copy"]],tag:{odb:"orders + price copy"}}
+ ]},
+{id:"strangler-fig",name:"Strangler Fig",cat:"microservices",mod:"microservices",pkg:"strangler",ex:["grocery","banking","insurance","autorollback"],
+ intent:"Replace a legacy system piece by piece, routing one feature at a time to new services until the old system can be switched off.",
+ when:"A full rewrite is too risky, and the old system has to keep running while you modernize it.",
+ analogy:"A strangler fig vine grows around an old tree. Over the years the vine takes over and the old tree can go.",
+ tip:"Route by feature through a layer you control, and keep an easy switch back. Delete legacy code as each piece moves, or you'll run two systems forever.",
+ code:`routes:
+  - path: /api/catalog/**  → catalog-service    <span class="c"># migrated</span>
+  - path: /api/orders/**   → orders-service     <span class="c"># 10% canary</span>
+    weight: 10
+  - path: /**              → legacy-monolith    <span class="c"># everything else</span>`,
+ nodes:[N("app","Clients",90,200,{kind:"client"}),N("fac","Routing layer",340,200,{sub:"all → legacy"}),
+  N("leg","Legacy monolith",640,90,{sub:"catalog · orders · billing"}),N("new","New services",640,310,{sub:"none yet"})],
+ edges:[["app","fac"],["fac","leg"],["fac","new"]],
+ steps:[
+  {say:"All traffic goes through a routing layer you control. At first it sends everything to the legacy system.",send:[["app","fac","requests"],["fac","leg","everything"]]},
+  {say:"Catalog is rebuilt as a new service. The router now sends catalog requests there; everything else still goes to legacy.",send:[["app","fac","GET /catalog"],["fac","new","route"]],tag:{fac:"/catalog → new",new:"catalog",leg:"orders · billing"}},
+  {say:"Orders moves next, starting with 10% of traffic. If errors rise, the router switches it back in seconds.",send:[["app","fac","POST /orders"],{par:[["fac","new","10%"],["fac","leg","90%"]]}],tag:{fac:"/orders → 10% new",new:"catalog · orders (10%)"}},
+  {say:"Piece by piece the legacy system shrinks until it handles nothing and can be switched off.",send:[["app","fac","requests"],["fac","new","everything"]],tag:{fac:"all → new",new:"catalog · orders · billing",leg:"retired"}}
+ ]},
+{id:"sidecar-service-mesh",name:"Sidecar / Service Mesh",cat:"microservices",mod:"microservices",pkg:"sidecar",ex:["mtls","telemetry","traffic","outlier"],
+ intent:"Run networking concerns (encryption, retries, metrics, traffic splitting) in a proxy beside each service, so the service code stays plain.",
+ when:"Many services, often in several languages, all need the same security and observability, and you don't want a library per language.",
+ analogy:"Every office gets the same trained receptionist. Staff just do their work; the receptionist handles visitors, badges and the visitor log.",
+ tip:"A mesh adds latency and a lot of moving parts. It pays off at dozens of services and is often overkill at five.",
+ code:`<span class="c"># no change to the service; the mesh is configured outside it</span>
+<span class="k">kind:</span> VirtualService
+spec:
+  http:
+  - route:
+    - destination: { host: payments, subset: v1 }
+      weight: 90
+    - destination: { host: payments, subset: v2 }
+      weight: 10`,
+ nodes:[N("oa","order-service",110,110,{sub:"plain HTTP"}),N("os","sidecar proxy",110,300,{sub:"Envoy"}),
+  N("pa","payment-service",690,110,{sub:"plain HTTP"}),N("ps","sidecar proxy",690,300,{sub:"Envoy"}),N("cp","Control plane",400,70,{sub:"policies, certificates"})],
+ edges:[["oa","os"],["ps","pa"],["os","ps"],["cp","os"],["cp","ps"]],
+ steps:[
+  {say:"Each service runs with a proxy beside it in the same pod. All traffic in and out passes through that proxy.",on:["oa","os","pa","ps"]},
+  {say:"The control plane gives both proxies certificates and routing rules. No service code changes.",send:[{par:[["cp","os","certs + rules"],["cp","ps","certs + rules"]]}]},
+  {say:"Order service makes a plain HTTP call. Its sidecar encrypts it with mutual TLS and sends it across.",send:[["oa","os","POST /charge"],["os","ps","mTLS"]],tag:{os:"retries · metrics · mTLS"}},
+  {say:"The receiving sidecar checks the caller's identity, records metrics, then hands plain HTTP to the payment service.",send:[["ps","pa","POST /charge"]],tag:{ps:"caller verified ✓"}}
+ ]},
+{id:"idempotent-consumer",name:"Idempotent Consumer",cat:"microservices",mod:"microservices",pkg:"idempotency",ex:["wallet","apikey","concurrent","notifications"],
+ intent:"Make a message handler safe to run more than once for the same message, by recording which messages it has already handled.",
+ when:"The broker or an HTTP client can deliver duplicates (at-least-once delivery, client retries), and repeating the action would be wrong.",
+ analogy:"A cashier stamping 'PAID' on a bill. Hand the same bill over twice and the stamp shows it's already been paid.",
+ tip:"Record the message id in the same transaction as the business change. Checking first and writing later leaves a race between two copies.",
+ code:`@Transactional
+<span class="k">void</span> on(PaymentCaptured e) {
+  <span class="k">if</span> (!processed.insertIfAbsent(e.eventId())) <span class="k">return</span>;  <span class="c">// duplicate: skip</span>
+  wallet.credit(e.userId(), e.amount());
+}`,
+ nodes:[N("br","Kafka",110,200,{sub:"at-least-once"}),N("cons","Wallet consumer",400,200,{sub:"–"}),N("seen","processed_ids",400,340,{sub:"empty"}),N("wal","Wallet",690,200,{sub:"balance ₹0"})],
+ edges:[["br","cons"],["cons","seen"],["cons","wal"]],
+ steps:[
+  {say:"The broker delivers 'payment captured, ₹100'. In one transaction the consumer records the event id and credits the wallet.",send:[["br","cons","evt-77 ₹100"],["cons","seen","insert evt-77"],["cons","wal","credit ₹100"]],tag:{seen:"evt-77",wal:"balance ₹100"}},
+  {say:"The consumer's acknowledgement gets lost, so the broker delivers the same message again.",send:[["br","cons","evt-77 ₹100"]]},
+  {say:"The id is already recorded. The consumer skips the credit and just acknowledges. The balance stays ₹100, not ₹200.",send:[["cons","seen","evt-77?"],["seen","cons","already seen"],["cons","br","ack"]],tag:{cons:"duplicate skipped"}}
+ ]},
+{id:"distributed-tracing",name:"Distributed Tracing",cat:"microservices",mod:"microservices",pkg:"tracing",ex:["grocery","async","core","sampling","threads"],
+ intent:"Follow one request across every service it touches, using a trace id passed along with each call.",
+ when:"A slow or failed request crosses several services and the separate logs don't show where the time went.",
+ analogy:"A courier tracking number. Every depot scans the same number, so you can see exactly where the parcel waited.",
+ tip:"Pass the trace context through async hops too (Kafka headers, thread pools), or traces break into pieces. Sample rather than record every request.",
+ code:`<span class="c">// Micrometer Tracing + OpenTelemetry add these headers for you</span>
+traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+<span class="c">//              trace id (same everywhere)       span id (each hop)</span>
+log.info("charging card");   <span class="c">// the log line carries the traceId</span>`,
+ nodes:[N("gw","Gateway",100,200,{sub:"starts trace 4bf9…"}),N("ord","order-service",320,200,{sub:"–"}),
+  N("pay","payment-service",540,90,{sub:"–"}),N("inv","inventory",540,310,{sub:"–"}),N("col","Trace collector",680,200,{sub:"Tempo / Jaeger"})],
+ edges:[["gw","ord"],["ord","pay"],["ord","inv"]],
+ steps:[
+  {say:"The gateway starts a trace and puts its id in a header on the outgoing call.",send:[["gw","ord","traceparent 4bf9…"]]},
+  {say:"Order service records its own span under the same trace id, and passes the id on to each service it calls.",send:[{par:[["ord","pay","4bf9…"],["ord","inv","4bf9…"]]}],tag:{ord:"span · 40 ms"}},
+  {say:"Every service reports its spans (start, end, parent) to a collector.",send:[{par:[["pay","col","span"],["inv","col","span"],["ord","col","span"]]}],tag:{pay:"span · 2.1 s",inv:"span · 30 ms"}},
+  {say:"The trace view shows the whole request as one timeline. The 2.1-second payment call is clearly the slow part.",on:["col","pay"],tag:{col:"2.2 s · payment 2.1 s"}}
+ ]},
+{id:"config-server",name:"Config Server",cat:"microservices",mod:"microservices",pkg:"config",ex:["profiles","refresh","secrets","validation"],
+ intent:"Keep configuration for every service in one versioned place, and let services fetch and refresh it at runtime.",
+ when:"Many services and environments need settings (URLs, limits, feature flags) that change without a rebuild.",
+ analogy:"Head office sends the price list to every branch. Change it once and all branches update.",
+ tip:"Keep secrets out of plain config and reference a secrets manager instead. Validate config at startup so a typo fails fast, not at 2 a.m.",
+ code:`<span class="c"># config repo: checkout-service-prod.yml</span>
+checkout:
+  express-fee-paise: 9900
+  max-cart-items: 50
+
+@ConfigurationProperties("checkout") @Validated
+<span class="k">record</span> CheckoutProps(@Positive <span class="k">long</span> expressFeePaise, @Max(100) <span class="k">int</span> maxCartItems) {}`,
+ nodes:[N("git","Config repo",110,200,{sub:"git · v41"}),N("cs","Config server",380,200),
+  N("s1","checkout #1",660,80,{sub:"express fee ₹99"}),N("s2","checkout #2",660,200,{sub:"express fee ₹99"}),N("s3","catalog",660,320,{sub:"page size 20"})],
+ edges:[["git","cs"],["cs","s1"],["cs","s2"],["cs","s3"]],
+ steps:[
+  {say:"Settings for every service and environment live in one versioned repository.",on:["git"]},
+  {say:"On startup each service asks the config server for its own settings, by service name and environment.",send:[{par:[["s1","cs","checkout / prod"],["s2","cs","checkout / prod"],["s3","cs","catalog / prod"]]}]},
+  {say:"Ops changes the express fee to ₹79 in a reviewed commit.",send:[["git","cs","v42"]],tag:{git:"git · v42 · fee ₹79"}},
+  {say:"A refresh event tells running services to reload. They pick up ₹79 without restarting.",send:[{par:[["cs","s1","refresh"],["cs","s2","refresh"]]}],tag:{s1:"express fee ₹79",s2:"express fee ₹79"}}
+ ]},
+{id:"anti-corruption-layer",name:"Anti-Corruption Layer",cat:"microservices",mod:"microservices",pkg:"acl",ex:["erp","insurance","logistics","outbound"],
+ intent:"Put a translation layer between your own domain model and a legacy or external system, so its awkward model doesn't leak into yours.",
+ when:"You integrate with an ERP, a carrier API or a legacy system whose terms, codes and data shapes don't match your domain.",
+ analogy:"An interpreter at a business meeting who explains what is meant, not just the literal words.",
+ tip:"Keep the translator at the edge, owned by the team that uses it. If domain code starts using ERP field names, the layer is leaking.",
+ code:`<span class="k">class</span> ErpProductTranslator {
+  Product toDomain(ErpMaterial m) {
+    <span class="k">return new</span> Product(
+        <span class="k">new</span> Sku(m.MATNR().strip()),          <span class="c">// "000000000000012345"</span>
+        Money.ofPaise(Math.round(m.NETPR() * 100)),
+        m.LVORM().equals("X") ? DISCONTINUED : ACTIVE);
+  }
+}`,
+ nodes:[N("dom","Catalog domain",120,200,{sub:"Product(sku, price, status)"}),N("acl","ERP translator",410,200,{sub:"anti-corruption layer"}),N("erp","Legacy ERP",680,200,{sub:"MATNR, NETPR, LVORM"})],
+ edges:[["dom","acl"],["acl","erp"]],
+ steps:[
+  {say:"The ERP speaks its own language: MATNR codes, prices as decimal rupees, and LVORM = 'X' meaning deleted.",on:["erp"]},
+  {say:"The domain asks the translator for a product, in its own terms.",send:[["dom","acl","find(sku 12345)"]]},
+  {say:"The translator calls the ERP in ERP terms.",send:[["acl","erp","MATNR 0…012345"],["erp","acl","NETPR 59.5, LVORM X"]]},
+  {say:"It translates the answer back: a Sku, a price in paise, status DISCONTINUED. ERP codes never reach the domain.",send:[["acl","dom","Product(₹59.50, DISCONTINUED)"]],tag:{acl:"translated ✓"}}
+ ]},
+{id:"cache-aside",name:"Cache-Aside",cat:"microservices",mod:"microservices",pkg:"caching",ex:["catalog","race","singleflight","writebehind"],
+ intent:"Read from a cache first, load from the database on a miss and store the result, and clear the cache entry when the data changes.",
+ when:"The same data is read far more often than it changes, and the database is the bottleneck.",
+ analogy:"Keeping today's bestsellers at the checkout counter. If a book isn't there, fetch it from the stock room and leave a copy at the counter.",
+ tip:"Set a time-to-live, clear entries on writes, and guard hot keys: when one expires, let one request reload it while the others wait.",
+ code:`Product get(String sku) {
+  Product p = redis.get(sku);
+  <span class="k">if</span> (p != <span class="k">null</span>) <span class="k">return</span> p;                  <span class="c">// hit</span>
+  p = db.findBySku(sku);                    <span class="c">// miss</span>
+  redis.set(sku, p, Duration.ofMinutes(10));
+  <span class="k">return</span> p;
+}
+<span class="k">void</span> update(Product p) { db.save(p); redis.delete(p.sku()); }`,
+ nodes:[N("app","catalog-service",130,200),N("cache","Redis cache",450,90,{sub:"empty"}),N("db","Database",450,310,{sub:"milk ₹60"})],
+ edges:[["app","cache"],["app","db"]],
+ steps:[
+  {say:"The first request checks the cache. It's a miss.",send:[["app","cache","GET milk"],["cache","app","miss"]]},
+  {say:"The service loads from the database and stores the result in the cache for 10 minutes.",send:[["app","db","SELECT milk"],["db","app","₹60"],["app","cache","SET milk, 10 min"]],tag:{cache:"milk ₹60 · expires in 10 min"}},
+  {say:"The next thousand requests are cache hits. The database isn't touched.",send:[["app","cache","GET milk"],["cache","app","₹60 (hit)"]]},
+  {say:"The price changes. The service writes to the database and deletes the cache entry, so the next read loads the new price.",send:[["app","db","UPDATE ₹62"],["app","cache","DEL milk"]],tag:{cache:"empty",db:"milk ₹62"}}
+ ]},
+{id:"sharding",name:"Sharding",cat:"microservices",mod:"microservices",pkg:"sharding",ex:["banking","geo","hotspot","scatter"],
+ intent:"Split one large dataset across several databases by a shard key, so each database holds and serves only part of it.",
+ when:"One database can't hold the data or keep up with the writes, even after indexing and read replicas.",
+ analogy:"A library splitting its catalogue by author surname: A–H on floor 1, I–P on floor 2, Q–Z on floor 3.",
+ tip:"Pick a key that spreads the load evenly and keeps related data together. Queries without the shard key must ask every shard.",
+ code:`<span class="k">int</span> shardFor(String customerId) {
+  <span class="k">return</span> Math.floorMod(hash(customerId), SHARDS);   <span class="c">// or consistent hashing</span>
+}
+DataSource ds = shards.get(shardFor(order.customerId()));`,
+ nodes:[N("app","order-service",110,200),N("rt","Shard router",360,200,{sub:"hash(customerId) mod 3"}),
+  N("s0","Shard 0",660,70,{sub:"1.2 M customers"}),N("s1","Shard 1",660,200,{sub:"1.2 M customers"}),N("s2","Shard 2",660,330,{sub:"1.2 M customers"})],
+ edges:[["app","rt"],["rt","s0"],["rt","s1"],["rt","s2"]],
+ steps:[
+  {say:"Orders for 3.6 million customers are too much for one database, so they're split across three shards.",on:["s0","s1","s2"]},
+  {say:"Customer C-1042 places an order. The router hashes the customer id and gets shard 1.",send:[["app","rt","save order (C-1042)"],["rt","s1","INSERT"]],tag:{rt:"C-1042 → shard 1"}},
+  {say:"All of that customer's orders live on shard 1, so 'my orders' is one fast query.",send:[["app","rt","orders of C-1042"],["rt","s1","SELECT"],["s1","rt","12 orders"]]},
+  {say:"A query without the shard key, like 'all orders today', must ask every shard and merge the answers.",send:[["app","rt","orders today"],{par:[["rt","s0","SELECT"],["rt","s1","SELECT"],["rt","s2","SELECT"]]}],tag:{rt:"asks all 3 shards"}}
+ ]},
+{id:"materialized-view",name:"Materialized View",cat:"microservices",mod:"microservices",pkg:"materializedview",ex:["sales","balances","tracking","rebuild"],
+ intent:"Work out the answer to an expensive query ahead of time and store it, updating it as the source data changes.",
+ when:"A dashboard or screen needs totals across many rows or services, and calculating them on every request is too slow.",
+ analogy:"A whiteboard in the shop showing today's total sales, updated after every bill, instead of adding up every receipt whenever someone asks.",
+ tip:"The view is a copy: it can lag and it can be rebuilt. Keep the code that rebuilds it from scratch, and test that it gives the same totals.",
+ code:`@KafkaListener(topics = "grocery.ordering.order.placed.v1")
+<span class="k">void</span> on(OrderPlaced e) {
+  jdbc.update("""
+    INSERT INTO daily_sales(store, day, total) VALUES (?, ?, ?)
+    ON CONFLICT (store, day) DO UPDATE SET total = daily_sales.total + EXCLUDED.total
+    """, e.store(), e.day(), e.totalPaise());
+}`,
+ nodes:[N("o","Orders",110,90,{sub:"events"}),N("r","Refunds",110,310,{sub:"events"}),N("proj","Projector",380,200),
+  N("mv","daily_sales view",650,200,{sub:"Store 7: ₹0"}),N("dash","Ops dashboard",650,340,{kind:"client"})],
+ edges:[["o","proj"],["r","proj"],["proj","mv"],["dash","mv"]],
+ steps:[
+  {say:"The ops dashboard needs sales per store per day. Adding up millions of order rows on every refresh would be far too slow.",on:["dash"]},
+  {say:"A projector listens to order events and adds each total to a stored row.",send:[["o","proj","OrderPlaced ₹499"],["proj","mv","+₹499"]],tag:{mv:"Store 7: ₹499"}},
+  {say:"Refund events subtract from the same row.",send:[["r","proj","Refund ₹99"],["proj","mv","−₹99"]],tag:{mv:"Store 7: ₹400"}},
+  {say:"The dashboard reads one row per store, instantly. If the view is ever wrong, replaying the events rebuilds it.",send:[["dash","mv","SELECT"],["mv","dash","₹400"]]}
+ ]},
+{id:"competing-consumers",name:"Competing Consumers",cat:"microservices",mod:"microservices",pkg:"competingconsumers",ex:["invoices","groups","visibility","poison"],
+ intent:"Let several workers pull from the same queue, so messages are handled in parallel and the load spreads by itself.",
+ when:"A queue of independent jobs (invoices, emails, images) needs more throughput than one worker can give.",
+ analogy:"Several cashiers serving one shared queue. Whoever is free takes the next customer.",
+ tip:"You lose ordering across workers, and a message that always fails can loop forever. Cap retries and move it to a dead-letter queue.",
+ code:`@KafkaListener(topics = "invoices", groupId = "invoice-workers", concurrency = "3")
+<span class="k">void</span> generate(InvoiceRequested e) {
+  pdf.render(e.orderId());   <span class="c">// 3 workers share the partitions</span>
+}`,
+ nodes:[N("q","Invoice queue",130,200,{sub:"6 messages"}),N("w1","Worker 1",440,70,{sub:"idle"}),N("w2","Worker 2",440,200,{sub:"idle"}),
+  N("w3","Worker 3",440,330,{sub:"idle"}),N("dlq","Dead-letter queue",690,330,{sub:"0 messages"})],
+ edges:[["q","w1"],["q","w2"],["q","w3"],["w3","dlq"]],
+ steps:[
+  {say:"Six invoice jobs are waiting. Three identical workers listen on the same queue.",on:["q","w1","w2","w3"]},
+  {say:"Each message goes to exactly one worker, and they work in parallel.",send:[{par:[["q","w1","invoice 1"],["q","w2","invoice 2"],["q","w3","invoice 3"]]}],tag:{w1:"invoice 1",w2:"invoice 2",w3:"invoice 3",q:"3 messages"}},
+  {say:"Worker 2 finishes first and takes the next one. A busy worker simply gets fewer messages.",send:[["q","w2","invoice 4"]],tag:{w2:"invoice 4",q:"2 messages"}},
+  {say:"Invoice 5 has corrupt data and fails 3 times. It's moved to a dead-letter queue instead of blocking the line.",send:[["q","w3","invoice 5"],["w3","dlq","invoice 5 ✗"]],tag:{dlq:"1 message",w3:"invoice 6",q:"0 messages"}}
+ ]},
+{id:"leader-election",name:"Leader Election",cat:"microservices",mod:"microservices",pkg:"leaderelection",ex:["lease","fencing","bully","sequential"],
+ intent:"Have one of many instances act as leader for a task, and pick a new leader automatically if it dies.",
+ when:"Some work must be done by exactly one instance at a time: a scheduled job, handing out shards, sending the daily report.",
+ analogy:"A group project where one person holds the edit key to the shared document. If they disappear, the group hands the key to someone else.",
+ tip:"Leases expire, so an old leader can wake up still believing it leads. Use fencing tokens so storage rejects writes from a stale leader.",
+ code:`<span class="c">// lease in a shared store (etcd, ZooKeeper or a database row)</span>
+<span class="k">boolean</span> leader = lock.tryAcquire("daily-settlement", Duration.ofSeconds(15));
+<span class="k">if</span> (leader) {
+  <span class="k">long</span> token = lock.fencingToken();   <span class="c">// goes up with every new leader</span>
+  settlement.run(token);              <span class="c">// storage rejects older tokens</span>
+}`,
+ nodes:[N("a","Instance A",110,80,{sub:"–"}),N("b","Instance B",110,200,{sub:"–"}),N("c","Instance C",110,320,{sub:"–"}),
+  N("lease","Lease store",410,200,{sub:"free"}),N("db","Settlement DB",690,200,{sub:"no writes yet"})],
+ edges:[["a","lease"],["b","lease"],["c","lease"]],
+ steps:[
+  {say:"Three instances run the same code. Only one should run the nightly settlement.",on:["a","b","c"]},
+  {say:"All three try to take the lease. A wins and gets fencing token 7; B and C become followers.",send:[{par:[["a","lease","acquire"],["b","lease","acquire"],["c","lease","acquire"]]}],tag:{lease:"A leads · token 7",a:"leader",b:"follower",c:"follower"}},
+  {say:"The leader renews its lease every few seconds and writes using its token.",send:[["a","lease","renew"],["a","db","write (token 7)"]],tag:{db:"last token 7"}},
+  {say:"A freezes in a long garbage-collection pause and misses its renewals. The lease expires and B becomes leader with token 8.",send:[["b","lease","acquire"]],tag:{a:"paused",lease:"B leads · token 8",b:"leader"}},
+  {say:"A wakes up and tries to write with token 7. The database has already seen 8, so it rejects the stale write.",send:[["a","db","write (token 7)"],["db","a","rejected"],["b","db","write (token 8)"]],tag:{db:"last token 8"}}
+ ]},
+{id:"backpressure",name:"Backpressure & Load Shedding",cat:"microservices",mod:"microservices",pkg:"backpressure",ex:["flow","overflow","shedding","unbounded"],
+ intent:"Let a slow consumer tell producers to slow down, and drop excess load on purpose instead of collapsing under it.",
+ when:"Traffic can arrive faster than you can handle it: sale spikes, retry storms, a slow downstream service.",
+ analogy:"A restaurant host who quotes a 20-minute wait, and turns people away once the waiting list is full, instead of seating everyone into chaos.",
+ tip:"An unbounded queue isn't backpressure; it only delays the crash. Drop low-priority work first and reply 503 with Retry-After.",
+ code:`Flux.from(orderEvents)
+    .limitRate(100)                              <span class="c">// ask for 100 at a time</span>
+    .onBackpressureDrop(e -&gt; metrics.dropped(e))
+    .flatMap(<span class="k">this</span>::process, 16);                <span class="c">// at most 16 in flight</span>`,
+ nodes:[N("prod","Flash-sale traffic",110,200,{kind:"client",sub:"5,000 req/s"}),N("q","Bounded buffer",400,200,{sub:"0 of 100"}),
+  N("cons","Order processor",690,200,{sub:"800 req/s max"}),N("shed","Shed with 503",400,340,{sub:"browse traffic first"})],
+ edges:[["prod","q"],["q","cons"],["q","shed"]],
+ steps:[
+  {say:"A flash sale sends 5,000 requests a second. The processor can handle 800.",on:["prod","cons"]},
+  {say:"The processor pulls only what it can handle, in batches. The demand flows upstream: 'send me 100 more'.",send:[["cons","q","request(100)"],["q","cons","100 orders"]],tag:{q:"100 of 100"}},
+  {say:"The buffer is full. Instead of growing without limit, new low-priority requests are turned away with 503 and Retry-After.",send:[["prod","q","more requests"],["q","shed","overflow"]],tag:{shed:"1,200 turned away"}},
+  {say:"Checkout requests are kept; browsing is dropped first. The service stays up and serves what it can.",on:["cons","q"],tag:{cons:"800 req/s · healthy"}}
+ ]},
+{id:"ambassador",name:"Ambassador",cat:"microservices",mod:"microservices",pkg:"ambassador",ex:["token","legacy","shardproxy"],
+ intent:"Put a helper proxy beside a client to handle the details of talking to a remote service: auth tokens, retries, routing.",
+ when:"Several clients need the same connection logic for an awkward external service, and you don't want it copied into each one.",
+ analogy:"A personal assistant who handles a busy person's calls: dials, waits on hold, and only passes the call through when the right person answers.",
+ tip:"An ambassador is a sidecar focused on outgoing calls to one service. Keep it simple; business logic doesn't belong there.",
+ code:`<span class="c">// the app calls localhost; the ambassador adds auth and retries</span>
+<span class="k">var</span> r = http.get("http://localhost:9000/shipments/" + id);
+
+<span class="c"># ambassador (separate container)</span>
+upstream: https://api.carrier.example
+auth:  oauth2 client-credentials (cached, auto-refresh)
+retry: 3 × exponential backoff on 5xx`,
+ nodes:[N("app","dispatch-service",110,200,{sub:"calls localhost:9000"}),N("amb","Ambassador",400,200,{sub:"token cache: empty"}),
+  N("auth","Carrier OAuth",680,80),N("api","Carrier API",680,320,{sub:"flaky"})],
+ edges:[["app","amb"],["amb","auth"],["amb","api"]],
+ steps:[
+  {say:"The app makes a plain local call. It knows nothing about OAuth or the carrier's quirks.",send:[["app","amb","GET /shipments/88"]]},
+  {say:"The ambassador fetches an OAuth token once and caches it until it expires.",send:[["amb","auth","client credentials"],["auth","amb","token (1 h)"]],tag:{amb:"token cached"}},
+  {say:"It calls the carrier API. The first attempt gets a 503, so it retries with backoff.",send:[["amb","api","GET + token"],["api","amb","503"],["amb","api","retry"],["api","amb","200"]]},
+  {say:"The app gets a clean answer. Every client using this carrier reuses the same ambassador.",send:[["amb","app","shipment 88"]]}
+ ]},
+{id:"gateway-aggregation",name:"Gateway Aggregation",cat:"microservices",mod:"microservices",pkg:"aggregation",ex:["core","budget","dag","declarative","fields"],
+ intent:"Have a gateway call several services in parallel and combine their answers into one response.",
+ when:"One screen needs data from many services, and calling them one by one from the phone costs round-trips over a slow network.",
+ analogy:"A travel agent who checks flights, hotels and cabs at the same time and hands you one itinerary.",
+ tip:"Set a time budget for the whole response and decide which parts are optional. A missing 'recommendations' block shouldn't fail the order page.",
+ code:`Mono&lt;OrderPage&gt; page(String id) {
+  <span class="k">return</span> Mono.zip(
+      orders.get(id),
+      delivery.eta(id).timeout(ofMillis(300)).onErrorReturn(Eta.unknown()),
+      payments.status(id))
+    .map(t -&gt; <span class="k">new</span> OrderPage(t.getT1(), t.getT2(), t.getT3()));
+}`,
+ nodes:[N("app","Order screen",100,200,{kind:"client"}),N("agg","Aggregating gateway",350,200,{sub:"budget 400 ms"}),
+  N("o","order-service",650,70,{sub:"60 ms"}),N("d","delivery-service",650,200,{sub:"90 ms"}),N("p","payment-service",650,330,{sub:"50 ms"})],
+ edges:[["app","agg"],["agg","o"],["agg","d"],["agg","p"]],
+ steps:[
+  {say:"Without aggregation the phone would make three calls over mobile data, one after another.",on:["app"]},
+  {say:"The app makes one request. The gateway calls all three services at once.",send:[["app","agg","GET /order-page/5521"],{par:[["agg","o","GET"],["agg","d","GET"],["agg","p","GET"]]}]},
+  {say:"The answers come back in parallel, so the total time is the slowest call: 90 ms.",send:[{par:[["o","agg","order"],["d","agg","ETA 7:40"],["p","agg","paid"]]}]},
+  {say:"The gateway merges them into one response for the screen. If delivery had timed out, it would send 'ETA unknown' instead of failing.",send:[["agg","app","one response"]],tag:{agg:"merged in 92 ms"}}
+ ]},
+{id:"health-check",name:"Health Check",cat:"microservices",mod:"microservices",pkg:"healthcheck",ex:["probes","composite","cached","storm"],
+ intent:"Expose endpoints that say whether a service is alive and ready for traffic, so the platform can route around or restart unhealthy instances.",
+ when:"You run several instances behind a load balancer or Kubernetes, which needs to know which ones to use.",
+ analogy:"A nurse checking a patient. 'Are they alive?' and 'Are they fit to work today?' are different questions.",
+ tip:"Keep liveness simple: is the process stuck? Put dependency checks in readiness only, or a database blip makes Kubernetes restart every pod.",
+ code:`management.endpoint.health.probes.enabled: <span class="k">true</span>
+<span class="c"># /actuator/health/liveness   → is the JVM responsive?</span>
+<span class="c"># /actuator/health/readiness  → database pool ok? warm-up done?</span>
+livenessProbe:  { httpGet: { path: /actuator/health/liveness },  periodSeconds: 10 }
+readinessProbe: { httpGet: { path: /actuator/health/readiness }, periodSeconds: 5 }`,
+ nodes:[N("k8s","Kubernetes",110,200,{sub:"probes every 5 s"}),N("p1","catalog pod 1",420,80,{sub:"ready"}),N("p2","catalog pod 2",420,200,{sub:"warming up"}),
+  N("p3","catalog pod 3",420,320,{sub:"ready"}),N("lb","Load balancer",690,200,{sub:"→ pods 1, 3"})],
+ edges:[["k8s","p1"],["k8s","p2"],["k8s","p3"],["lb","p1"],["lb","p2"],["lb","p3"]],
+ steps:[
+  {say:"Kubernetes probes each pod. Pods 1 and 3 are ready; pod 2 is still warming its cache.",send:[{par:[["k8s","p1","ready?"],["k8s","p2","ready?"],["k8s","p3","ready?"]]}]},
+  {say:"Only ready pods get traffic. Pod 2 isn't killed, just left out of the load balancer for now.",send:[{par:[["lb","p1","traffic"],["lb","p3","traffic"]]}]},
+  {say:"Pod 2 finishes warming up, reports ready, and starts getting requests.",send:[["k8s","p2","ready?"],["p2","k8s","UP"],["lb","p2","traffic"]],tag:{p2:"ready",lb:"→ pods 1, 2, 3"}},
+  {say:"Pod 3 deadlocks and stops answering its liveness probe. After 3 failures Kubernetes restarts it.",send:[["k8s","p3","alive?"]],tag:{p3:"no answer ×3 → restart",lb:"→ pods 1, 2"}}
+ ]},
+{id:"deployment-strategies",name:"Deployment Strategies",cat:"microservices",mod:"microservices",pkg:"deployment",ex:["bluegreen","canary","toggles","migration"],
+ intent:"Release new versions gradually or side by side (blue-green, canary, feature toggles), so a bad release is caught early and rolled back fast.",
+ when:"Downtime or a broken release is expensive, and you want to try a version on real traffic before everyone gets it.",
+ analogy:"A restaurant trying a new dish on two tables before adding it to the menu.",
+ tip:"Database changes must work with both versions during the rollout: add new columns first, migrate, and remove old ones in a later release.",
+ code:`<span class="c"># Argo Rollouts canary</span>
+strategy:
+  canary:
+    steps:
+    - setWeight: 5
+    - pause: { duration: 10m }   <span class="c"># watch error rate and latency</span>
+    - setWeight: 50
+    - pause: { duration: 10m }
+    - setWeight: 100`,
+ nodes:[N("users","Users",110,200,{kind:"client"}),N("lb","Router",370,200,{sub:"100% → v1"}),
+  N("v1","checkout v1",650,90,{sub:"stable"}),N("v2","checkout v2",650,310,{sub:"new",hidden:1})],
+ edges:[["users","lb"],["lb","v1"],["lb","v2"]],
+ steps:[
+  {say:"Version 1 serves everyone.",send:[["users","lb","requests"],["lb","v1","100%"]]},
+  {say:"Version 2 is deployed beside it but gets no traffic yet. Smoke tests run against it directly.",show:["v2"],on:["v2"]},
+  {say:"Canary: 5% of users go to v2 while the error rate and latency are watched.",send:[["users","lb","requests"],{par:[["lb","v1","95%"],["lb","v2","5%"]]}],tag:{lb:"95% v1 · 5% v2"}},
+  {say:"The numbers look healthy, so traffic steps up to 50%, then 100%.",send:[["lb","v2","100%"]],tag:{lb:"100% → v2",v2:"serving everyone"}},
+  {say:"Had errors jumped, the router would have switched back to v1 in seconds. Blue-green makes the same switch in a single step.",on:["v1","lb"],tag:{v1:"kept for rollback"}}
+ ]},
+/* ───────── ARCHITECTURE ───────── */
+{id:"layered",name:"Layered",cat:"architecture",mod:"architecture",pkg:"layered",ex:["grocery","clinic","reporting","rules"],
+ intent:"Organize code in horizontal layers (presentation, business, data access), where each layer only calls the one below it.",
+ when:"A typical business application where a clear, familiar structure matters more than strictly isolating the domain.",
+ analogy:"A restaurant: waiters take orders, the kitchen cooks, the storeroom supplies. Waiters don't walk into the storeroom.",
+ tip:"The business layer tends to end up depending on database details. If the domain rules matter most, consider hexagonal so dependencies point inward.",
+ code:`@RestController <span class="k">class</span> OrderController { <span class="k">private final</span> OrderService service; }
+@Service        <span class="k">class</span> OrderService    { <span class="k">private final</span> OrderRepository repo; }
+@Repository     <span class="k">interface</span> OrderRepository <span class="k">extends</span> JpaRepository&lt;OrderEntity, Long&gt; {}
+<span class="c">// ArchUnit: layeredArchitecture() ... whereLayer("Controller").mayNotBeAccessedByAnyLayer()</span>`,
+ nodes:[N("cl","Browser",110,200,{kind:"client"}),N("pres","Presentation",400,70,{sub:"OrderController"}),N("biz","Business",400,200,{sub:"OrderService"}),
+  N("data","Data access",400,330,{sub:"OrderRepository"}),N("db","Database",680,330)],
+ edges:[["cl","pres"],["pres","biz"],["biz","data"],["data","db"]],
+ steps:[
+  {say:"Each layer has one job, and calls only go downward.",on:["pres","biz","data"]},
+  {say:"A request enters the presentation layer, which reads the input and calls the business layer.",send:[["cl","pres","POST /orders"],["pres","biz","placeOrder()"]]},
+  {say:"The business layer applies the rules (stock, limits) and asks the data layer to save.",send:[["biz","data","save(order)"],["data","db","INSERT"]]},
+  {say:"The result flows back up. A controller calling the repository directly would skip a layer, and the ArchUnit test fails the build.",send:[["db","data","ok"],["data","biz","saved"],["biz","pres","Order #5521"],["pres","cl","201 Created"]]}
+ ]},
+{id:"hexagonal",name:"Hexagonal (Ports & Adapters)",cat:"architecture",mod:"architecture",pkg:"hexagonal",ex:["checkout","claims","fare","contract"],
+ intent:"Put the domain at the center with ports (interfaces) it defines, and plug technology in from the outside through adapters.",
+ when:"The business rules are the valuable part and must be testable without databases, web frameworks or brokers.",
+ analogy:"A laptop's ports. USB-C defines the shape; any charger, screen or drive that fits can be plugged in.",
+ tip:"Ports belong to the domain and use domain words (PaymentPort.charge), not technology words (StripeClient.post).",
+ code:`<span class="c">// domain: no Spring imports</span>
+<span class="k">interface</span> PaymentPort { Receipt charge(Money amount, OrderId id); }
+<span class="k">class</span> Checkout { Checkout(PaymentPort payments, OrderRepository orders) { ... } }
+
+<span class="c">// infrastructure</span>
+@Component <span class="k">class</span> RazorpayAdapter <span class="k">implements</span> PaymentPort { ... }
+<span class="c">// test</span>
+<span class="k">new</span> Checkout(<span class="k">new</span> FakePayments(), <span class="k">new</span> InMemoryOrders());`,
+ nodes:[N("rest","REST adapter",100,100,{sub:"drives the domain"}),N("test","Unit test",100,300,{sub:"drives the domain"}),N("core","Checkout domain",320,200,{sub:"rules only"}),
+  N("payPort","PaymentPort",530,110,{sub:"«port»",kind:"iface"}),N("repoPort","OrderRepository",530,290,{sub:"«port»",kind:"iface"}),
+  N("razor","Razorpay adapter",712,60),N("pg","JPA adapter",712,340)],
+ edges:[["rest","core"],["test","core"],["core","payPort"],["core","repoPort"],["razor","payPort","i"],["pg","repoPort","i"]],
+ steps:[
+  {say:"The domain sits in the middle with no framework code. It declares the ports it needs as interfaces.",on:["core","payPort","repoPort"]},
+  {say:"A REST adapter drives the domain: it turns an HTTP request into a call on a use case.",send:[["rest","core","checkout(cart)"]]},
+  {say:"The domain calls its own ports. Spring plugs real adapters in behind them: Razorpay for payments, JPA for storage.",send:[["core","payPort","charge()"],["payPort","razor","handled by"],["core","repoPort","save()"],["repoPort","pg","handled by"]]},
+  {say:"In a unit test the same domain runs with in-memory fakes plugged into the ports. No database, and the test runs in milliseconds.",send:[["test","core","checkout(cart)"]],tag:{razor:"now: FakePayments",pg:"now: InMemoryOrders"}}
+ ]},
+{id:"clean",name:"Clean Architecture",cat:"architecture",mod:"architecture",pkg:"clean",ex:["transfer","coupon","refill","crosscutting"],
+ intent:"Arrange code in rings (entities, use cases, interface adapters, frameworks) where source dependencies only point inward.",
+ when:"Long-lived systems whose business rules must outlast frameworks, user interfaces and databases.",
+ analogy:"An onion. The business is the core; each outer layer protects and adapts it, and you can peel the outside without touching the core.",
+ tip:"Don't build four classes for every trivial screen. Apply the full structure where the rules are rich.",
+ code:`<span class="c">// entities (innermost)</span>  <span class="k">record</span> Account(AccountId id, Money balance) { Account debit(Money m) { ... } }
+<span class="c">// use cases</span>             <span class="k">class</span> TransferFunds { TransferFunds(AccountGateway g, Presenter p) { ... } }
+<span class="c">// interface adapters</span>    <span class="k">class</span> TransferController { ... transferFunds.execute(request); }
+<span class="c">// frameworks &amp; drivers</span>  Spring MVC, JPA, Kafka`,
+ nodes:[N("fw","Frameworks",100,170,{sub:"Spring MVC, JPA"}),N("ad","Adapters",295,170,{sub:"controller, presenter"}),N("uc","Use cases",495,170,{sub:"TransferFunds"}),
+  N("en","Entities",690,170,{sub:"Account.debit()"}),N("gw","AccountGateway",495,330,{sub:"interface owned by use case",kind:"iface"}),N("jpa","JpaAccountGateway",230,330,{sub:"outer ring"})],
+ edges:[["fw","ad"],["ad","uc"],["uc","en"],["uc","gw","h"],["jpa","gw","i"]],
+ steps:[
+  {say:"Four rings, outer to inner. Code may only depend on rings further in, so every arrow points toward Entities.",on:["fw","ad","uc","en"]},
+  {say:"A transfer request arrives through the web framework, and an adapter turns it into a use-case request.",send:[["fw","ad","HTTP POST"],["ad","uc","TransferRequest"]]},
+  {say:"The use case runs the business flow and asks the entities to enforce rules like 'no overdraft'.",send:[["uc","en","debit(₹500)"],["en","uc","ok"]]},
+  {say:"To load and save accounts, the use case calls a gateway interface it owns. The JPA class implementing it sits in an outer ring and points inward.",send:[["uc","gw","load(A-1)"]],on:["jpa","gw"]},
+  {say:"Swap Spring for another framework, or JPA for a remote API, and the entities and use cases don't change.",on:["en","uc"],tag:{fw:"any framework",jpa:"any storage"}}
+ ]},
+{id:"event-driven",name:"Event-Driven",cat:"architecture",mod:"architecture",pkg:"eventdriven",ex:["grocery","broker","fraud","iot","dlq"],
+ intent:"Have services announce facts as events on a broker, and let any interested service react, without the publisher knowing who listens.",
+ when:"One action triggers many follow-ups owned by different teams, and you want to add reactions without changing the source.",
+ analogy:"A school bell. It doesn't know who is in which room; everyone who cares reacts to it.",
+ tip:"Events are facts in the past tense (OrderPlaced), not commands. Plan for duplicates, out-of-order delivery and a dead-letter queue.",
+ code:`<span class="c">// publisher states a fact</span>
+events.publish("grocery.ordering.order.placed.v1", <span class="k">new</span> OrderPlaced(id, items, total));
+<span class="c">// each subscriber lives in its own service and consumer group</span>
+@KafkaListener(topics = "grocery.ordering.order.placed.v1", groupId = "inventory")
+<span class="k">void</span> reserve(OrderPlaced e) { ... }`,
+ nodes:[N("ord","order-service",110,200,{sub:"publisher"}),N("br","Kafka",380,200,{sub:"order.placed"}),
+  N("inv","inventory",660,60,{sub:"–"}),N("noti","notifications",660,155,{sub:"–"}),N("ana","analytics",660,250,{sub:"–"}),N("fr","fraud check",660,345,{sub:"–",hidden:1})],
+ edges:[["ord","br"],["br","inv"],["br","noti"],["br","ana"],["br","fr"]],
+ steps:[
+  {say:"Order service publishes a fact, OrderPlaced. It doesn't call anyone or know who's listening.",send:[["ord","br","OrderPlaced #5521"]]},
+  {say:"Each subscriber gets its own copy and reacts on its own: reserve stock, send the SMS, update the dashboards.",send:[{par:[["br","inv","OrderPlaced"],["br","noti","OrderPlaced"],["br","ana","OrderPlaced"]]}],tag:{inv:"stock reserved",noti:"SMS sent",ana:"sales +₹499"}},
+  {say:"The fraud team adds a new subscriber. Order service doesn't change or redeploy.",show:["fr"],send:[["fr","br","subscribe"]]},
+  {say:"If notifications is down, its messages wait in the broker. Others aren't affected, and it catches up when it's back.",send:[["br","fr","OrderPlaced"]],tag:{noti:"down → catching up",fr:"risk score 0.02"}}
+ ]},
+{id:"modular-monolith",name:"Modular Monolith",cat:"architecture",mod:"architecture",pkg:"modular",ex:["shop","payroll","cycles","verify"],
+ intent:"Build one deployable application split into strictly separated modules with public APIs, so teams can grow without the cost of microservices.",
+ when:"You want clear boundaries and team ownership but not yet the operational cost of many services. Often the step before microservices.",
+ analogy:"A department store under one roof: separate departments with their own staff, talking at service counters, but one building and one front door.",
+ tip:"Boundaries only hold if something enforces them. Use Spring Modulith or ArchUnit to fail the build when one module reaches into another's internals.",
+ code:`com.freshcart.catalog            <span class="c">// public API: CatalogApi</span>
+com.freshcart.catalog.internal   <span class="c">// hidden from other modules</span>
+com.freshcart.ordering           <span class="c">// uses CatalogApi only</span>
+
+@Test <span class="k">void</span> verifyModules() {
+  ApplicationModules.of(FreshCartApp.<span class="k">class</span>).verify();   <span class="c">// Spring Modulith</span>
+}`,
+ nodes:[N("app","freshcart.jar",400,60,{sub:"one deployable"}),N("cat","catalog",160,220,{sub:"API: CatalogApi"}),N("ord","ordering",400,220,{sub:"uses CatalogApi"}),
+  N("pay","payments",640,220,{sub:"listens to events"}),N("catInt","catalog.internal",160,345,{sub:"hidden"}),N("ver","Module test",640,345,{sub:"checks boundaries"})],
+ edges:[["app","cat","h"],["app","ord","h"],["app","pay","h"],["cat","catInt","h"]],
+ steps:[
+  {say:"Everything ships as one application, but the code is split into modules with clear owners.",on:["app","cat","ord","pay"]},
+  {say:"Ordering needs a price, so it calls catalog's public API, not its internal classes.",send:[["ord","cat","CatalogApi.price()"]]},
+  {say:"Modules can also talk through in-process events: ordering publishes, payments reacts.",send:[["ord","pay","OrderPlaced (event)"]],tag:{pay:"payment started"}},
+  {say:"Someone makes ordering import a class from catalog.internal. The module test fails the build before it can merge.",send:[["ord","catInt","import ✗"],["ver","ord","violation!"]],tag:{ver:"build failed ✗"}}
+ ]},
 ];
 
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const svg=$("#dia"), NS="http://www.w3.org/2000/svg";
-const REPO="https://github.com/khiruashish/java-design-pattern/tree/main/design-patterns";
+const GH="https://github.com/khiruashish/java-design-pattern/tree/main";
+const srcDir=p=>p.mod?`${GH}/code/${p.mod}/src/main/java/com/handbook/${p.mod}/${p.pkg}`:`${GH}/design-patterns/${p.cat}/src/main/java/com/handbook/${p.cat}/${p.pkg}`;
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let cur=P[0], step=0, playing=false, run=0, speed=1, curCat="creational";
 
@@ -1008,7 +1677,7 @@ function selectPattern(p,{auto=true,push=true}={}){
   $("#when").textContent=p.when;$("#analogy").textContent=p.analogy;
   $("#tip").textContent=p.tip||"";$("#tipbox").hidden=!p.tip;
   $("#code").innerHTML=p.code;
-  $("#repo").innerHTML=p.ex.map(e=>`<a href="${REPO}/${p.cat}/src/main/java/com/handbook/${p.cat}/${p.pkg}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
+  $("#repo").innerHTML=p.ex.map(e=>`<a href="${srcDir(p)}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
   $("#steps").innerHTML=p.steps.map((s,i)=>`<li tabindex="0" data-i="${i}">${esc(s.say)}</li>`).join("");
   svg.setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
   if(push&&!EMBED){try{history.replaceState(null,"","#"+p.id)}catch(e){location.hash=p.id}}

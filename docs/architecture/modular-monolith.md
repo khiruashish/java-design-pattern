@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=modular-monolith&amp;embed=1" title="Animated walkthrough of the Modular Monolith pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#modular-monolith){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a classic monolith turned into a "big ball of mud": any class calls any other, the billing code reads the catalog's tables, and a change anywhere can break anything. The usual reaction, "let's do microservices", trades that for network failures, distributed transactions and 30 deployment pipelines, often before anyone knows where the right boundaries are.

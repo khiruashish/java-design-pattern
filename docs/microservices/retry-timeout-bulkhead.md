@@ -19,6 +19,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=retry-timeout-bulkhead&amp;embed=1" title="Animated walkthrough of the Retry / Timeout / Bulkhead pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#retry-timeout-bulkhead){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:**

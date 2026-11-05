@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=api-gateway&amp;embed=1" title="Animated walkthrough of the API Gateway pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#api-gateway){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a grocery mobile app talks to catalog, cart, order and payment services. Without a gateway, the app needs every service's address, each service re-implements token validation and rate limiting, and moving or splitting a service means shipping a new app version (and waiting weeks for users to update). A gateway puts **one front door** in front of all of them.

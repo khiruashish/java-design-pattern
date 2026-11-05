@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=anti-corruption-layer&amp;embed=1" title="Animated walkthrough of the Anti-Corruption Layer pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#anti-corruption-layer){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the new catalog service reads products from a 25-year-old ERP: fields like `MAT_NO` with 18-digit zero padding, prices as `"1.299,00"`, units `KGM`/`ST`, and `DEL_FLAG = "X"` for inactive. If those details spread through the new code, the new service becomes as hard to change as the ERP, and replacing the ERP later means touching everything. That's the "corruption".

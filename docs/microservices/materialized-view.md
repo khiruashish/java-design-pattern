@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=materialized-view&amp;embed=1" title="Animated walkthrough of the Materialized View pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#materialized-view){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the store manager's dashboard shows today's orders and revenue. Computing it means `SUM` over millions of order lines, run every time 400 managers refresh their screens. The tracking page needs shipment, driver and ETA data that live in three different services; joining them over HTTP on every page view is slow and fragile.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=service-discovery&amp;embed=1" title="Animated walkthrough of the Service Discovery pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#service-discovery){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** `order-service` runs as 3 containers today, 7 during the evening rush, and each deploy replaces them with new IP addresses. A crashed instance should stop getting traffic within seconds. Hard-coding `10.0.1.11:8080` in configuration can't keep up.

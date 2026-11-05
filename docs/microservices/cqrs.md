@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=cqrs&amp;embed=1" title="Animated walkthrough of the CQRS pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#cqrs){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a single normalized `products` table must enforce pricing rules on writes **and** answer "cheapest organic fruit in Bengaluru, sorted by discount, with ratings" in 20 ms for millions of shoppers. The write model wants normalization and invariants; the read side wants denormalized, pre-joined, indexed data. One model serves both badly. In microservices it's worse: the data for one screen lives in **several services**.

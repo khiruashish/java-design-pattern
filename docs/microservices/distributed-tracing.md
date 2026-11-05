@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=distributed-tracing&amp;embed=1" title="Animated walkthrough of the Distributed Tracing pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#distributed-tracing){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** checkout takes 1.5 s sometimes. The request touches the gateway, order, inventory, payment and an external bank. Each service's logs say "OK" and its average latency looks fine. Which hop is slow, for **this** request? Without a shared ID, correlating logs across five services by timestamp is guesswork.

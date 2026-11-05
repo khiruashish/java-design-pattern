@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=ambassador&amp;embed=1" title="Animated walkthrough of the Ambassador pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#ambassador){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a 2009 loan-servicing application must call a partner bank's new API, which requires an API key, request ids and tolerance for frequent 503s. The app's HTTP client can't add headers or retry, and nobody can safely rebuild it. Separately, a Node.js, a Python and a Java service all need the same sharded-Redis logic, and three implementations drift.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=hexagonal&amp;embed=1" title="Animated walkthrough of the Hexagonal (Ports &amp; Adapters) pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#hexagonal){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** checkout logic is tangled with Spring MVC, JPA and the payment provider's SDK. Switching payment providers means editing business code; testing a checkout rule requires a database and a sandbox account; a nightly batch import can't reuse the logic because it's buried in a controller.

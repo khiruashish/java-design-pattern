@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=decomposition&amp;embed=1" title="Animated walkthrough of the Decomposition (DDD) pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#decomposition){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a grocery monolith has catalog, inventory, orders, payments and delivery in one codebase and one database. Every team deploys together, a bad inventory query slows checkout, and a change to the `products` table breaks four teams. Microservices promise independent teams and deployments, but only if the **boundaries are right**. Split badly (by technical layer, or by today's org chart) and you get a **distributed monolith**: all the network problems, none of the independence.

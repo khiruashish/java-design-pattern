@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=cache-aside&amp;embed=1" title="Animated walkthrough of the Cache-Aside pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#cache-aside){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the product page for bananas is viewed 1,000 times a minute during the evening rush, and every view runs the same `SELECT`. The database's CPU climbs, latency rises for everything else, and you're paying for a bigger database just to answer the same question again and again.
