@@ -1,0 +1,5 @@
+=== Logistics: Warehouse Receiving Hours ===
+Truck WEDNESDAY 11:30 -> Bhiwandi: accept Night hub: wait
+Truck SATURDAY  15:00 -> Bhiwandi: wait   Night hub: wait
+Truck SUNDAY    10:00 -> Bhiwandi: wait   Night hub: wait
+Truck SUNDAY    22:30 -> Bhiwandi: wait   Night hub: accept

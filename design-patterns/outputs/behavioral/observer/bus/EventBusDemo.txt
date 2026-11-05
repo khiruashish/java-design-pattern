@@ -1,0 +1,4 @@
+welcome mail -> neha@example.com
+CRM contact  -> neha@example.com
+security mail -> neha@example.com
+CRM contact  -> li@example.com

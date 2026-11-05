@@ -1,0 +1,6 @@
+=== E-commerce: Checkout Address Form ===
+start          : country=null | state=null (disabled) | postcode=null () | Pay disabled
+pick India     : country=India | state=null [Karnataka, Maharashtra] | postcode=null (6-digit PIN) | Pay disabled
+state + PIN    : country=India | state=Karnataka [Karnataka, Maharashtra] | postcode=560034 (6-digit PIN) | Pay ENABLED
+switch country : country=Germany | state=null [Bavaria, Berlin] | postcode=null (5-digit PLZ) | Pay disabled
+state + PLZ    : country=Germany | state=Berlin [Bavaria, Berlin] | postcode=10115 (5-digit PLZ) | Pay ENABLED

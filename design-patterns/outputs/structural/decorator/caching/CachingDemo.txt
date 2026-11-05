@@ -1,0 +1,7 @@
+  (db query for BUTTER-500)
+BUTTER-500: Salted Butter 500g, INR 285
+BUTTER-500: Salted Butter 500g, INR 285
+BUTTER-500: Salted Butter 500g, INR 285
+  (db query for BUTTER-500)
+BUTTER-500: Salted Butter 500g, INR 285
+hits=2 misses=2

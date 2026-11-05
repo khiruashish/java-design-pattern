@@ -1,0 +1,4 @@
+=== Grocery: Pricing Rules as Decorators ===
+No offers           : INR 1050.00
+Discounts, then GST : INR 840.00
+GST, then discounts : INR 845.00  <- same rules, different order

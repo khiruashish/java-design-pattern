@@ -1,0 +1,4 @@
+=== Food Delivery: Order Status Notifications ===
+[EMAIL] to=asha@example.com subject="Order update" body="Hi Asha, order FD-501 is out for delivery"
+[SMS]   to=+91-98450-00001 text="Hi Ravi, order FD-502 is out for deli..."
+[PUSH]  device=device-7f3a title="Order update" text="Hi Meera, order FD-503 is out for delivery"

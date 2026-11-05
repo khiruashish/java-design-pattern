@@ -1,0 +1,3 @@
+JP: subtotal JPY 3,000 + Consumption tax 8% JPY 240 + delivery JPY 0 = JPY 3,240 (same-day delivery)
+JP: subtotal JPY 1,500 + Consumption tax 8% JPY 120 + delivery JPY 330 = JPY 1,950 (same-day delivery)
+JP: Minimum order is JPY 1,000

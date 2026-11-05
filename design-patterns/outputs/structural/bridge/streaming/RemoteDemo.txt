@@ -1,0 +1,16 @@
+=== Streaming: Remotes x Devices ===
+Basic remote + SmartTV:
+  SmartTV power ON
+  SmartTV volume 30
+Voice remote + SetTopBox:
+  "play Cricket World Cup Final"
+  SetTopBox power ON
+    [SetTopBox] tuning to channel for 'Cricket World Cup Final'
+  "louder"
+  SetTopBox volume 18
+  SetTopBox volume 28
+  "louder"
+  SetTopBox volume 30
+  SetTopBox volume 30
+  "make me a sandwich"
+  Sorry, I didn't understand that

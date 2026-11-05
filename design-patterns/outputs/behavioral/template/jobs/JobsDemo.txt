@@ -1,0 +1,7 @@
+invoice-generation: started
+  generated 1,240 invoices
+invoice-generation: finished
+cache-warmup: skipped
+gst-report: started
+gst-report: FAILED - tax service unavailable
+gst-report lock released? true

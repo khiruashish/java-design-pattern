@@ -1,0 +1,11 @@
+=== Grocery: Order Lifecycle ===
+  GRO-1 [PLACED] picker packed 6 items
+  GRO-1 [PACKED] rider assigned
+  GRO-1 [OUT_FOR_DELIVERY] cannot cancel
+  GRO-1 [OUT_FOR_DELIVERY] OTP verified at door
+  GRO-1 [DELIVERED] cannot deliver
+GRO-1 final status: DELIVERED
+  GRO-2 [PLACED] picker packed 6 items
+  GRO-2 [PACKED] items restocked, full refund
+  GRO-2 [CANCELLED] cannot dispatch
+GRO-2 final status: CANCELLED

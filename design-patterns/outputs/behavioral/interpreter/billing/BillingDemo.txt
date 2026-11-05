@@ -1,0 +1,5 @@
+=== Telecom: Tariff Formulas Configured by the Pricing Team ===
+Light user bill : INR 399.00
+Heavy user bill : INR 844.00
+Roaming 30 min  : INR 750.00
+Roaming 90 min  : INR 999.00 (capped)

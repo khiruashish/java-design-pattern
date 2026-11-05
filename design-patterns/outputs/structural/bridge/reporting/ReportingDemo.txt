@@ -1,0 +1,22 @@
+=== ERP Reporting: 2 reports x 2 formats = 4 outputs from 4 classes ===
+# Q3 Sales by Region
+Region,Revenue (INR lakh)
+North,182.4
+South,211.9
+
+<h2>Q3 Sales by Region</h2>
+<table>
+  <tr><th>Region</th><th>Revenue (INR lakh)</th></tr>
+  <tr><td>North</td><td>182.4</td></tr>
+  <tr><td>South</td><td>211.9</td></tr>
+</table>
+
+# Low Stock Items
+SKU,Name,On hand
+RICE-5KG,"Basmati Rice, 5kg",12
+
+<h2>Low Stock Items</h2>
+<table>
+  <tr><th>SKU</th><th>Name</th><th>On hand</th></tr>
+  <tr><td>RICE-5KG</td><td>Basmati Rice, 5kg</td><td>12</td></tr>
+</table>

@@ -1,0 +1,15 @@
+=== Docs SaaS: One Document, Many Exports ===
+--- Markdown ---
+## Q3 Launch Plan
+We launch in Pune and Jaipur on 1 November.
+![Pune dark store](pune.png)
+| City | Stores |
+| --- | --- |
+| Pune | 12 |
+| Jaipur | 7 |
+--- HTML ---
+<h2>Q3 Launch Plan</h2>
+<p>We launch in Pune and Jaipur on 1 November.</p>
+<img src="pune.png" alt="Pune dark store">
+<table>(2 rows)</table>
+--- Word count: 16 ---

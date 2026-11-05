@@ -1,0 +1,4 @@
+=== Payments: Checkout on a Legacy Bank SDK ===
+ORD-1001 INR     499.00 -> Approved (txn LB68940)
+ORD-1002 INR   12999.50 -> Approved (txn LB68941)
+ORD-1003 INR   75000.00 -> Declined: amount above limit

@@ -1,0 +1,14 @@
+=== Grocery: One-Tap Checkout ===
+Order A:
+  [inventory] reserved 2 x MILK-1L
+  [payment] charged INR 136 to CUST-1
+  [delivery] slot booked 6-8 PM for Koramangala
+  [notify] CUST-1: Order confirmed, arriving SLOT-18-20
+=> Result[success=true, message=confirmed PAY-CUST-1-136 SLOT-18-20]
+Order B:
+=> Result[success=false, message=EGGS-12 is out of stock]
+Order C:
+  [inventory] reserved 3 x BREAD-WW
+  [inventory] released 3 x BREAD-WW
+  [notify] CUST-3: Payment failed, nothing was charged
+=> Result[success=false, message=payment failed: card declined]

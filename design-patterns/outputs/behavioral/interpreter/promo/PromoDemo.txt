@@ -1,0 +1,8 @@
+=== E-commerce: Promo Rules Written by Marketing ===
+Rule text : cart_total >= 999 AND (category == 'electronics' OR member_tier == 'gold') AND NOT city == 'Leh'
+Parsed AST: ((cart_total >= 999.0 AND (category == 'electronics' OR member_tier == 'gold')) AND NOT city == 'Leh')
+total=1499  category=electronics  tier=silver  city=Pune   -> OFFER APPLIES
+total=1200  category=fashion      tier=gold    city=Delhi  -> OFFER APPLIES
+total=650   category=electronics  tier=gold    city=Pune   -> no offer
+total=5000  category=electronics  tier=gold    city=Leh    -> no offer
+Bad rule rejected: Unexpected end of rule

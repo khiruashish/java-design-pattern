@@ -75,6 +75,7 @@ java -cp "capstone/target/classes:$(cat capstone/target/classpath.txt)" com.hand
 ├── mkdocs.yml                # theme, navigation, markdown extensions
 ├── requirements.txt          # MkDocs Material + plugins
 ├── docs/                     # the handbook pages (Markdown)
+├── design-patterns/          # standalone copy with ONLY the 26 GoF patterns (creational/structural/behavioral)
 ├── code/                     # Maven multi-module project
 │   ├── creational/ structural/ behavioral/ concurrency/
 │   ├── microservices/        # distributed patterns as runnable simulations (H2, FakeClock)

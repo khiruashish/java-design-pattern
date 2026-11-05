@@ -1,0 +1,6 @@
+=== Banking: Branch Counter ===
+Teller checks balance   -> INR 250000
+Teller withdraws 20,000 -> withdrew INR 20000, new balance INR 230000
+Teller withdraws 80,000 -> DENIED (anita lacks role MANAGER)
+Manager withdraws 80,000 -> withdrew INR 80000, new balance INR 150000
+Intern checks balance   -> DENIED (sam lacks role TELLER/MANAGER)
