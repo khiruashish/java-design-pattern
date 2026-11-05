@@ -24,6 +24,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-microservices:#0a6c8c; --t-microservices:#dcf0f7;
   --c-architecture:#b0285a; --t-architecture:#fbe3ec;
   --ok:#1a7f43; --ok-t:#e1f4e8; --bad:#c0362c; --bad-t:#fbe5e3;
+  --c-tour:#4d6f0f; --t-tour:#ebf3da;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -38,6 +39,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-microservices:#5cc6e8; --t-microservices:#13303b;
   --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --ok:#5fd38d; --ok-t:#16301f; --bad:#ff7d72; --bad-t:#3a1a17;
+  --c-tour:#a9d65e; --t-tour:#24300f;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -49,6 +51,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-microservices:#5cc6e8; --t-microservices:#13303b;
   --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --ok:#5fd38d; --ok-t:#16301f; --bad:#ff7d72; --bad-t:#3a1a17;
+  --c-tour:#a9d65e; --t-tour:#24300f;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -175,6 +178,39 @@ html.embed .quiz .cmptop{display:none}
 #qhard[aria-pressed="true"]{background:var(--soft);border-color:var(--edge)}
 .quiz .svgbox{max-width:860px;width:100%}
 
+
+/* with / without / break it */
+.modes{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{appearance:none;border:0;background:var(--card);color:var(--ink);padding:6px 12px;font:600 13.5px var(--body);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--cat);color:var(--on-cat)}
+.breaks{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:12px var(--mono);color:var(--muted)}
+.breaks button{appearance:none;border:1px dashed var(--edge);background:transparent;color:var(--ink);border-radius:7px;padding:4px 9px;font:500 13px var(--body);cursor:pointer}
+.breaks button[aria-pressed="true"]{border-style:solid;border-color:var(--cat);background:var(--cat-tint)}
+html.naive{--cat:var(--bad)!important;--cat-tint:var(--bad-t)!important}
+.pats{font-size:14px;color:var(--muted)}
+.pats a{color:var(--cat);font-weight:600}
+.codehint{text-transform:none;letter-spacing:0;font-weight:400}
+/* picker */
+html.picking .main,html.picking #cats,html.picking #chips,html.picking #tocompare,html.picking #toquiz,html.picking #topick{display:none}
+.pick{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:12px;min-width:0}
+html.embed .pick{padding:16px;border-radius:12px}
+html.embed .pick .cmptop{display:none}
+.pq{margin:0;font:700 clamp(20px,2.6vw,26px)/1.2 var(--display)}
+.popts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:8px}
+.popt{appearance:none;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:12px 14px;cursor:pointer;display:grid;gap:2px;font:15px var(--body)}
+.popt b{font-weight:600}
+.popt span{font-size:13px;color:var(--muted)}
+.popt:hover{border-color:var(--cat)}
+.presult{display:grid;gap:8px}
+.pname{margin:0;font:700 clamp(22px,2.8vw,30px)/1.1 var(--display)}
+.pwhen{margin:0}
+.presult .svgbox{max-width:860px;width:100%}
+.palso{margin:0;color:var(--muted)}
+.linkish{appearance:none;border:0;background:none;color:var(--cat);font:600 14.5px var(--body);cursor:pointer;padding:0;text-decoration:underline}
+a.btn{text-decoration:none}
+
 /* diagram */
 .edge{stroke:var(--edge);stroke-width:1.5;fill:none}
 .edge.i{stroke-dasharray:6 5}
@@ -216,6 +252,7 @@ html.embed .quiz .cmptop{display:none}
       <span><b></b>message in flight</span>
       <a class="back" id="tocompare" href="index.html?compare=all">Compare look-alike patterns →</a>
       <a class="back" id="toquiz" href="index.html?quiz=1">Quiz: name that pattern →</a>
+      <a class="back" id="topick" href="index.html?pick=1">Help me pick a pattern →</a>
     </div>
   </header>
 
@@ -229,9 +266,11 @@ html.embed .quiz .cmptop{display:none}
         <h2 id="pname"></h2>
         <p class="intent" id="intent"></p>
       </div>
+      <div class="modes" id="modes" hidden></div>
       <div class="svgbox"><svg class="dia" id="dia" viewBox="0 0 800 400" role="img" aria-label="Animated object diagram"></svg></div>
       <div class="progress"><div id="bar"></div></div>
       <div class="caption"><span class="n" id="capn"></span><span id="cap"></span></div>
+      <div class="pats" id="pats" hidden></div>
       <div class="controls">
         <button class="btn" id="prev" aria-label="Previous step">◀ Back</button>
         <button class="btn primary" id="play">▶ Play</button>
@@ -240,7 +279,7 @@ html.embed .quiz .cmptop{display:none}
           <button data-s="1.6">0.5×</button><button data-s="1" aria-pressed="true">1×</button><button data-s="0.55">2×</button>
         </div>
       </div>
-      <div class="stagecode"><div class="codehead">Code for this step</div><pre class="code" id="code2"></pre></div>
+      <div class="stagecode"><div class="codehead">Code for this step <span class="codehint" id="codehint" hidden>· shows the pattern version</span></div><pre class="code" id="code2"></pre></div>
       <ol class="steps" id="steps"></ol>
       <div class="kbd">Keys: ← → step · space play/pause</div>
     </section>
@@ -269,6 +308,26 @@ html.embed .quiz .cmptop{display:none}
       <div class="speed" role="group" aria-label="Speed">speed
         <button data-s="1.6">0.5×</button><button data-s="1" aria-pressed="true">1×</button><button data-s="0.55">2×</button>
       </div>
+    </div>
+  </section>
+  <section class="pick" id="pick" hidden aria-live="polite">
+    <div class="cmptop"><a class="back" href="index.html">← All patterns, one at a time</a></div>
+    <div class="chips" id="ptrail"></div>
+    <h2 class="pq" id="pq"></h2>
+    <div class="popts" id="popts"></div>
+    <div class="presult" id="presult" hidden>
+      <div class="eyebrow" id="pfam"></div>
+      <h3 class="pname" id="pname2"></h3>
+      <p class="intent" id="pintent"></p>
+      <p class="pwhen"><b>Use it when:</b> <span id="pwhen"></span></p>
+      <div class="svgbox"><svg class="dia" id="psvg" viewBox="0 0 800 400" role="img" aria-label="Animated diagram of the suggested pattern"></svg></div>
+      <div class="caption"><span id="pcap"></span></div>
+      <p class="palso" id="palso"></p>
+    </div>
+    <div class="controls">
+      <a class="btn primary" id="popen" hidden></a>
+      <button class="btn" id="pback">◀ Back</button>
+      <button class="btn" id="prestart">Start over</button>
     </div>
   </section>
   <section class="quiz" id="quiz" hidden aria-live="polite">
@@ -300,7 +359,8 @@ const CATS={
   behavioral:{name:"Behavioral",blurb:"how objects share work"},
   concurrency:{name:"Concurrency",blurb:"how threads cooperate"},
   microservices:{name:"Microservices",blurb:"how services work together"},
-  architecture:{name:"Architecture",blurb:"how a codebase is organized"}
+  architecture:{name:"Architecture",blurb:"how a codebase is organized"},
+  tour:{name:"FreshCart tour",blurb:"one order, end to end"}
 };
 const P=[
 /* ───────── CREATIONAL ───────── */
@@ -1751,6 +1811,529 @@ const PAIRS={
 "hexagonal~clean":"The same core idea: dependencies point at the domain. Clean names more rings (entities, use cases, adapters, frameworks); hexagonal has just inside and outside."
 };
 
+/* ───────── "Without the pattern": what goes wrong ───────── */
+const NAIVE={
+"singleton":{nodes:[N("c1","CartService",110,90,{kind:"client"}),N("c2","CheckoutService",110,310,{kind:"client"}),N("a","config copy #1",450,90,{hidden:1}),N("b","config copy #2",450,310,{hidden:1}),N("f","config file",690,200)],
+ edges:[["c1","a"],["c2","b"],["a","f"],["b","f"]],
+ steps:[{say:"Without a singleton, CartService calls new AppConfig() and gets its own copy.",show:["a"],send:[["c1","a","new"],["a","f","read"]]},
+  {say:"CheckoutService builds a second copy and reads the file again.",show:["b"],send:[["c2","b","new"],["b","f","read"]]},
+  {say:"Ops changes the delivery radius in one copy at runtime. The other still has the old value, so the two services disagree.",tag:{a:"radius 5 km",b:"radius 3 km ✗"}}]},
+"factory-method":{nodes:[N("os","OrderService",140,200,{sub:"if/else on channel type"}),N("sms","SmsChannel",520,90),N("em","EmailChannel",520,200),N("wa","WhatsAppChannel",520,310,{hidden:1})],
+ edges:[["os","sms"],["os","em"],["os","wa"]],
+ steps:[{say:"Without a factory method, OrderService picks the concrete class itself with if/else.",send:[["os","sms","new SmsChannel()"]]},
+  {say:"Every place that sends notifications repeats the same switch.",send:[["os","em","new EmailChannel()"]],tag:{os:"switch copied in 6 places"}},
+  {say:"Adding WhatsApp means editing every one of those switches. Missing one is a bug.",show:["wa"],tag:{os:"5 of 6 switches updated ✗"}}]},
+"abstract-factory":{nodes:[N("scr","CheckoutScreen",140,200,{sub:"picks each part itself"}),N("rp","RupeePrice",520,110),N("kb","KonbiniButton",520,290)],
+ edges:[["scr","rp"],["scr","kb"]],
+ steps:[{say:"Without a factory, the screen chooses each part separately.",send:[["scr","rp","new RupeePrice()"]]},
+  {say:"A different code path picks the payment button using the Japan setting.",send:[["scr","kb","new KonbiniButton()"]]},
+  {say:"Nothing ties the choices together, so a rupee price ends up next to a Japanese konbini button.",on:["rp","kb"],tag:{scr:"mismatched set ✗"}}]},
+"builder":{nodes:[N("cl","CheckoutPage",130,200,{kind:"client"}),N("o","Order",520,200,{sub:"new Order(items, null, null, …)"})],
+ edges:[["cl","o"]],
+ steps:[{say:"Without a builder, the page calls a constructor with seven parameters, most of them null.",send:[["cl","o","new Order(…7 args)"]]},
+  {say:"Two String parameters sit side by side, so the slot and the coupon get swapped and nobody notices.",tag:{o:"slot = \"FRESH10\" ✗"}},
+  {say:"Nothing checks the combination, so an express order without a slot is created anyway.",tag:{o:"express, no slot ✗"}}]},
+"prototype":{nodes:[N("btn","Reorder button",110,200,{kind:"client"}),N("cart","New cart",420,310,{sub:"0 items"}),N("cat","Catalog API",420,90)],
+ edges:[["btn","cart"],["cart","cat"]],
+ steps:[{say:"Without copying, the button rebuilds last week's cart from scratch.",send:[["btn","cart","new Cart()"]]},
+  {say:"Every one of the 12 items is looked up again.",send:[["cart","cat","12 lookups"],["cat","cart","items"]],tag:{cart:"12 items · 12 API calls"}},
+  {say:"A shallow copy would be quicker but share the item list, so adding bananas would change last week's cart too.",tag:{cart:"shared list ✗"}}]},
+"object-pool":{nodes:[N("reqs","100 requests",110,200,{kind:"client"}),N("c","new Connection()",380,200,{sub:"one per request"}),N("db","Database",660,200,{sub:"max 100 connections"})],
+ edges:[["reqs","c"],["c","db"]],
+ steps:[{say:"Without a pool, every request opens its own database connection.",send:[["reqs","c","open"],["c","db","connect"]]},
+  {say:"Each open costs about 50 ms of handshake, so every request is slower.",tag:{c:"50 ms each"}},
+  {say:"A traffic spike opens more connections than the database allows, and new requests fail.",tag:{db:"too many connections ✗"}}]},
+"adapter":{nodes:[N("co","CheckoutService",150,200,{sub:"knows the legacy SDK"}),N("lg","LegacyBank SDK",610,200,{sub:"transfer(String rupees)"})],
+ edges:[["co","lg"]],
+ steps:[{say:"Without an adapter, Checkout calls the old SDK directly and converts paise to rupee strings itself.",send:[["co","lg","transfer(\"499.00\")"]]},
+  {say:"The same conversion code gets copied into refunds, payouts and tests.",tag:{co:"conversion in 4 places"}},
+  {say:"Switching banks now means changing every one of those places.",tag:{co:"4 files to change ✗"}}]},
+"bridge":{nodes:[N("a","HtmlSalesReport",220,90),N("b","CsvSalesReport",570,90),N("c","HtmlInventoryReport",220,290),N("d","CsvInventoryReport",570,290),
+  N("e","PdfSalesReport",395,190,{hidden:1}),N("f","PdfInventoryReport",395,370,{hidden:1})],
+ edges:[],
+ steps:[{say:"Without a bridge, every report type × every format is its own class: 4 classes for 2 × 2.",on:["a","b","c","d"]},
+  {say:"Add PDF and you need two more classes, each repeating the report logic.",show:["e","f"],on:["e","f"]},
+  {say:"Add a third report type and it's three more. The class count multiplies, and a fix to sales logic must be made in three places.",on:["a","b","e"]}]},
+"composite":{nodes:[N("cart","Cart",130,200,{sub:"if (item instanceof Bundle)"}),N("milk","Milk",470,90,{sub:"₹60"}),N("box","Breakfast Box",470,310,{sub:"bundle"})],
+ edges:[["cart","milk"],["cart","box"]],
+ steps:[{say:"Without a common interface, the cart has to check what kind of item it's holding.",send:[["cart","milk","price"]]},
+  {say:"Bundles need a different method, and bundles inside bundles need a loop inside a loop.",send:[["cart","box","sumChildren()"]],tag:{cart:"instanceof checks ×3"}},
+  {say:"Every new feature (tax, weight) repeats the type checks, and a bundle three levels deep gets missed.",tag:{cart:"nested bundle missed ✗"}}]},
+"decorator":{nodes:[N("co","Checkout",110,200,{kind:"client"}),N("big","LoggingRetryingFraudGateway",470,200,{sub:"one subclass per combination"})],
+ edges:[["co","big"]],
+ steps:[{say:"Without decorators, each combination of features becomes its own subclass.",send:[["co","big","pay()"]]},
+  {say:"Logging + retry, retry only, logging + fraud check… three features already need up to seven classes.",tag:{big:"7 subclasses"}},
+  {say:"Changing how retries work means editing every class that retries.",tag:{big:"retry logic copied ×4 ✗"}}]},
+"facade":{nodes:[N("app","Mobile app",120,200,{kind:"client",sub:"knows 4 APIs"}),N("inv","Inventory",580,55),N("pay","Payments",580,150),N("ship","Shipping",580,250),N("noti","Notifications",580,345)],
+ edges:[["app","inv"],["app","pay"],["app","ship"],["app","noti"]],
+ steps:[{say:"Without a facade, the app calls every subsystem itself, in the right order.",send:[["app","inv","reserve"],["app","pay","charge"],["app","ship","book"],["app","noti","SMS"]]},
+  {say:"The web shop and the kiosk repeat the same sequence.",tag:{app:"sequence copied ×3"}},
+  {say:"Someone reorders the steps in one copy, and cards are charged before stock is reserved.",tag:{app:"wrong order in 1 copy ✗"}}]},
+"flyweight":{nodes:[N("mem","Memory",400,80,{sub:"–"}),N("l1","Store A listing",130,300,{sub:"name + image + nutrition"}),N("l2","Store B listing",400,300,{sub:"name + image + nutrition"}),N("l3","Store C listing",670,300,{sub:"name + image + nutrition"})],
+ edges:[["l1","mem"],["l2","mem"],["l3","mem"]],
+ steps:[{say:"Without sharing, every store's listing carries its own copy of the product details.",on:["l1","l2","l3"]},
+  {say:"10,000 stores × 2 KB of identical data per product adds up fast.",send:[{par:[["l1","mem","2 KB"],["l2","mem","2 KB"],["l3","mem","2 KB"]]}],tag:{mem:"20 MB for one product"}},
+  {say:"Fixing a typo in the product name means updating thousands of copies, and some get missed.",tag:{l3:"old name ✗"}}]},
+"proxy":{nodes:[N("t","Teller",110,110,{kind:"client"}),N("i","Intern",110,300,{kind:"client"}),N("real","CoreAccountService",590,200,{sub:"no access checks"})],
+ edges:[["t","real"],["i","real"]],
+ steps:[{say:"Without a proxy, callers hold the real service directly.",send:[["t","real","withdraw"]]},
+  {say:"The role check must be written into every caller, or mixed into the service's business code.",on:["t","i"]},
+  {say:"One caller forgets the check, and an intern's withdrawal goes through.",send:[["i","real","withdraw ₹5,000"]],tag:{real:"allowed ✗"}}]},
+"chain-of-responsibility":{nodes:[N("tk","Refund ₹2,400",110,200,{kind:"client"}),N("sw","SupportDesk",470,200,{sub:"if … else if … else if …"})],
+ edges:[["tk","sw"]],
+ steps:[{say:"Without a chain, one class decides who handles every ticket with a long if/else.",send:[["tk","sw","ticket"]]},
+  {say:"Every rule (FAQs, limits, VIP customers, fraud) lives in the same method.",tag:{sw:"14 branches"}},
+  {say:"Adding a fraud-review step means editing that method and retesting every branch.",tag:{sw:"edit + retest all ✗"}}]},
+"command":{nodes:[N("btn","Add button",110,110,{kind:"client"}),N("undo","Undo button",110,310,{kind:"client"}),N("cart","Cart",520,200,{sub:"0 items"})],
+ edges:[["btn","cart"],["undo","cart"]],
+ steps:[{say:"Without command objects, the button calls the cart directly.",send:[["btn","cart","add(milk)"]],tag:{cart:"1 item"}},
+  {say:"Undo has no record of what happened, so it can't know what to reverse.",send:[["undo","cart","undo?"]],tag:{undo:"nothing to undo ✗"}},
+  {say:"Offline, the click is simply lost: there's no object to queue and send later.",tag:{btn:"offline: lost ✗"}}]},
+"interpreter":{nodes:[N("txt","Marketing",110,200,{kind:"client",sub:"new promo rules weekly"}),N("code","PromoService",480,200,{sub:"if total > 500 && cat == dairy"})],
+ edges:[["txt","code"]],
+ steps:[{say:"Without an interpreter, each promo rule is hard-coded as an if statement.",send:[["txt","code","new rule"]]},
+  {say:"Every new rule needs a developer, a release and a deploy.",tag:{code:"release #47 for one rule"}},
+  {say:"Rules pile up as nested ifs that nobody dares to touch.",tag:{code:"120 nested ifs ✗"}}]},
+"iterator":{nodes:[N("loop","Statement screen",140,200,{kind:"client",sub:"handles paging itself"}),N("api","Bank API",570,200)],
+ edges:[["loop","api"]],
+ steps:[{say:"Without an iterator, the screen does the paging itself: fetch, loop, check the cursor, fetch again.",send:[["loop","api","GET page 1"],["api","loop","3 txns"]]},
+  {say:"The export job and the search screen copy the same paging loop.",tag:{loop:"paging copied ×3"}},
+  {say:"One copy forgets the last page, so exports silently miss transactions.",tag:{loop:"last page skipped ✗"}}]},
+"mediator":{nodes:[N("ord","New order",150,75,{kind:"client"}),N("st","Store",150,325),N("ra","Rider A",650,75),N("rb","Rider B",650,325)],
+ edges:[["ord","ra"],["ord","rb"],["ord","st"],["ra","rb"],["ra","st"],["rb","st"]],
+ steps:[{say:"Without a coordinator, the order talks to every rider and to the store directly.",send:[{par:[["ord","ra","free?"],["ord","rb","free?"]]}]},
+  {say:"Riders also talk to the store and to each other. Every object knows every other one.",send:[{par:[["ra","st","ETA?"],["rb","st","ETA?"],["ra","rb","you take it?"]]}]},
+  {say:"Adding a new rider type means changing the order, the store and every rider.",tag:{ord:"6 links to update ✗"}}]},
+"memento":{nodes:[N("cart","Cart",160,200,{sub:"public fields"}),N("app","Checkout app",600,200,{sub:"copies fields itself"})],
+ edges:[["app","cart"]],
+ steps:[{say:"Without a memento, the app saves the cart by reading its fields directly.",send:[["app","cart","read lines, coupon, total"]]},
+  {say:"For that to work the fields must be public, so anything can change them.",tag:{cart:"fields exposed"}},
+  {say:"Cart gains a new field. The app's copy code isn't updated, so undo restores a broken cart.",tag:{app:"missed new field ✗"}}]},
+"null-object":{nodes:[N("co","Checkout",140,200,{sub:"if (coupon != null)"}),N("repo","CouponRepo",570,200)],
+ edges:[["co","repo"]],
+ steps:[{say:"Without a null object, the lookup returns null when there's no coupon.",send:[["co","repo","find(code)"],["repo","co","null"]]},
+  {say:"Every caller has to remember 'if (coupon != null)'.",tag:{co:"null checks ×9"}},
+  {say:"One place forgets, and checkout crashes with a NullPointerException.",tag:{co:"NullPointerException ✗"}}]},
+"observer":{nodes:[N("ord","Order #5521",190,200,{sub:"calls each service by name"}),N("sms","SMS sender",620,90),N("app","Customer app",620,200),N("ana","Analytics",620,310)],
+ edges:[["ord","sms"],["ord","app"],["ord","ana"]],
+ steps:[{say:"Without observers, the order calls each interested service itself.",send:[["ord","sms","update"],["ord","app","update"]]},
+  {say:"The Order class now depends on SMS, the app and analytics.",tag:{ord:"imports 3 services"}},
+  {say:"The SMS call throws, so analytics is never told. Adding loyalty points means editing Order again.",tag:{sms:"threw ✗",ana:"never called ✗"}}]},
+"specification":{nodes:[N("q","ProductQuery",180,200,{sub:"inStockOrganicUnder200()"}),N("p","Product list",590,200)],
+ edges:[["q","p"]],
+ steps:[{say:"Without specifications, each filter combination becomes its own method.",send:[["q","p","filter"]]},
+  {say:"inStockOrganic(), organicUnder200(), inStockUnder200()… one method per combination.",tag:{q:"11 filter methods"}},
+  {say:"The 'organic' rule changes, and three of those methods still use the old one.",tag:{q:"3 stale copies ✗"}}]},
+"state":{nodes:[N("ord","Order",160,200,{sub:"switch (status)"}),N("c","cancel()",530,100,{sub:"if PLACED … else if PACKED …"}),N("d","dispatch()",530,300,{sub:"if PLACED … else if PACKED …"})],
+ edges:[["ord","c"],["ord","d"]],
+ steps:[{say:"Without state objects, every method switches on a status field.",send:[["ord","c","cancel()"]]},
+  {say:"The same switch appears in cancel(), dispatch(), refund() and more.",send:[["ord","d","dispatch()"]]},
+  {say:"Adding a Returned status means editing every switch. Miss one and a delivered order can be dispatched again.",tag:{d:"missed case ✗"}}]},
+"strategy":{nodes:[N("cl","Checkout",130,200,{kind:"client"}),N("calc","FeeCalculator",500,200,{sub:"if express … else if member …"})],
+ edges:[["cl","calc"]],
+ steps:[{say:"Without strategies, all fee rules live in one method full of if/else.",send:[["cl","calc","fee(cart)"]]},
+  {say:"Each new delivery option adds another branch.",tag:{calc:"9 branches"}},
+  {say:"A festival pricing tweak means editing and retesting the whole method.",tag:{calc:"edit + retest all ✗"}}]},
+"template-method":{nodes:[N("csv","CsvImporter",210,100,{sub:"open · parse · validate · save"}),N("xl","ExcelImporter",210,300,{sub:"open · parse · save"}),N("db","Database",610,200)],
+ edges:[["csv","db"],["xl","db"]],
+ steps:[{say:"Without a template, each importer writes the whole algorithm itself.",on:["csv","xl"]},
+  {say:"Open, validate and save are copied into every importer, and the copies drift apart.",send:[["csv","db","valid rows"]]},
+  {say:"ExcelImporter forgot validate(), so bad rows reach the database.",send:[["xl","db","bad rows"]],tag:{xl:"no validation ✗"}}]},
+"visitor":{nodes:[N("g","Vegetables",150,80,{sub:"tax()"}),N("e","Headphones",150,200,{sub:"tax()"}),N("m","Medicine",150,320,{sub:"tax()"}),N("dev","Developer",580,200,{kind:"client"})],
+ edges:[["dev","g"],["dev","e"],["dev","m"]],
+ steps:[{say:"Without a visitor, every new operation is added as a method on every item class.",on:["g","e","m"]},
+  {say:"Adding 'shipping weight' means editing all three classes.",send:[{par:[["dev","g","add weight()"],["dev","e","add weight()"],["dev","m","add weight()"]]}],tag:{g:"tax() · weight()",e:"tax() · weight()",m:"tax() · weight()"}},
+  {say:"Tax rules end up spread across many files, and one class gets the rate wrong.",tag:{m:"tax 18% ✗ (should be 5%)"}}]},
+"producer-consumer":{nodes:[N("p","Order intake",140,200),N("c","Picker",600,200,{sub:"busy"})],
+ edges:[["p","c"]],
+ steps:[{say:"Without a queue, the intake thread calls the picker directly and waits for it.",send:[["p","c","pick(A)"]]},
+  {say:"While the picker is busy, no new orders can be accepted.",tag:{p:"blocked · 40 orders waiting"}},
+  {say:"Switching to an unbounded list keeps accepting work until memory runs out.",tag:{c:"list: 2 million tasks ✗"}}]},
+"thread-pool":{nodes:[N("s","Upload service",140,200,{kind:"client"}),N("t","new Thread() per task",520,200,{sub:"–"})],
+ edges:[["s","t"]],
+ steps:[{say:"Without a pool, every image gets a brand-new thread.",send:[["s","t","start()"]]},
+  {say:"Creating and destroying threads costs time and about 1 MB of stack each.",tag:{t:"1 MB stack each"}},
+  {say:"A burst of 10,000 uploads starts 10,000 threads, and the server runs out of memory.",tag:{t:"OutOfMemoryError ✗"}}]},
+"future-promise":{nodes:[N("pg","Product page",110,200,{kind:"client"}),N("pr","Pricing service",440,70,{sub:"120 ms"}),N("st","Stock service",440,200,{sub:"80 ms"}),N("rv","Reviews service",440,330,{sub:"300 ms"})],
+ edges:[["pg","pr"],["pg","st"],["pg","rv"]],
+ steps:[{say:"Without futures, the page calls each service one after another. Pricing first: 120 ms.",send:[["pg","pr","GET"],["pr","pg","price"]]},
+  {say:"Then stock: another 80 ms of waiting.",send:[["pg","st","GET"],["st","pg","stock"]]},
+  {say:"Reviews last: 500 ms in total, and if reviews hangs, the whole page hangs with it.",send:[["pg","rv","GET"]],tag:{rv:"hangs ✗",pg:"waited 500 ms+"}}]},
+"read-write-lock":{nodes:[N("r1","Customer app 1",110,70,{kind:"client"}),N("r2","Customer app 2",110,200,{kind:"client"}),N("r3","Ops dashboard",110,330,{kind:"client"}),N("lock","synchronized map",440,200,{sub:"one thread at a time"})],
+ edges:[["r1","lock"],["r2","lock"],["r3","lock"]],
+ steps:[{say:"Without a read-write lock, a plain lock lets only one thread in at a time.",send:[["r1","lock","read"]]},
+  {say:"Readers wait for each other, even though reading changes nothing.",tag:{r2:"waiting",r3:"waiting"}},
+  {say:"With hundreds of customers watching the map, reads crawl.",tag:{lock:"queue: 240 readers ✗"}}]},
+"immutable-object":{nodes:[N("t1","Thread A",110,100),N("t2","Thread B",110,300),N("m","Money ₹100",430,200,{sub:"has setAmount()"})],
+ edges:[["t1","m"],["t2","m"]],
+ steps:[{say:"Without immutability, both threads share a Money object with a setter.",on:["m"]},
+  {say:"Thread A adds ₹50 while thread B subtracts ₹20; both read ₹100 first.",send:[{par:[["t1","m","set(150)"],["t2","m","set(80)"]]}]},
+  {say:"The last write wins: ₹80. Thread A's ₹50 is silently lost.",tag:{m:"₹80 (lost update ✗)"}}]},
+"double-checked-locking":{nodes:[N("t1","Thread A",100,100),N("t2","Thread B",100,300),N("chk","if (model == null)",370,200,{sub:"no lock"}),
+  N("m1","FraudModel #1",670,100,{hidden:1}),N("m2","FraudModel #2",670,300,{hidden:1})],
+ edges:[["t1","chk"],["t2","chk"],["chk","m1"],["chk","m2"]],
+ steps:[{say:"Without locking, both threads see that the model is null at the same moment.",send:[{par:[["t1","chk","null?"],["t2","chk","null?"]]}]},
+  {say:"Both load it: two slow loads and two copies in memory.",show:["m1","m2"],send:[{par:[["chk","m1","load()"],["chk","m2","load()"]]}]},
+  {say:"Locking every call instead fixes that, but then every request waits on the lock forever after.",tag:{chk:"every call locks ✗"}}]},
+"virtual-threads":{nodes:[N("req","10,000 requests",110,200,{kind:"client"}),N("pool","Platform thread pool",410,200,{sub:"200 threads"}),N("api","Slow HTTP API",690,200)],
+ edges:[["req","pool"],["pool","api"]],
+ steps:[{say:"Without virtual threads, each request holds a real OS thread, even while it just waits.",send:[["req","pool","requests"]]},
+  {say:"All 200 threads are blocked waiting on the slow API, while the CPU sits idle.",send:[["pool","api","200 calls"]],tag:{pool:"200 of 200 blocked"}},
+  {say:"Request 201 has to queue, even though the machine is doing almost nothing.",tag:{req:"9,800 queued ✗"}}]},
+"decomposition":{nodes:[N("mono","FreshCart monolith",250,200,{sub:"one codebase, one DB"}),N("t1","Delivery team",620,90,{kind:"client"}),N("t2","Checkout team",620,310,{kind:"client"})],
+ edges:[["t1","mono"],["t2","mono"]],
+ steps:[{say:"Without decomposition, every team works in one codebase on one shared database.",send:[{par:[["t1","mono","commit"],["t2","mono","commit"]]}]},
+  {say:"The delivery team's small change has to wait for a full release of everything.",tag:{mono:"release blocked by 1 change"}},
+  {say:"A slow query in delivery overloads the shared database, and checkout goes down too.",tag:{mono:"DB overloaded ✗",t2:"checkout down ✗"}}]},
+"api-gateway":{nodes:[N("app","Mobile app",110,200,{kind:"client"}),N("cat","catalog-service",600,70),N("ord","order-service",600,200),N("pay","payment-service",600,330)],
+ edges:[["app","cat"],["app","ord"],["app","pay"]],
+ steps:[{say:"Without a gateway, the app calls every service directly and must know all their addresses.",send:[{par:[["app","cat","GET"],["app","ord","POST"],["app","pay","POST"]]}]},
+  {say:"Each service implements login checks and rate limits itself, each slightly differently.",tag:{ord:"own auth code",pay:"own auth code"}},
+  {say:"One service forgets the rate limit, and a bot floods it.",tag:{cat:"no rate limit ✗"}}]},
+"backend-for-frontend":{nodes:[N("mob","Mobile app",110,110,{kind:"client"}),N("web","Web app",110,300,{kind:"client"}),N("api","General API",420,200,{sub:"one response for everyone"})],
+ edges:[["mob","api"],["web","api"]],
+ steps:[{say:"Without a BFF, the phone uses the same general API as the web shop.",send:[["mob","api","GET /home"]]},
+  {say:"It downloads the full 48 KB web payload and throws most of it away.",send:[["api","mob","48 KB"]],tag:{mob:"slow on 4G ✗"}},
+  {say:"The web team changes the payload for a new page, and the mobile app breaks.",send:[["web","api","new field"]],tag:{mob:"broke ✗"}}]},
+"service-discovery":{nodes:[N("ord","order-service",140,200,{sub:"PAYMENT_URL=10.0.1.7"}),N("p1","payment #1",600,100,{sub:"10.0.1.7"}),N("p2","payment #2",600,300,{sub:"10.0.1.9"})],
+ edges:[["ord","p1"]],
+ steps:[{say:"Without discovery, order service has one payment address hard-coded in its config.",send:[["ord","p1","POST /charge"]]},
+  {say:"Instance #1 is replaced during a deploy and comes back with a new IP.",tag:{p1:"gone ✗"}},
+  {say:"Calls keep going to the old address and fail until someone edits config and restarts. Instance #2 sits idle.",send:[["ord","p1","POST /charge"]],tag:{ord:"connection refused ✗",p2:"never used"}}]},
+"circuit-breaker":{nodes:[N("co","Checkout",120,200,{sub:"200 threads"}),N("pay","payment-service",600,200,{sub:"down"})],
+ edges:[["co","pay"]],
+ steps:[{say:"Without a breaker, every checkout call goes to the failing payment service.",send:[["co","pay","charge"]]},
+  {say:"Each call waits 30 seconds for its timeout, and threads pile up.",tag:{co:"200 of 200 threads waiting"}},
+  {say:"Checkout runs out of threads, so even viewing the cart fails. One outage has become two.",tag:{co:"checkout down ✗"}}]},
+"retry-timeout-bulkhead":{nodes:[N("page","Product page",110,200,{kind:"client"}),N("pool","Shared thread pool",400,200,{sub:"100 threads"}),N("pr","pricing-service",680,90,{sub:"healthy"}),N("rv","reviews-service",680,310,{sub:"hangs"})],
+ edges:[["page","pool"],["pool","pr"],["pool","rv"]],
+ steps:[{say:"Without timeouts or bulkheads, every call shares one thread pool and waits as long as it takes.",send:[["page","pool","GET reviews"],["pool","rv","GET"]]},
+  {say:"Reviews hangs, and every request for it holds a thread forever.",tag:{pool:"100 of 100 stuck on reviews"}},
+  {say:"Pricing is healthy but can't get a thread, so the whole product page fails.",send:[["page","pool","GET price"]],tag:{pr:"never called ✗"}}]},
+"rate-limiter":{nodes:[N("bot","Bot",110,200,{kind:"client",sub:"5,000 req/s"}),N("api","OTP endpoint",420,200),N("sms","SMS provider",680,200,{sub:"₹0.20 per SMS"})],
+ edges:[["bot","api"],["api","sms"]],
+ steps:[{say:"Without a limit, one client can call the OTP endpoint as often as it likes.",send:[["bot","api","POST /otp ×5000"]]},
+  {say:"Each call sends a paid SMS.",send:[["api","sms","5,000 SMS"]]},
+  {say:"The bill spikes, and real users' requests time out behind the flood.",tag:{sms:"₹1,000 a second ✗",api:"overloaded ✗"}}]},
+"saga":{nodes:[N("orc","PlaceOrder",130,200,{sub:"no compensation"}),N("inv","Inventory",480,70),N("pay","Payments",480,200),N("del","Delivery",480,330)],
+ edges:[["orc","inv"],["orc","pay"],["orc","del"]],
+ steps:[{say:"Without a saga, order service just calls each step and hopes.",send:[["orc","inv","reserve"],["orc","pay","charge"]],tag:{inv:"reserved",pay:"charged ₹499"}},
+  {say:"Booking a rider fails.",send:[["orc","del","book"],["del","orc","failed ✗"]]},
+  {say:"Nothing undoes the earlier steps: the customer is charged and the stock stays reserved for an order that doesn't exist.",tag:{pay:"charged ₹499 ✗",inv:"still reserved ✗"}}]},
+"transactional-outbox":{nodes:[N("svc","order-service",120,200,{kind:"client"}),N("db","orders table",420,90),N("kafka","Kafka",420,310)],
+ edges:[["svc","db"],["svc","kafka"]],
+ steps:[{say:"Without an outbox, the service saves the order, then publishes to Kafka as a separate step.",send:[["svc","db","INSERT order"]],tag:{db:"order #5521"}},
+  {say:"The service crashes between the two.",tag:{svc:"crashed ✗"}},
+  {say:"The order exists but no event was sent: no confirmation SMS, no stock reserved.",tag:{kafka:"no event ✗"}}]},
+"cqrs":{nodes:[N("admin","Admin app",110,90,{kind:"client"}),N("shop","Shoppers",110,310,{kind:"client"}),N("db","One database",480,200,{sub:"same tables for reads and writes"})],
+ edges:[["admin","db"],["shop","db"]],
+ steps:[{say:"Without CQRS, searches and price changes hit the same tables.",send:[{par:[["shop","db","search ×10,000"],["admin","db","UPDATE price"]]}]},
+  {say:"Search needs joins across six tables, and locks from updates slow it further.",tag:{db:"search p95: 2.4 s"}},
+  {say:"Adding indexes to help search slows the writes. Tuning one side hurts the other.",tag:{db:"writes slower ✗"}}]},
+"event-sourcing":{nodes:[N("cmd","Cart actions",110,200,{kind:"client"}),N("row","carts table",440,200,{sub:"items: milk, eggs"}),N("sup","Support agent",680,330,{kind:"client"})],
+ edges:[["cmd","row"],["sup","row"]],
+ steps:[{say:"Without event sourcing, each change overwrites the cart row.",send:[["cmd","row","UPDATE items"]]},
+  {say:"Milk is removed and the row now says just eggs. That milk was ever there is gone.",tag:{row:"items: eggs"}},
+  {say:"Support asks why the customer was charged for milk. There's no history to answer from.",send:[["sup","row","what happened?"]],tag:{sup:"no history ✗"}}]},
+"database-per-service":{nodes:[N("ord","order-service",180,90),N("cat","catalog-service",620,90),N("shared","Shared database",400,300,{sub:"products, orders, …"})],
+ edges:[["ord","shared"],["cat","shared"]],
+ steps:[{say:"Without a database per service, both services read and write the same tables.",send:[{par:[["ord","shared","SQL"],["cat","shared","SQL"]]}]},
+  {say:"Catalog renames a column for its own reasons.",tag:{shared:"price → price_paise"}},
+  {say:"Order service's queries break in production, although nobody touched its code.",tag:{ord:"SQL error ✗"}}]},
+"strangler-fig":{nodes:[N("app","Clients",110,200,{kind:"client"}),N("leg","Legacy monolith",420,90),N("new","New system",420,310,{sub:"rewritten from scratch"})],
+ edges:[["app","leg"],["app","new"]],
+ steps:[{say:"Without strangling, the team rewrites everything and plans to switch over in one night.",send:[["app","leg","all traffic"]]},
+  {say:"Cutover night: all traffic moves to the new system at once.",send:[["app","new","all traffic"]]},
+  {say:"Bugs in billing, catalog and orders all appear together, and rolling back loses a day of orders.",tag:{new:"37 incidents ✗"}}]},
+"sidecar-service-mesh":{nodes:[N("oa","order-service",180,200,{sub:"own TLS, retries, metrics"}),N("pa","payment-service",620,200,{sub:"Go: different TLS library"})],
+ edges:[["oa","pa"]],
+ steps:[{say:"Without a sidecar, every service implements mTLS, retries and metrics itself.",on:["oa","pa"]},
+  {say:"Services in different languages each need their own library and config, and they drift.",tag:{pa:"Go version differs"}},
+  {say:"A certificate rotation means changing and redeploying every service. One is missed and its calls fail.",send:[["oa","pa","TLS handshake"]],tag:{pa:"expired certificate ✗"}}]},
+"idempotent-consumer":{nodes:[N("br","Kafka",110,200,{sub:"at-least-once"}),N("cons","Wallet consumer",400,200,{sub:"no duplicate check"}),N("wal","Wallet",680,200,{sub:"balance ₹0"})],
+ edges:[["br","cons"],["cons","wal"]],
+ steps:[{say:"Without idempotency, the consumer credits the wallet for every delivery.",send:[["br","cons","evt-77 ₹100"],["cons","wal","credit"]],tag:{wal:"balance ₹100"}},
+  {say:"The acknowledgement is lost, so the broker redelivers.",send:[["br","cons","evt-77 ₹100"]]},
+  {say:"The wallet is credited again: ₹200 for one ₹100 payment.",send:[["cons","wal","credit"]],tag:{wal:"balance ₹200 ✗"}}]},
+"distributed-tracing":{nodes:[N("gw","Gateway",140,90,{sub:"own logs"}),N("ord","order-service",140,310,{sub:"own logs"}),N("pay","payment-service",420,200,{sub:"own logs"}),N("dev","On-call engineer",680,200,{kind:"client"})],
+ edges:[["dev","gw"],["dev","ord"],["dev","pay"]],
+ steps:[{say:"Without tracing, each service writes its own logs with no shared id.",on:["gw","ord","pay"]},
+  {say:"A checkout took 2.2 s. The engineer searches three log systems by timestamp.",send:[{par:[["dev","gw","search"],["dev","ord","search"],["dev","pay","search"]]}]},
+  {say:"Thousands of requests happened in that second. There's no way to tell which lines belong to this one.",tag:{dev:"can't link the lines ✗"}}]},
+"config-server":{nodes:[N("s1","checkout #1",160,100,{sub:"fee ₹99 (in the build)"}),N("s2","checkout #2",160,300,{sub:"fee ₹99 (in the build)"}),N("ci","Build + deploy",570,200)],
+ edges:[["ci","s1"],["ci","s2"]],
+ steps:[{say:"Without a config server, settings are baked into each service's build.",on:["s1","s2"]},
+  {say:"Changing the express fee means a new build and a redeploy of every instance.",send:[["ci","s1","redeploy"]],tag:{s1:"fee ₹79"}},
+  {say:"One instance is skipped, so customers see ₹79 or ₹99 depending on which one they hit.",tag:{s2:"fee ₹99 ✗"}}]},
+"anti-corruption-layer":{nodes:[N("dom","Catalog domain",160,200,{sub:"uses MATNR, NETPR, LVORM"}),N("erp","Legacy ERP",600,200)],
+ edges:[["dom","erp"]],
+ steps:[{say:"Without an anti-corruption layer, domain code calls the ERP directly.",send:[["dom","erp","MATNR 0…012345"],["erp","dom","NETPR 59.5"]]},
+  {say:"ERP field names and codes spread through the domain: LVORM == 'X' checks appear in pricing and search.",tag:{dom:"LVORM checks ×7"}},
+  {say:"Replacing the ERP now means rewriting core business code.",tag:{dom:"rewrite needed ✗"}}]},
+"cache-aside":{nodes:[N("app","catalog-service",140,200),N("db","Database",560,200,{sub:"milk ₹60"})],
+ edges:[["app","db"]],
+ steps:[{say:"Without a cache, every product view queries the database.",send:[["app","db","SELECT ×10,000"]]},
+  {say:"Sale traffic multiplies the load on the same few hot rows.",tag:{db:"CPU 98%"}},
+  {say:"Pages slow down for everyone, checkout included.",tag:{app:"p95: 3 s ✗"}}]},
+"sharding":{nodes:[N("app","order-service",140,200),N("db","One database",560,200,{sub:"3.6 M customers"})],
+ edges:[["app","db"]],
+ steps:[{say:"Without sharding, every customer's orders go to one database.",send:[["app","db","INSERT"]]},
+  {say:"Disk and write throughput reach the limit of the biggest machine you can buy.",tag:{db:"disk 95% · writes maxed"}},
+  {say:"There's no bigger machine to move to, and backups take all night.",tag:{db:"can't grow ✗"}}]},
+"materialized-view":{nodes:[N("dash","Ops dashboard",140,200,{kind:"client"}),N("orders","orders table",560,200,{sub:"48 M rows"})],
+ edges:[["dash","orders"]],
+ steps:[{say:"Without a materialized view, the dashboard adds up the orders table on every refresh.",send:[["dash","orders","SUM … GROUP BY store"]]},
+  {say:"Each refresh scans millions of rows.",tag:{orders:"query: 14 s"}},
+  {say:"Twenty people refresh at once, and the database slows checkout too.",tag:{orders:"DB overloaded ✗"}}]},
+"competing-consumers":{nodes:[N("q","Invoice queue",140,200,{sub:"6,000 jobs"}),N("w","Single worker",560,200,{sub:"one at a time"})],
+ edges:[["q","w"]],
+ steps:[{say:"Without competing consumers, one worker processes every invoice in turn.",send:[["q","w","invoice 1"]]},
+  {say:"Month-end brings 6,000 invoices. At a second each, that's well over an hour and a half.",tag:{q:"5,999 waiting"}},
+  {say:"If that one worker crashes, nothing gets processed at all.",tag:{w:"crashed ✗",q:"stuck ✗"}}]},
+"leader-election":{nodes:[N("a","Instance A",110,80),N("b","Instance B",110,200),N("c","Instance C",110,320),N("db","Settlement DB",620,200)],
+ edges:[["a","db"],["b","db"],["c","db"]],
+ steps:[{say:"Without leader election, every instance runs the nightly settlement job.",send:[{par:[["a","db","settle"],["b","db","settle"],["c","db","settle"]]}]},
+  {say:"The same merchants are paid three times.",tag:{db:"paid out ×3 ✗"}},
+  {say:"Running it on one hard-coded instance instead means no settlement at all when that instance is down.",tag:{a:"down → no settlement ✗"}}]},
+"backpressure":{nodes:[N("prod","Flash-sale traffic",110,200,{kind:"client",sub:"5,000 req/s"}),N("q","Unbounded queue",410,200,{sub:"growing"}),N("cons","Order processor",690,200,{sub:"800 req/s"})],
+ edges:[["prod","q"],["q","cons"]],
+ steps:[{say:"Without backpressure, everything that arrives goes into an unbounded queue.",send:[["prod","q","5,000 req/s"],["q","cons","800 req/s"]]},
+  {say:"The queue grows by 4,200 requests a second, and waits stretch to minutes.",tag:{q:"1.2 M queued"}},
+  {say:"Memory runs out and the processor crashes, losing everything it was holding.",tag:{cons:"OutOfMemoryError ✗"}}]},
+"ambassador":{nodes:[N("a1","dispatch-service",160,100,{sub:"own OAuth + retries"}),N("a2","returns-service",160,300,{sub:"own OAuth, no retries"}),N("api","Carrier API",620,200)],
+ edges:[["a1","api"],["a2","api"]],
+ steps:[{say:"Without an ambassador, each service implements the carrier's auth and retries itself.",send:[{par:[["a1","api","GET"],["a2","api","GET"]]}]},
+  {say:"The two copies drift apart: one retries, one doesn't.",on:["a2"]},
+  {say:"The carrier has a short outage. Dispatch retries and recovers; returns simply fail.",send:[["api","a2","503"]],tag:{a2:"failed ✗"}}]},
+"gateway-aggregation":{nodes:[N("app","Order screen",110,200,{kind:"client"}),N("o","order-service",620,70),N("d","delivery-service",620,200),N("p","payment-service",620,330)],
+ edges:[["app","o"],["app","d"],["app","p"]],
+ steps:[{say:"Without aggregation, the phone calls each service itself, one after another.",send:[["app","o","GET"],["o","app","order"]]},
+  {say:"Another round trip for the delivery ETA.",send:[["app","d","GET"],["d","app","ETA"]]},
+  {say:"Three round trips over mobile data add up, and a slow delivery call blocks the whole screen.",send:[["app","p","GET"]],tag:{app:"3 round trips · 700 ms ✗"}}]},
+"health-check":{nodes:[N("lb","Load balancer",140,200,{sub:"sends to every pod"}),N("p1","pod 1",520,80,{sub:"ok"}),N("p2","pod 2",520,200,{sub:"still starting"}),N("p3","pod 3",520,320,{sub:"deadlocked"})],
+ edges:[["lb","p1"],["lb","p2"],["lb","p3"]],
+ steps:[{say:"Without health checks, the load balancer sends traffic to every pod.",send:[{par:[["lb","p1","traffic"],["lb","p2","traffic"],["lb","p3","traffic"]]}]},
+  {say:"Pod 2 is still warming up and returns errors.",tag:{p2:"errors ✗"}},
+  {say:"Pod 3 is stuck but still 'running', so its requests hang until someone notices.",tag:{p3:"requests hang ✗"}}]},
+"deployment-strategies":{nodes:[N("users","Users",110,200,{kind:"client"}),N("lb","Router",380,200,{sub:"100% → v2"}),N("v2","checkout v2",650,200,{sub:"untested on real traffic"})],
+ edges:[["users","lb"],["lb","v2"]],
+ steps:[{say:"Without a rollout strategy, the new version replaces the old one for everyone at once.",send:[["users","lb","requests"],["lb","v2","100%"]]},
+  {say:"A bug that only shows up on real traffic hits every customer.",tag:{v2:"errors 30% ✗"}},
+  {say:"Rolling back means redeploying the old build: 20 minutes of failed checkouts.",tag:{lb:"rollback: 20 min ✗"}}]},
+"layered":{nodes:[N("ctrl","OrderController",220,200,{sub:"SQL + rules + HTML"}),N("db","Database",600,200)],
+ edges:[["ctrl","db"]],
+ steps:[{say:"Without layers, the controller does everything: reads the request, applies rules, writes SQL.",send:[["ctrl","db","SQL"]]},
+  {say:"The same pricing rule gets copied into three controllers.",tag:{ctrl:"rule copied ×3"}},
+  {say:"Changing the database touches every controller, and the rules can't be tested without a running server.",tag:{ctrl:"untestable ✗"}}]},
+"hexagonal":{nodes:[N("core","Checkout",240,200,{sub:"new RazorpayClient()"}),N("rz","Razorpay SDK",600,100),N("db","JPA EntityManager",600,300)],
+ edges:[["core","rz"],["core","db"]],
+ steps:[{say:"Without ports, the domain creates its technology dependencies itself.",send:[{par:[["core","rz","charge"],["core","db","persist"]]}]},
+  {say:"A unit test now needs a real payment sandbox and a database.",tag:{core:"tests take 40 s"}},
+  {say:"Switching payment providers means rewriting checkout's business logic.",tag:{core:"rewrite ✗"}}]},
+"clean":{nodes:[N("fw","Spring controller",160,200,{sub:"returns the @Entity as JSON"}),N("ent","Account @Entity",540,200,{sub:"JPA annotations + rules"})],
+ edges:[["fw","ent"]],
+ steps:[{say:"Without rings, the JPA entity is used everywhere: as the API model, the business object and the table row.",send:[["fw","ent","bind JSON"]]},
+  {say:"A database column rename changes the public API by accident.",tag:{ent:"column renamed"}},
+  {say:"Clients break, and the business rules can't be tested without JPA.",tag:{fw:"API changed ✗"}}]},
+"event-driven":{nodes:[N("ord","order-service",160,200,{sub:"calls 4 services"}),N("inv","inventory",600,60),N("noti","notifications",600,155),N("ana","analytics",600,250),N("fr","fraud check",600,345,{hidden:1})],
+ edges:[["ord","inv"],["ord","noti"],["ord","ana"],["ord","fr"]],
+ steps:[{say:"Without events, order service calls every follow-up service directly.",send:[{par:[["ord","inv","call"],["ord","noti","call"],["ord","ana","call"]]}]},
+  {say:"Adding fraud checks means changing and redeploying order service.",show:["fr"],send:[["ord","fr","call"]],tag:{ord:"redeploy for each new consumer"}},
+  {say:"Notifications is down, so placing an order fails, even though only the SMS couldn't be sent.",tag:{noti:"down",ord:"order failed ✗"}}]},
+"modular-monolith":{nodes:[N("c1","CatalogService",160,90),N("c2","OrderService",640,90),N("c3","PriceCache",160,310,{sub:"catalog internal"}),N("c4","PaymentDao",640,310)],
+ edges:[["c1","c2"],["c1","c3"],["c1","c4"],["c2","c3"],["c2","c4"],["c3","c4"]],
+ steps:[{say:"Without module boundaries, any class can use any other class.",on:["c1","c2","c3","c4"]},
+  {say:"Ordering reaches straight into catalog's internal price cache.",send:[["c2","c3","cache.put()"]]},
+  {say:"Catalog changes its cache, and checkout breaks. Nobody can tell which team owns what.",tag:{c2:"broke ✗"}}]}
+};
+
+/* ───────── "Break it": inject a failure while the pattern is in place ───────── */
+const BREAKS={
+"api-gateway":[{label:"Catalog goes down",steps:[
+  {say:"The catalog service crashes.",on:["cat"],tag:{cat:"down ✗"}},
+  {say:"The gateway's 2-second timeout fires, and it returns a clean 503 instead of leaving the app hanging.",send:[["app","gw","GET /api/products"],["gw","cat","route"],["cat","gw","timeout"],["gw","app","503"]],tag:{gw:"timeout → 503"}},
+  {say:"Orders and payments keep working through the same gateway.",send:[["app","gw","POST /orders"],["gw","ord","route"],["ord","gw","201"],["gw","app","201 Created"]]}]}],
+"backend-for-frontend":[{label:"Reviews service fails",steps:[
+  {say:"The reviews service starts returning errors.",on:["rev"],tag:{rev:"down ✗"}},
+  {say:"The Web BFF asks all three services; reviews answers with an error.",send:[["web","wbff","GET /home"],{par:[["wbff","cart","full cart"],["wbff","deals","all deals"],["wbff","rev","reviews"]]},["rev","wbff","error"]]},
+  {say:"It leaves the reviews block out and still returns the page. The mobile app never used reviews, so it isn't affected.",send:[["wbff","web","page, no reviews"],["mob","mbff","GET /home"],["mbff","mob","3 KB"]],tag:{wbff:"partial page"}}]}],
+"transactional-outbox":[{label:"Relay crashes mid-publish",steps:[
+  {say:"An order and its outbox row are saved in one transaction.",send:[{par:[["svc","db","INSERT order"],["svc","ob","INSERT event"]]}],tag:{db:"order #5521",ob:"1 pending"}},
+  {say:"The relay publishes the event, then crashes before marking the row as sent.",send:[["ob","relay","pending row"],["relay","kafka","publish"]],tag:{relay:"crashed ✗"}},
+  {say:"On restart it sees the row still pending and publishes again. Consumers spot the repeated event id and ignore it.",send:[["ob","relay","still pending"],["relay","kafka","publish again"],["kafka","relay","ack"]],tag:{relay:"restarted",ob:"0 pending · 1 sent",kafka:"duplicate ignored downstream"}}]}],
+"cqrs":[{label:"Read side falls behind",steps:[
+  {say:"The projector that updates the read view goes down. An admin changes the price to ₹65.",send:[["admin","cmd","ChangePrice ₹65"],["cmd","bus","PriceChanged"]],tag:{bus:"projector down ✗",cmd:"milk ₹65 saved"}},
+  {say:"Shoppers still see ₹60: the read view is stale, but search keeps working.",send:[["shop","q","search milk"],["q","shop","₹60 (stale)"]]},
+  {say:"The projector restarts and replays the events it missed. The view catches up.",send:[["bus","q","catch up"]],tag:{bus:"PriceChanged",q:"search view: milk ₹65"}}]}],
+"event-sourcing":[{label:"Corrupt the cart view",steps:[
+  {say:"A bug writes garbage into the current-state cart view.",on:["cart"],tag:{log:"append-only · 3 events",cart:"corrupted ✗"}},
+  {say:"No problem: the view is only a copy. Throw it away; the events are still in the store.",tag:{cart:"deleted"}},
+  {say:"Replaying the three events rebuilds the cart exactly.",send:[["log","cart","replay 3 events"]],tag:{cart:"eggs (rebuilt) ✓"}}]}],
+"database-per-service":[{label:"Catalog goes down",steps:[
+  {say:"The catalog service and its database go down.",on:["cat","cdb"],tag:{cat:"down ✗",cdb:"down ✗",odb:"orders + price copy"}},
+  {say:"Order service can't reach the Catalog API.",send:[["ord","cat","GET price"],["cat","ord","timeout"]]},
+  {say:"It falls back to its own copy of the prices, so customers can still place orders.",send:[["ord","odb","read price copy"],["odb","ord","₹60"]],tag:{ord:"served from local copy"}}]}],
+"strangler-fig":[{label:"New orders service misbehaves",steps:[
+  {say:"10% of order traffic is going to the new service.",send:[["app","fac","POST /orders"],{par:[["fac","new","10%"],["fac","leg","90%"]]}],tag:{fac:"/orders → 10% new",new:"catalog · orders (10%)",leg:"orders · billing"}},
+  {say:"The new service's error rate jumps.",on:["new"],tag:{new:"errors 8% ✗"}},
+  {say:"The router sends all orders back to legacy in seconds. Customers barely notice.",send:[["app","fac","POST /orders"],["fac","leg","route back"]],tag:{fac:"/orders → legacy",new:"catalog only"}}]}],
+"sidecar-service-mesh":[{label:"Payment pod starts failing",steps:[
+  {say:"One payment instance starts returning 500 errors.",send:[["oa","os","POST /charge"],["os","ps","mTLS"],["ps","pa","POST /charge"],["pa","ps","500"]],tag:{pa:"returning 500s ✗"}},
+  {say:"The order-side sidecar retries on a healthy instance and ejects the bad one from its pool. The service code did nothing.",send:[["ps","os","500"]],tag:{os:"retried · bad pod ejected"}},
+  {say:"The control plane reports the ejection, so operators see it on the dashboard.",send:[["cp","os","stats"]],tag:{cp:"1 pod ejected"}}]}],
+"distributed-tracing":[{label:"Drop the header on an async hop",steps:[
+  {say:"Inventory is called through Kafka, and the trace header isn't copied into the message.",send:[["gw","ord","traceparent 4bf9…"],["ord","inv","no traceparent ✗"]]},
+  {say:"Inventory starts a new trace, so its span ends up in a different timeline.",send:[["inv","col","span (other trace)"]],tag:{inv:"new trace e91c… ✗"}},
+  {say:"The fix is to copy the trace context into message headers; Micrometer can do this for Kafka. Then the gap closes.",tag:{inv:"span · trace 4bf9… ✓"}}]}],
+"config-server":[{label:"Config server goes down",steps:[
+  {say:"The config server goes down.",on:["cs"],tag:{cs:"down ✗"}},
+  {say:"Running services keep the settings they already loaded and carry on.",on:["s1","s2","s3"]},
+  {say:"A new instance starting now can't fetch its settings, so it fails fast instead of running with wrong defaults.",tag:{s3:"restart → fails fast (by design)"}}]}],
+"anti-corruption-layer":[{label:"ERP sends an unknown code",steps:[
+  {say:"The ERP returns a status code nobody has seen before: LVORM = 'Z'.",send:[["dom","acl","find(sku 12345)"],["acl","erp","MATNR 0…012345"],["erp","acl","LVORM \"Z\""]]},
+  {say:"The translator doesn't recognise 'Z'. It logs it and maps it to a safe UNKNOWN status.",tag:{acl:"unknown code → UNKNOWN"}},
+  {say:"The domain gets a clean Product. The ERP's oddity stays at the edge.",send:[["acl","dom","Product(UNKNOWN)"]]}]}],
+"cache-aside":[{label:"Redis goes down",steps:[
+  {say:"The Redis cache goes down.",on:["cache"],tag:{cache:"down ✗"}},
+  {say:"The service catches the cache error and reads from the database directly.",send:[["app","cache","GET milk"],["cache","app","error"],["app","db","SELECT milk"],["db","app","₹60"]]},
+  {say:"Slower, but still correct. When Redis comes back empty, the cache refills on the next misses.",tag:{cache:"back · refilling"}}]}],
+"sharding":[{label:"Shard 2 goes down",steps:[
+  {say:"Shard 2 goes down.",on:["s2"],tag:{s2:"down ✗"}},
+  {say:"Customers whose data lives on shards 0 and 1 aren't affected.",send:[["app","rt","orders of C-1042"],["rt","s1","SELECT"],["s1","rt","12 orders"]]},
+  {say:"Only customers on shard 2 see errors: about a third of users, not everyone.",send:[["app","rt","orders of C-2077"],["rt","s2","SELECT"],["s2","rt","unavailable"]],tag:{rt:"1 of 3 shards down"}}]}],
+"materialized-view":[{label:"Same event delivered twice",steps:[
+  {say:"An order event updates the stored total.",send:[["o","proj","OrderPlaced #88"],["proj","mv","+₹499"]],tag:{mv:"Store 7: ₹499"}},
+  {say:"The broker delivers the same event again.",send:[["o","proj","OrderPlaced #88 (again)"]]},
+  {say:"The projector records which event ids it has applied, so the duplicate doesn't double the total.",tag:{proj:"duplicate skipped",mv:"Store 7: ₹499 ✓"}}]}],
+"ambassador":[{label:"Carrier OAuth goes down",steps:[
+  {say:"The carrier's login service goes down.",on:["auth"],tag:{auth:"down ✗",amb:"token cached (40 min left)"}},
+  {say:"The ambassador still holds a valid cached token, so calls keep working.",send:[["app","amb","GET /shipments/88"],["amb","api","GET + cached token"],["api","amb","200"],["amb","app","shipment 88"]]},
+  {say:"If the outage outlasts the token, the ambassador returns a clear error and the app can show 'tracking unavailable'.",on:["amb"]}]}],
+"gateway-aggregation":[{label:"Delivery times out",steps:[
+  {say:"The gateway fans out to all three services.",send:[["app","agg","GET /order-page/5521"],{par:[["agg","o","GET"],["agg","d","GET"],["agg","p","GET"]]}]},
+  {say:"Order and payment answer quickly. Delivery doesn't answer within its 300 ms budget.",send:[{par:[["o","agg","order"],["p","agg","paid"]]}],tag:{d:"no answer in 300 ms ✗"}},
+  {say:"The gateway sends the page anyway, with 'ETA unknown' in place of the delivery time.",send:[["agg","app","page, ETA unknown"]],tag:{agg:"partial page in 302 ms"}}]}]
+};
+
+/* ───────── FreshCart: one order through the capstone, end to end ───────── */
+const TOUR={id:"freshcart-order",name:"FreshCart: one order, end to end",cat:"tour",
+ intent:"Follow one grocery order through the handbook's capstone, FreshCart, and see where each pattern does its job.",
+ when:"You know the patterns one by one and want to see how they fit together in a real checkout.",
+ analogy:"A factory tour: you've seen each machine in the brochure; now you watch one product move along the whole line.",
+ tip:"This mirrors FreshCart.checkout() in code/capstone. The capstone page lists all 22 patterns and the class each lives in.",
+ code:`1  Facade             FreshCart.checkout()
+2  Idempotency, rate limit, validation chain
+3  Saga               reserve → slot → pay
+4  Strategy           SlotStrategy
+5  Factory, decorator, breaker, adapter
+6  Outbox, state      OrderStore, OrderState
+7  Observer, CQRS     DomainEvents, history view
+8  Idempotent consumer: loyalty, SMS
+9  Modular monolith   one package per module`,
+ repoLinks:[["FreshCart.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/capstone/src/main/java/com/handbook/capstone/FreshCart.java"],["capstone/checkout","https://github.com/khiruashish/java-design-pattern/tree/main/code/capstone/src/main/java/com/handbook/capstone/checkout"],["capstone/payment","https://github.com/khiruashish/java-design-pattern/tree/main/code/capstone/src/main/java/com/handbook/capstone/payment"]],
+ ex:[],
+ nodes:[N("app","Customer",60,200,{kind:"client"}),N("fc","FreshCart facade",205,200,{sub:"checkout()"}),N("gate","Checks",205,70,{sub:"idempotency · rate limit · chain"}),
+  N("inv","Inventory",400,70,{sub:"–"}),N("slot","Delivery slots",560,70,{sub:"SlotStrategy"}),N("pay","Payments",400,200,{sub:"factory → breaker → adapter"}),
+  N("store","OrderStore",400,330,{sub:"order + outbox"}),N("bus","DomainEvents",580,330,{sub:"observer"}),
+  N("view","Order history",725,150,{sub:"CQRS read model"}),N("loy","Loyalty",720,260,{sub:"–"}),N("sms","SMS",720,370,{sub:"notifications"})],
+ edges:[["app","fc"],["fc","gate"],["fc","inv"],["fc","slot"],["fc","pay"],["fc","store"],["store","bus"],["bus","view"],["bus","loy"],["bus","sms"]],
+ steps:[
+  {say:"The customer taps Place order. One call goes into the FreshCart facade, which hides eight modules behind it.",pats:["facade"],send:[["app","fc","checkout(cart, key)"]]},
+  {say:"Cheap checks first: a repeated idempotency key returns the original order, a token bucket stops scripts, and a chain of validations rejects bad carts.",pats:["idempotent-consumer","rate-limiter","chain-of-responsibility"],send:[["fc","gate","checks"],["gate","fc","ok"]],tag:{gate:"all checks passed"}},
+  {say:"The saga starts. Step 1 reserves the stock; if a later step fails, this is released.",pats:["saga"],send:[["fc","inv","reserve stock"]],tag:{inv:"reserved"}},
+  {say:"Step 2 books a delivery slot, chosen by a pluggable slot strategy.",pats:["saga","strategy"],send:[["fc","slot","book slot"]],tag:{slot:"7–9 am booked"}},
+  {say:"Step 3 pays. A factory picks the UPI gateway, a circuit-breaker decorator wraps it, and an adapter talks to the PayFast SDK. A decline would undo steps 2 and 1.",pats:["factory-method","decorator","circuit-breaker","adapter"],send:[["fc","pay","pay ₹499"],["pay","fc","paid"]],tag:{pay:"UPI → breaker → PayFast ✓"}},
+  {say:"The order and its OrderPlaced event are saved in one transaction, and the order's state object starts at PLACED.",pats:["transactional-outbox","state"],send:[["fc","store","save order + event"]],tag:{store:"PLACED · 1 event pending"}},
+  {say:"The outbox relay publishes the event. Listeners react without knowing each other, and the 'my orders' read model updates.",pats:["observer","cqrs"],send:[["store","bus","OrderPlaced"],{par:[["bus","view","OrderPlaced"],["bus","loy","OrderPlaced"],["bus","sms","OrderPlaced"]]}],tag:{view:"ORD-101 listed",loy:"+50 points",sms:"SMS sent",store:"PLACED · 0 pending"}},
+  {say:"The relay crashes and replays the event. Loyalty and SMS have seen its id before, so nothing happens twice.",pats:["idempotent-consumer"],send:[["store","bus","OrderPlaced (again)"],{par:[["bus","loy","OrderPlaced"],["bus","sms","OrderPlaced"]]}],tag:{loy:"duplicate ignored",sms:"not sent twice"}},
+  {say:"All of these are modules inside one deployable, with boundaries the build enforces: a modular monolith.",pats:["modular-monolith"],on:["fc","gate","inv","slot","pay","store","bus"],tag:{fc:"ORD-101 placed"}}
+ ]};
+HL[TOUR.id]=[[0],[1],[2],[2,3],[4],[5],[6],[7],[8]];
+P.push(TOUR);
+
+/* ───────── pattern picker: a few questions → a pattern ───────── */
+const PICK={q:"What are you trying to do?",o:[
+ {t:"Create objects",h:"control how and when objects get made",n:{q:"What's the creation problem?",o:[
+  {t:"There must be exactly one shared instance",p:"singleton"},
+  {t:"The object has many optional parts",p:"builder"},
+  {t:"I want 'one like that, slightly different'",p:"prototype"},
+  {t:"Parts must come as a matching family",p:"abstract-factory"},
+  {t:"A subclass should decide which class to create",p:"factory-method"},
+  {t:"Objects are expensive and can be reused",p:"object-pool"}]}},
+ {t:"Fit objects together",h:"wrap, combine or simplify",n:{q:"What do you need to do?",o:[
+  {t:"Use a class whose interface doesn't match",p:"adapter"},
+  {t:"Give one simple front to several subsystems",p:"facade"},
+  {t:"Add optional features in layers",p:"decorator"},
+  {t:"Control access to an object, or load it lazily",p:"proxy"},
+  {t:"Treat a group and a single item the same way",p:"composite"},
+  {t:"Two things vary independently (what × how)",p:"bridge"},
+  {t:"Store millions of near-identical objects",p:"flyweight"}]}},
+ {t:"Change or organise behaviour",h:"algorithms, events, requests",n:{q:"Which sounds closest?",o:[
+  {t:"Swap one algorithm for another at runtime",p:"strategy"},
+  {t:"Behaviour depends on a lifecycle status",p:"state"},
+  {t:"Undo, queue or log user actions",p:"command"},
+  {t:"Tell many listeners when something changes",p:"observer"},
+  {t:"Pass a request along until someone handles it",p:"chain-of-responsibility"},
+  {t:"Fixed steps, one step differs per variant",p:"template-method"},
+  {t:"Many objects talk to each other in a tangle",p:"mediator"},
+  {t:"Save and restore an object's state",p:"memento"},
+  {t:"Add operations over a fixed set of types",p:"visitor"},
+  {t:"Combine business rules flexibly",p:"specification"},
+  {t:"Evaluate rules written as text",p:"interpreter"},
+  {t:"Stop writing 'if (x != null)' everywhere",p:"null-object"},
+  {t:"Walk a collection without knowing its storage",p:"iterator"}]}},
+ {t:"Make threads work together",h:"concurrency in one JVM",n:{q:"What's the concurrency problem?",o:[
+  {t:"Hand work from fast producers to slower workers",p:"producer-consumer"},
+  {t:"Cap how many CPU tasks run at once",p:"thread-pool"},
+  {t:"Run several slow calls at once and combine them",p:"future-promise"},
+  {t:"Data is read far more than it's written",p:"read-write-lock"},
+  {t:"Share values between threads without locks",p:"immutable-object"},
+  {t:"Create an expensive object once, lazily",p:"double-checked-locking"},
+  {t:"Thousands of requests mostly wait on I/O",p:"virtual-threads"}]}},
+ {t:"Build or run services",h:"microservices",n:{q:"Which area?",o:[
+  {t:"Splitting up a big application",h:"monolith, legacy",n:{q:"Where are you starting from?",o:[
+   {t:"Deciding where the service boundaries go",p:"decomposition"},
+   {t:"Replacing a legacy system bit by bit",p:"strangler-fig"},
+   {t:"Talking to a legacy system without its mess leaking in",p:"anti-corruption-layer"},
+   {t:"Clear modules, but one deployable for now",p:"modular-monolith"}]}},
+  {t:"Keeping data consistent across services",h:"transactions, events",n:{q:"What's going wrong?",o:[
+   {t:"One action must update several services, with undo",p:"saga"},
+   {t:"Saving and publishing an event must both happen",p:"transactional-outbox"},
+   {t:"Messages may arrive twice",p:"idempotent-consumer"},
+   {t:"Each service needs its own private data",p:"database-per-service"},
+   {t:"I need a full history of every change",p:"event-sourcing"}]}},
+  {t:"Calls failing, slow or overloaded",h:"resilience",n:{q:"What happens?",o:[
+   {t:"A dependency is down and drags everything with it",p:"circuit-breaker"},
+   {t:"Calls fail briefly or hang",p:"retry-timeout-bulkhead"},
+   {t:"One client sends far too many requests",p:"rate-limiter"},
+   {t:"More work arrives than we can handle",p:"backpressure"}]}},
+  {t:"Clients and entry points",h:"gateways, BFFs",n:{q:"What do clients need?",o:[
+   {t:"One front door with auth and routing",p:"api-gateway"},
+   {t:"Mobile and web need different payloads",p:"backend-for-frontend"},
+   {t:"One screen needs data from many services",p:"gateway-aggregation"}]}},
+  {t:"Reads too slow or data too big",h:"scale",n:{q:"What's the bottleneck?",o:[
+   {t:"Reads and writes need different models",p:"cqrs"},
+   {t:"A dashboard recomputes the same totals",p:"materialized-view"},
+   {t:"The same rows are read again and again",p:"cache-aside"},
+   {t:"One database can't hold or write it all",p:"sharding"},
+   {t:"A queue of jobs needs more workers",p:"competing-consumers"}]}},
+  {t:"Running services day to day",h:"operations",n:{q:"What do you need?",o:[
+   {t:"Find services whose addresses keep changing",p:"service-discovery"},
+   {t:"Route traffic only to healthy instances",p:"health-check"},
+   {t:"Change settings without rebuilding",p:"config-server"},
+   {t:"Add TLS, retries and metrics without code",p:"sidecar-service-mesh"},
+   {t:"Wrap a tricky external API for every client",p:"ambassador"},
+   {t:"Exactly one instance should run a job",p:"leader-election"},
+   {t:"Release new versions safely",p:"deployment-strategies"},
+   {t:"See where a slow request spent its time",p:"distributed-tracing"}]}}]}},
+ {t:"Structure a codebase",h:"architecture styles",n:{q:"What matters most?",o:[
+  {t:"A simple, familiar structure",p:"layered"},
+  {t:"Business rules testable without frameworks",p:"hexagonal"},
+  {t:"Rules that outlast frameworks and databases",p:"clean"},
+  {t:"Teams react to facts without calling each other",p:"event-driven"},
+  {t:"Strong module boundaries in one deployable",p:"modular-monolith"}]}}
+]};
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -1781,7 +2364,7 @@ function clip(a,b){ // segment from rect a edge to rect b edge
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 function codeHtml(p){return p.code.split("\n").map((l,i)=>`<span class="ln" data-i="${i}">${l||" "}</span>`).join("")}
 function lightCode(pre,p,step){
-  if(!pre)return;const on=new Set((HL[p.id]||[])[step]||[]);
+  if(!pre)return;const on=new Set(p._v?[]:((HL[p.id]||[])[step]||[]));
   pre.querySelectorAll(".ln").forEach(el=>el.classList.toggle("hl",on.has(+el.dataset.i)));
   pre.classList.toggle("lit",on.size>0);
 }
@@ -1859,6 +2442,7 @@ class Stage{
 const main=new Stage($("#dia"),st=>updateText(st));
 let playing=false, playTok=0, curCat="creational";
 const cur=()=>main.p;
+$("#modes").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;setVariant(b.dataset.k,+(b.dataset.i||0))});
 
 function setPlayBtn(){const b=$("#play"),p=cur();if(!p)return;const end=main.step>=p.steps.length-1;
   b.textContent=playing?"❚❚ Pause":(end?"↺ Replay":"▶ Play");
@@ -1869,7 +2453,32 @@ function updateText(st){
   $("#bar").style.width=((st.step+1)/p.steps.length*100)+"%";
   [...$("#steps").children].forEach((li,i)=>{li.className=i===st.step?"cur":i<st.step?"done":"";li.setAttribute("aria-current",i===st.step?"step":"false")});
   lightCode($("#code"),p,st.step);lightCode($("#code2"),p,st.step);
+  const pats=s.pats||[];$("#pats").hidden=!pats.length;
+  $("#pats").innerHTML=pats.length?"Pattern at work: "+pats.map(id=>{const q=byId(id);return `<a href="${EMBED?`../${q.cat}/${q.id}/`:`#${q.id}`}" target="${EMBED?"_top":"_self"}">${esc(q.name)}</a>`}).join(" · "):"";
   setPlayBtn();
+}
+let base=null;
+function variantOf(p,kind,i){
+  if(kind==="naive"){const v=NAIVE[p.id];return{...p,nodes:v.nodes,edges:v.edges,steps:v.steps,_v:"naive"}}
+  if(kind==="break"){const v=BREAKS[p.id][i];return{...p,nodes:v.nodes||p.nodes,edges:v.edges||p.edges,steps:v.steps,_v:"break"}}
+  return p;
+}
+function renderModes(kind,i){
+  const p=base,b=BREAKS[p.id]||[],has=NAIVE[p.id]||b.length;
+  $("#modes").hidden=!has;if(!has)return;
+  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">With the pattern</button>`;
+  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">Without it</button>`;
+  h+=`</div>`;
+  if(b.length)h+=`<div class="breaks"><span>Break it:</span>${b.map((x,j)=>`<button data-k="break" data-i="${j}" aria-pressed="${kind==="break"&&i===j}">⚡ ${esc(x.label)}</button>`).join("")}</div>`;
+  $("#modes").innerHTML=h;
+}
+function setVariant(kind,i=0,auto=true){
+  stop();const v=variantOf(base,kind,i);main.set(v);
+  document.documentElement.classList.toggle("naive",kind==="naive");
+  $("#steps").innerHTML=v.steps.map((s,j)=>`<li tabindex="0" data-i="${j}">${esc(s.say)}</li>`).join("");
+  $("#codehint").hidden=!v._v;
+  renderModes(kind,i);main.playStep(false);
+  if(auto&&!reduce)setTimeout(()=>{if(main.p===v&&main.step===0&&!playing)autoplay()},400);
 }
 async function autoplay(){
   playing=true;const tok=++playTok;setPlayBtn();
@@ -1886,7 +2495,7 @@ function stop(){playing=false;playTok++;main.cancel();setPlayBtn()}
 function go(i,animate=true){stop();main.step=Math.max(0,Math.min(cur().steps.length-1,i));main.playStep(animate)}
 
 function selectPattern(p,{auto=true,push=true}={}){
-  stop();main.set(p);curCat=p.cat;
+  stop();base=p;main.set(p);curCat=p.cat;document.documentElement.classList.remove("naive");
   document.documentElement.style.setProperty("--cat",`var(--c-${p.cat})`);
   document.documentElement.style.setProperty("--cat-tint",`var(--t-${p.cat})`);
   renderNav();
@@ -1896,7 +2505,8 @@ function selectPattern(p,{auto=true,push=true}={}){
   $("#when").textContent=p.when;$("#analogy").textContent=p.analogy;
   $("#tip").textContent=p.tip||"";$("#tipbox").hidden=!p.tip;
   $("#code").innerHTML=codeHtml(p);$("#code2").innerHTML=codeHtml(p);
-  $("#repo").innerHTML=p.ex.map(e=>`<a href="${srcDir(p)}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
+  $("#repo").innerHTML=p.repoLinks?p.repoLinks.map(([l,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(l)}</a>`).join(""):p.ex.map(e=>`<a href="${srcDir(p)}/${e}" target="_blank" rel="noopener">${p.pkg}/${e}</a>`).join("");
+  renderModes("with",0);$("#codehint").hidden=true;
   $("#steps").innerHTML=p.steps.map((s,i)=>`<li tabindex="0" data-i="${i}">${esc(s.say)}</li>`).join("");
   $("#dia").setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
   if(push&&!EMBED){try{history.replaceState(null,"","#"+p.id)}catch(e){location.hash=p.id}}
@@ -1970,6 +2580,47 @@ function startCompare(){
   return{autoplayOnce:()=>{if(ci===0&&!cplaying)cauto()}};
 }
 
+/* ───────── pattern picker (?pick=1) ───────── */
+function startPick(){
+  document.documentElement.classList.add("picking");
+  $("#pick").hidden=false;
+  const ps=new Stage($("#psvg"),st=>{$("#pcap").textContent=st.p.steps[st.step].say});
+  let path=[], ptok=0;
+  const nodeAt=()=>path.reduce((n,i)=>n.o[i].n||n,PICK);
+  function loop(tok){(async()=>{while(tok===ptok){for(let i=0;i<ps.p.steps.length;i++){if(tok!==ptok)return;ps.step=i;const ok=await ps.playStep(!reduce);if(!ok||tok!==ptok)return;await wait((reduce?2600:1500)*speed)}await wait(1500*speed)}})()}
+  function trail(){
+    let n=PICK;const crumbs=path.map((i,d)=>{const o=n.o[i];n=o.n||n;return `<button class="chip" data-d="${d}">${esc(o.t)}</button>`});
+    $("#ptrail").innerHTML=crumbs.length?`<button class="chip" data-d="-1">Start</button>`+crumbs.join(""):"";
+  }
+  function show(){
+    ptok++;ps.cancel();
+    const n=nodeAt(), last=path.length?(()=>{let m=PICK,o=null;path.forEach(i=>{o=m.o[i];m=o.n||m});return o})():null;
+    trail();
+    if(last&&last.p){ // result
+      const p=byId(last.p);
+      document.documentElement.style.setProperty("--cat",`var(--c-${p.cat})`);document.documentElement.style.setProperty("--cat-tint",`var(--t-${p.cat})`);
+      $("#pq").textContent="Try this pattern";$("#popts").hidden=true;$("#presult").hidden=false;
+      $("#pfam").textContent=CATS[p.cat].name;$("#pname2").textContent=p.name;$("#pintent").textContent=p.intent;$("#pwhen").textContent=p.when;
+      const parent=path.slice(0,-1).reduce((m,i)=>m.o[i].n||m,PICK);
+      const alt=parent.o.filter(o=>o.p&&o.p!==p.id).slice(0,3).map(o=>byId(o.p));
+      $("#palso").innerHTML=alt.length?"Not quite right? Close alternatives: "+alt.map(a=>`<button class="linkish" data-p="${a.id}">${esc(a.name)}</button>`).join(" · "):"";
+      const a=$("#popen");a.hidden=false;a.textContent=`Open the ${p.name} page →`;a.href=EMBED?`../${p.cat}/${p.id}/`:`index.html#${p.id}`;a.target=EMBED?"_top":"_self";
+      ps.set(p);ps.draw({still:true});loop(ptok);
+    }else{
+      document.documentElement.style.setProperty("--cat","var(--c-behavioral)");document.documentElement.style.setProperty("--cat-tint","var(--t-behavioral)");
+      $("#presult").hidden=true;$("#popen").hidden=true;$("#popts").hidden=false;$("#pq").textContent=n.q;
+      $("#popts").innerHTML=n.o.map((o,i)=>`<button class="popt" data-i="${i}"><b>${esc(o.t)}</b>${o.h?`<span>${esc(o.h)}</span>`:""}</button>`).join("");
+    }
+    $("#pback").disabled=!path.length;
+  }
+  $("#popts").addEventListener("click",e=>{const b=e.target.closest(".popt");if(b){path.push(+b.dataset.i);show()}});
+  $("#ptrail").addEventListener("click",e=>{const b=e.target.closest(".chip");if(b){path=path.slice(0,+b.dataset.d+1);show()}});
+  $("#palso").addEventListener("click",e=>{const b=e.target.closest(".linkish");if(!b)return;const parent=path.slice(0,-1).reduce((m,i)=>m.o[i].n||m,PICK);path[path.length-1]=parent.o.findIndex(o=>o.p===b.dataset.p);show()});
+  $("#pback").onclick=()=>{path.pop();show()};
+  $("#prestart").onclick=()=>{path=[];show()};
+  show();
+}
+
 /* ───────── "Name that pattern" quiz (?quiz=1) ───────── */
 function startQuiz(){
   document.documentElement.classList.add("quizzing");
@@ -1978,10 +2629,11 @@ function startQuiz(){
   const store={get(k,d){try{const v=localStorage.getItem("pim-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("pim-"+k,JSON.stringify(v))}catch(e){}}};
   let fam="all", deck=[], cur=null, opts=[], answered=false, usedHint=false, qtok=0;
   let score=0, asked=0, streak=0, best=store.get("best",0), hard=false;
-  const pool=()=>fam==="all"?P:P.filter(p=>p.cat===fam);
+  const QP=P.filter(p=>p.cat!=="tour");
+  const pool=()=>fam==="all"?QP:QP.filter(p=>p.cat===fam);
   const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   function renderFam(){
-    $("#qfam").innerHTML=[["all",`All ${P.length}`],...Object.entries(CATS).map(([k,c])=>[k,c.name])]
+    $("#qfam").innerHTML=[["all",`All ${QP.length}`],...Object.entries(CATS).filter(([k])=>k!=="tour").map(([k,c])=>[k,c.name])]
       .map(([k,l])=>`<button class="chip" data-f="${k}" aria-current="${k===fam}">${l}</button>`).join("");
   }
   function renderScore(){
@@ -2055,16 +2707,17 @@ function startQuiz(){
 
 /* ───────── boot ───────── */
 addEventListener("keydown",e=>{if(e.target.closest("input,textarea"))return;
-  if(document.documentElement.classList.contains("quizzing"))return;
+  if(document.documentElement.classList.contains("quizzing")||document.documentElement.classList.contains("picking"))return;
   const cmp=document.documentElement.classList.contains("comparing");
   const nx=cmp?$("#cnext"):$("#next"), pv=cmp?$("#cprev"):$("#prev"), pl=cmp?$("#cplay"):$("#play");
   if(e.key==="ArrowRight"){e.preventDefault();nx.click()}else if(e.key==="ArrowLeft"){e.preventDefault();pv.click()}
   else if(e.key===" "&&!e.target.closest("button")){e.preventDefault();pl.click()}});
 function fromHash(){const id=Q.get("p")||location.hash.slice(1);return byId(id)}
-addEventListener("hashchange",()=>{const p=fromHash();if(p&&p!==cur()&&!document.documentElement.classList.contains("comparing")&&!document.documentElement.classList.contains("quizzing"))selectPattern(p,{push:false})});
+addEventListener("hashchange",()=>{const p=fromHash();if(p&&p!==cur()&&!document.documentElement.classList.contains("comparing")&&!document.documentElement.classList.contains("quizzing")&&!document.documentElement.classList.contains("picking"))selectPattern(p,{push:false})});
 
 let onVisible=null;
-if(Q.get("quiz")){startQuiz()}
+if(Q.get("pick")){startPick()}
+else if(Q.get("quiz")){startQuiz()}
 else if(Q.get("compare")){const c=startCompare();onVisible=c.autoplayOnce}
 else if(EMBED){selectPattern(fromHash()||P[0],{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
 else selectPattern(fromHash()||P[0],{push:false});
