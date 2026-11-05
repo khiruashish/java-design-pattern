@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="From beginner to architect, and ready for interviews. GoF, concurrency, architecture and microservice patterns in Java 21 with runnable examples.">
+        <meta name="description" content="From beginner to architect, and ready for interviews. GoF, concurrency, architecture, microservice, enterprise/DDD and testing patterns in Java 21 with runnable examples.">
       
       
         <meta name="author" content="Java Design Patterns Handbook">
@@ -420,6 +420,50 @@
     
     
       <li class="md-tabs__item">
+        <a href="../enterprise/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Enterprise & DDD
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../testing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../pattern-selection-guide/" class="md-tabs__link">
           
   
@@ -766,10 +810,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tag:communication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Communication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tag:concurrency" class="md-nav__link">
     <span class="md-ellipsis">
       
         Concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination
       
     </span>
   </a>
@@ -792,6 +858,17 @@
     <span class="md-ellipsis">
       
         Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:enterprise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise
       
     </span>
   </a>
@@ -843,6 +920,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tag:messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tag:microservices" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -880,6 +968,17 @@
     <span class="md-ellipsis">
       
         Observability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operations
       
     </span>
   </a>
@@ -957,6 +1056,17 @@
     <span class="md-ellipsis">
       
         System Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
       
     </span>
   </a>
@@ -2433,6 +2543,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2683,6 +2799,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/guarded-suspension-balking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guarded Suspension & Balking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/active-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Active Object
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/fork-join/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fork/Join
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2701,6 +2901,8 @@
       
         
           
+        
+      
         
       
         
@@ -3297,6 +3499,368 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_20" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_20" id="__nav_7_20_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data, Scale & Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_20_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_20">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data, Scale & Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/cache-aside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache-Aside
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/sharding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sharding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/materialized-view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialized View
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/competing-consumers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Competing Consumers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/leader-election/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leader Election
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/backpressure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backpressure & Load Shedding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/ambassador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ambassador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/gateway-aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway Aggregation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/health-check/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Health Check
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservices/deployment-strategies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment Strategies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3538,6 +4102,14 @@
     
       
         
+          
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -3561,7 +4133,417 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <div class="md-nav__link md-nav__container">
+            <a href="../enterprise/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enterprise & DDD
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Enterprise & DDD
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/dependency-injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependency Injection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/repository/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/unit-of-work/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unit of Work & Identity Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/value-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Value Object
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/aggregate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aggregate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise/domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../testing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/test-doubles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Doubles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/contract-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contract Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/test-data-builder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Data Builder & Object Mother
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
             
   
   
@@ -3579,8 +4561,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3753,7 +4735,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3775,14 +4757,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_10" id="__nav_10_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_12" id="__nav_12_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4103,7 +5085,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -4125,14 +5107,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_11" id="__nav_11_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_13" id="__nav_13_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4511,10 +5493,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" >
         
           
-          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
             
   
   
@@ -4532,8 +5514,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_12">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4649,10 +5631,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tag:communication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Communication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tag:concurrency" class="md-nav__link">
     <span class="md-ellipsis">
       
         Concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:coordination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination
       
     </span>
   </a>
@@ -4675,6 +5679,17 @@
     <span class="md-ellipsis">
       
         Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:enterprise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise
       
     </span>
   </a>
@@ -4726,6 +5741,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tag:messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tag:microservices" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4763,6 +5789,17 @@
     <span class="md-ellipsis">
       
         Observability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag:operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operations
       
     </span>
   </a>
@@ -4846,6 +5883,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#tag:testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4881,6 +5929,24 @@
 
 <span class="md-tag">Advanced</span><a class="headerlink" href="#tag:advanced" title="Permanent link">&para;</a></h2>
   <ul>
+    
+      <li>
+        <a href="../concurrency/active-object/">
+          Active Object
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/aggregate/">
+          Aggregate
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/backpressure/">
+          Backpressure & Load Shedding
+        </a>
+      </li>
     
       <li>
         <a href="../microservices/cqrs/">
@@ -4931,6 +5997,12 @@
       </li>
     
       <li>
+        <a href="../microservices/leader-election/">
+          Leader Election
+        </a>
+      </li>
+    
+      <li>
         <a href="../creational/object-pool/">
           Object Pool
         </a>
@@ -4945,6 +6017,12 @@
       <li>
         <a href="../microservices/saga/">
           Saga
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/sharding/">
+          Sharding
         </a>
       </li>
     
@@ -5037,6 +6115,12 @@
       </li>
     
       <li>
+        <a href="../enterprise/dependency-injection/">
+          Dependency Injection
+        </a>
+      </li>
+    
+      <li>
         <a href="../structural/facade/">
           Facade
         </a>
@@ -5045,6 +6129,12 @@
       <li>
         <a href="../creational/factory-method/">
           Factory Method
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/health-check/">
+          Health Check
         </a>
       </li>
     
@@ -5111,6 +6201,24 @@
       <li>
         <a href="../behavioral/template-method/">
           Template Method
+        </a>
+      </li>
+    
+      <li>
+        <a href="../testing/test-data-builder/">
+          Test Data Builder & Object Mother
+        </a>
+      </li>
+    
+      <li>
+        <a href="../testing/test-doubles/">
+          Test Doubles
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/value-object/">
+          Value Object
         </a>
       </li>
     
@@ -5208,11 +6316,40 @@
 
 
 
+  <h2 id="tag:communication">
+
+
+<span class="md-tag">Communication</span><a class="headerlink" href="#tag:communication" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../microservices/ambassador/">
+          Ambassador
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/gateway-aggregation/">
+          Gateway Aggregation
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
   <h2 id="tag:concurrency">
 
 
 <span class="md-tag">Concurrency</span><a class="headerlink" href="#tag:concurrency" title="Permanent link">&para;</a></h2>
   <ul>
+    
+      <li>
+        <a href="../concurrency/active-object/">
+          Active Object
+        </a>
+      </li>
     
       <li>
         <a href="../concurrency/double-checked-locking/">
@@ -5221,8 +6358,20 @@
       </li>
     
       <li>
+        <a href="../concurrency/fork-join/">
+          Fork/Join
+        </a>
+      </li>
+    
+      <li>
         <a href="../concurrency/future-promise/">
           Future / Promise
+        </a>
+      </li>
+    
+      <li>
+        <a href="../concurrency/guarded-suspension-balking/">
+          Guarded Suspension & Balking
         </a>
       </li>
     
@@ -5253,6 +6402,23 @@
       <li>
         <a href="../concurrency/virtual-threads/">
           Virtual Threads
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
+  <h2 id="tag:coordination">
+
+
+<span class="md-tag">Coordination</span><a class="headerlink" href="#tag:coordination" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../microservices/leader-election/">
+          Leader Election
         </a>
       </li>
     
@@ -5321,6 +6487,12 @@
       </li>
     
       <li>
+        <a href="../microservices/cache-aside/">
+          Cache-Aside
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/database-per-service/">
           Database per Service
         </a>
@@ -5339,14 +6511,73 @@
       </li>
     
       <li>
+        <a href="../microservices/materialized-view/">
+          Materialized View
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/saga/">
           Saga
         </a>
       </li>
     
       <li>
+        <a href="../microservices/sharding/">
+          Sharding
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/transactional-outbox/">
           Transactional Outbox
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
+  <h2 id="tag:enterprise">
+
+
+<span class="md-tag">Enterprise</span><a class="headerlink" href="#tag:enterprise" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../enterprise/aggregate/">
+          Aggregate
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/dependency-injection/">
+          Dependency Injection
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/domain-events/">
+          Domain Events
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/repository/">
+          Repository
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/unit-of-work/">
+          Unit of Work & Identity Map
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/value-object/">
+          Value Object
         </a>
       </li>
     
@@ -5409,6 +6640,12 @@
       </li>
     
       <li>
+        <a href="../microservices/ambassador/">
+          Ambassador
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/anti-corruption-layer/">
           Anti-Corruption Layer
         </a>
@@ -5423,6 +6660,12 @@
       <li>
         <a href="../structural/bridge/">
           Bridge
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/cache-aside/">
+          Cache-Aside
         </a>
       </li>
     
@@ -5445,8 +6688,20 @@
       </li>
     
       <li>
+        <a href="../microservices/competing-consumers/">
+          Competing Consumers
+        </a>
+      </li>
+    
+      <li>
         <a href="../structural/composite/">
           Composite
+        </a>
+      </li>
+    
+      <li>
+        <a href="../testing/contract-testing/">
+          Contract Testing
         </a>
       </li>
     
@@ -5469,6 +6724,12 @@
       </li>
     
       <li>
+        <a href="../microservices/deployment-strategies/">
+          Deployment Strategies
+        </a>
+      </li>
+    
+      <li>
         <a href="../getting-started/design-principles/">
           Design Principles
         </a>
@@ -5481,14 +6742,38 @@
       </li>
     
       <li>
+        <a href="../enterprise/domain-events/">
+          Domain Events
+        </a>
+      </li>
+    
+      <li>
         <a href="../architecture/event-driven/">
           Event-Driven
         </a>
       </li>
     
       <li>
+        <a href="../concurrency/fork-join/">
+          Fork/Join
+        </a>
+      </li>
+    
+      <li>
         <a href="../concurrency/future-promise/">
           Future / Promise
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/gateway-aggregation/">
+          Gateway Aggregation
+        </a>
+      </li>
+    
+      <li>
+        <a href="../concurrency/guarded-suspension-balking/">
+          Guarded Suspension & Balking
         </a>
       </li>
     
@@ -5507,6 +6792,12 @@
       <li>
         <a href="../getting-started/solid/lsp/">
           L · Liskov Substitution
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/materialized-view/">
+          Materialized View
         </a>
       </li>
     
@@ -5559,6 +6850,12 @@
       </li>
     
       <li>
+        <a href="../enterprise/repository/">
+          Repository
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/retry-timeout-bulkhead/">
           Retry / Timeout / Bulkhead
         </a>
@@ -5591,6 +6888,12 @@
       <li>
         <a href="../concurrency/thread-pool/">
           Thread Pool
+        </a>
+      </li>
+    
+      <li>
+        <a href="../enterprise/unit-of-work/">
+          Unit of Work & Identity Map
         </a>
       </li>
     
@@ -5699,6 +7002,23 @@
 
 
 
+  <h2 id="tag:messaging">
+
+
+<span class="md-tag">Messaging</span><a class="headerlink" href="#tag:messaging" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../microservices/competing-consumers/">
+          Competing Consumers
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
   <h2 id="tag:microservices">
 
 
@@ -5708,6 +7028,12 @@
       <li>
         <a href="../microservices/api-gateway/">
           API Gateway
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/ambassador/">
+          Ambassador
         </a>
       </li>
     
@@ -5724,14 +7050,32 @@
       </li>
     
       <li>
+        <a href="../microservices/backpressure/">
+          Backpressure & Load Shedding
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/cqrs/">
           CQRS
         </a>
       </li>
     
       <li>
+        <a href="../microservices/cache-aside/">
+          Cache-Aside
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/circuit-breaker/">
           Circuit Breaker
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/competing-consumers/">
+          Competing Consumers
         </a>
       </li>
     
@@ -5754,6 +7098,12 @@
       </li>
     
       <li>
+        <a href="../microservices/deployment-strategies/">
+          Deployment Strategies
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/distributed-tracing/">
           Distributed Tracing
         </a>
@@ -5766,8 +7116,32 @@
       </li>
     
       <li>
+        <a href="../microservices/gateway-aggregation/">
+          Gateway Aggregation
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/health-check/">
+          Health Check
+        </a>
+      </li>
+    
+      <li>
         <a href="../microservices/idempotent-consumer/">
           Idempotent Consumer
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/leader-election/">
+          Leader Election
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/materialized-view/">
+          Materialized View
         </a>
       </li>
     
@@ -5792,6 +7166,12 @@
       <li>
         <a href="../microservices/service-discovery/">
           Service Discovery
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/sharding/">
+          Sharding
         </a>
       </li>
     
@@ -5875,6 +7255,29 @@
 
 
 
+  <h2 id="tag:operations">
+
+
+<span class="md-tag">Operations</span><a class="headerlink" href="#tag:operations" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../microservices/deployment-strategies/">
+          Deployment Strategies
+        </a>
+      </li>
+    
+      <li>
+        <a href="../microservices/health-check/">
+          Health Check
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
   <h2 id="tag:platform">
 
 
@@ -5937,6 +7340,12 @@
 
 <span class="md-tag">Resilience</span><a class="headerlink" href="#tag:resilience" title="Permanent link">&para;</a></h2>
   <ul>
+    
+      <li>
+        <a href="../microservices/backpressure/">
+          Backpressure & Load Shedding
+        </a>
+      </li>
     
       <li>
         <a href="../microservices/circuit-breaker/">
@@ -6064,6 +7473,35 @@
       <li>
         <a href="../interview/system-design-patterns/">
           System Design Patterns
+        </a>
+      </li>
+    
+    
+  </ul>
+
+
+
+  <h2 id="tag:testing">
+
+
+<span class="md-tag">Testing</span><a class="headerlink" href="#tag:testing" title="Permanent link">&para;</a></h2>
+  <ul>
+    
+      <li>
+        <a href="../testing/contract-testing/">
+          Contract Testing
+        </a>
+      </li>
+    
+      <li>
+        <a href="../testing/test-data-builder/">
+          Test Data Builder & Object Mother
+        </a>
+      </li>
+    
+      <li>
+        <a href="../testing/test-doubles/">
+          Test Doubles
         </a>
       </li>
     
