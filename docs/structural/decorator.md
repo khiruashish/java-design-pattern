@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=decorator&amp;embed=1" title="Animated walkthrough of the Decorator pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#decorator){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a payment processor needs logging, retries and fraud checks, but not always all of them, and not always in the same order. Subclassing gives you `LoggingRetryingFraudCheckedProcessor`, `LoggingProcessor`, `RetryingFraudCheckedProcessor`... one subclass per combination. With decorators you write each feature **once** and **compose** them at runtime.

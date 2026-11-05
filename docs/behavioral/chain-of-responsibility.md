@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=chain-of-responsibility&amp;embed=1" title="Animated walkthrough of the Chain of Responsibility pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#chain-of-responsibility){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a checkout must check the delivery area, stock, coupon and payment limits. Writing it as one method with 40 lines of `if`s makes it hard to reorder checks, reuse them in other flows (reorders, subscriptions), or add a new one (fraud). The sender shouldn't need to know **which** check will reject the order, or **how many** checks there are.

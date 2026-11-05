@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=visitor&amp;embed=1" title="Animated walkthrough of the Visitor pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#visitor){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a cart has books, electronics and fresh produce. Finance wants GST per category, logistics wants shipping cost, marketing wants loyalty points, and next quarter someone wants carbon footprint. If each operation becomes a method on every item class (`gst()`, `shipping()`, `points()`, `carbon()`), item classes grow forever and mix tax rules with logistics rules. The item **types** rarely change; the **operations** keep coming.

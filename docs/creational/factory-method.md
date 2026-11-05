@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=factory-method&amp;embed=1" title="Animated walkthrough of the Factory Method pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#factory-method){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** your checkout code needs a payment processor. Today it's `new UpiProcessor()`. Tomorrow you add cards, then wallets, then net banking. If every caller writes `if (method == UPI) new UpiProcessor() else if ...`, each new payment method means editing (and re-testing) every one of those places.

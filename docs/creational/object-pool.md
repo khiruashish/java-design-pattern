@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=object-pool&amp;embed=1" title="Animated walkthrough of the Object Pool pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#object-pool){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** opening a database connection takes a TCP handshake, a TLS handshake and authentication, around 20–100 ms. A banking API handling 2,000 requests per second can't afford that on every request. The database also allows only so many connections. So you open a fixed number once and **lend** them to requests, taking them back afterwards.

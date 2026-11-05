@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=immutable-object&amp;embed=1" title="Animated walkthrough of the Immutable Object pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#immutable-object){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** an order snapshot is shared with billing, the warehouse and the email service, each on its own thread. If the snapshot is mutable, any of them (or the cart UI that created it) can change it while others are reading, and you need locks everywhere. If it's **immutable**, nobody can change it, so nobody needs a lock. Every reader sees exactly what was agreed at checkout.

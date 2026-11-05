@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=strategy&amp;embed=1" title="Animated walkthrough of the Strategy pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#strategy){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** delivery fees depend on the customer: standard customers pay INR 30 below INR 199, express costs INR 49 (plus INR 10 beyond 3 km), pass members pay nothing, and late-night orders carry a surcharge. Writing all of this as one growing `if/else` inside checkout makes checkout change every time pricing changes, and the rules can't be tested or reused on their own.

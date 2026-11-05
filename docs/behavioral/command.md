@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=command&amp;embed=1" title="Animated walkthrough of the Command pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#command){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** when a button directly calls `doc.delete(0, 7)`, the action is gone the moment it runs. You can't undo it (what was deleted?), you can't queue it for later, and you can't send it to a server when the network comes back. If the action is instead an **object** (`new Delete(doc, 0, 7)`) holding everything needed to run it, and to reverse it, all of those become easy.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=future-promise&amp;embed=1" title="Animated walkthrough of the Future / Promise pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#future-promise){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a fare search asks three airlines. Called one after another (60 ms + 120 ms + 2,000 ms), the customer waits over 2 seconds, and the slowest airline decides everyone's speed. Called **in parallel**, the wait is the slowest call, and with a **timeout**, at most 300 ms. You need a way to start work now, get the result later, combine results, and handle failures and timeouts.

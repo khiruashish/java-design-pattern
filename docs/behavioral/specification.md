@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=specification&amp;embed=1" title="Animated walkthrough of the Specification pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#specification){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a product search has many filters (in stock, under a price, brand, rating, COD), and customers combine them freely. Loan eligibility has a list of rules, and regulators require **reasons** for every rejection. Writing every combination as its own `if` or SQL query leads to duplicated, inconsistent rules ("in stock" means `stock > 0` in search but `stock >= 1 AND !blocked` in checkout).

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=flyweight&amp;embed=1" title="Animated walkthrough of the Flyweight pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#flyweight){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a ride-hailing map shows 10,000 cars. If each car object carries its own 16 KB icon bitmap, that's **160 MB** for three distinct pictures (Auto, Mini, Sedan). Only position and heading differ per car. Share the three icons, keep a tiny marker per car, and memory drops to well under 1 MB.

@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=memento&amp;embed=1" title="Animated walkthrough of the Memento pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#memento){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a designer wants to go back to "v1 draft" of a canvas. To restore it, *someone* must have saved every shape, colour and the background. If the version-history code copies the canvas's private fields itself, the canvas loses encapsulation: every change to its internals breaks the history code. Memento lets the **canvas** make its own snapshot, hand it out as an **opaque** object, and later restore from it.

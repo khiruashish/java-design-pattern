@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=interpreter&amp;embed=1" title="Animated walkthrough of the Interpreter pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#interpreter){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** marketing changes promotion rules every week: "carts over INR 999 in electronics, or for gold members, except in Leh". If every rule is Java code, every change needs a developer, a review and a deployment. If rules are **text** in a small language that your system can **interpret**, marketing can change them through an admin screen.

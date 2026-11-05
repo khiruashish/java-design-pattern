@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=virtual-threads&amp;embed=1" title="Animated walkthrough of the Virtual Threads pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#virtual-threads){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a checkout page checks delivery availability for 2,000 pincodes, each a 100 ms network call. With a pool of 50 platform threads, that's 40 rounds of 100 ms, about **4 seconds**, while the CPU sits idle because threads are just waiting on the network. You could rewrite everything with `CompletableFuture` or reactive streams, but that code is harder to read, debug and profile. Virtual threads let blocking code scale: each call gets its own cheap thread, and the whole batch finishes in roughly **100 ms**.
