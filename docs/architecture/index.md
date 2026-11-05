@@ -42,5 +42,5 @@ flowchart LR
 
 ---
 
-[:material-arrow-left: Anti-Corruption Layer](../microservices/anti-corruption-layer.md){ .md-button }
+[:material-arrow-left: Deployment Strategies](../microservices/deployment-strategies.md){ .md-button }
 [Start: Layered Architecture :material-arrow-right:](layered.md){ .md-button .md-button--primary }

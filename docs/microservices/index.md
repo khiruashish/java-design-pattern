@@ -31,6 +31,21 @@ Every page has **three real-world examples from different industries** (grocery,
 | [Config Server](config-server.md) | Externalized, versioned config and secrets | ⭐⭐⭐⭐ | ✅ |
 | [Anti-Corruption Layer](anti-corruption-layer.md) | Keep legacy/foreign models out of your domain | ⭐⭐⭐⭐ | ✅ |
 
+### Data, scale & operations
+
+| Pattern | Problem it solves | Interview frequency | Status |
+|---|---|---|---|
+| [Cache-Aside](cache-aside.md) | Offload reads; TTLs, invalidation, stampedes, write-behind | ⭐⭐⭐⭐⭐ | ✅ |
+| [Sharding](sharding.md) | Scale writes and storage across databases by a shard key | ⭐⭐⭐⭐⭐ | ✅ |
+| [Materialized View](materialized-view.md) | Precompute expensive or cross-service queries | ⭐⭐⭐⭐ | ✅ |
+| [Competing Consumers](competing-consumers.md) | Scale message processing; acks, redelivery, DLQs | ⭐⭐⭐⭐ | ✅ |
+| [Leader Election](leader-election.md) | Exactly one instance does the job; leases and fencing | ⭐⭐⭐⭐ | ✅ |
+| [Backpressure & Load Shedding](backpressure.md) | Bounded buffers; slow producers down or refuse work early | ⭐⭐⭐⭐ | ✅ |
+| [Ambassador](ambassador.md) | Outbound connectivity (auth, retries, routing) next to a client | ⭐⭐⭐ | ✅ |
+| [Gateway Aggregation](gateway-aggregation.md) | One client call, parallel fan-out, budgets, partial results | ⭐⭐⭐⭐ | ✅ |
+| [Health Check](health-check.md) | Liveness vs readiness; route and restart correctly | ⭐⭐⭐⭐⭐ | ✅ |
+| [Deployment Strategies](deployment-strategies.md) | Blue-green, canary, feature toggles, expand/contract | ⭐⭐⭐⭐⭐ | ✅ |
+
 ## How the patterns fit together
 
 ```mermaid
@@ -56,6 +71,15 @@ flowchart TB
     subgraph Operations
       TR[Distributed Tracing]
       CFG[Config Server]
+      HC[Health Check]
+      DEP[Deployment Strategies]
+    end
+    subgraph Scale
+      CA[Cache-Aside]
+      SH[Sharding]
+      MV[Materialized View]
+      CC[Competing Consumers] --> BP[Backpressure]
+      LE[Leader Election]
     end
     BFF --> CB
 ```
@@ -66,6 +90,7 @@ flowchart TB
 2. **Calling other services safely:** [Retry / Timeout / Bulkhead](retry-timeout-bulkhead.md) → [Circuit Breaker](circuit-breaker.md) → [Service Discovery](service-discovery.md) → [Rate Limiter](rate-limiter.md).
 3. **Data consistency:** [Transactional Outbox](transactional-outbox.md) → [Idempotent Consumer](idempotent-consumer.md) → [Saga](saga.md) → [CQRS](cqrs.md) → [Event Sourcing](event-sourcing.md).
 4. **Migration and operations:** [Strangler Fig](strangler-fig.md) → [Anti-Corruption Layer](anti-corruption-layer.md) → [Distributed Tracing](distributed-tracing.md) → [Config Server](config-server.md) → [Sidecar / Service Mesh](sidecar-service-mesh.md) → [BFF](backend-for-frontend.md).
+5. **Data, scale and operations:** [Cache-Aside](cache-aside.md) → [Materialized View](materialized-view.md) → [Sharding](sharding.md) → [Competing Consumers](competing-consumers.md) → [Backpressure](backpressure.md) → [Leader Election](leader-election.md) → [Health Check](health-check.md) → [Deployment Strategies](deployment-strategies.md) → [Ambassador](ambassador.md) → [Gateway Aggregation](gateway-aggregation.md).
 
 !!! tip "The microservices interview in one sentence"
     Almost every system design answer combines the same moves: **gateway at the edge, a database per service, sagas + outbox + idempotent consumers for consistency, CQRS read models for heavy queries, timeouts/circuit breakers/bulkheads on every call, and tracing to see it all.** If you can explain why each is needed, and what it costs, you can handle most microservices rounds.
@@ -75,5 +100,5 @@ flowchart TB
 
 ---
 
-[:material-arrow-left: Virtual Threads](../concurrency/virtual-threads.md){ .md-button }
+[:material-arrow-left: Fork/Join](../concurrency/fork-join.md){ .md-button }
 [Start: Decomposition :material-arrow-right:](decomposition.md){ .md-button .md-button--primary }

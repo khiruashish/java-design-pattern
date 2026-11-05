@@ -1,0 +1,3 @@
+=== Challenge: The Cache-Aside Stale-Set Race ===
+Naive set     -> cache holds Versioned[pricePaise=4000, version=1] while DB has v2 (stale until TTL)
+Versioned set -> cache holds null (stale write ignored; next read loads v2)

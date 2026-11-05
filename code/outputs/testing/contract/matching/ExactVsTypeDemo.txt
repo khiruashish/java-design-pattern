@@ -1,0 +1,4 @@
+=== Challenge: Exact Values vs Type Matchers in a Contract ===
+exact values : FAIL checkout -> pricing: price of a SKU ['pricePaise' = 27900 is not exactly 28500]
+type matcher : PASS checkout -> pricing: price of a SKU
+Contract the SHAPE the consumer depends on; assert specific values in the consumer's own unit tests.

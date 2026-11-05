@@ -1,0 +1,7 @@
+=== Grocery: Quantity as a Value Object ===
+500 g + 1 kg + 500 g = 2 kg
+1 kg equals 1000 g? true
+1 dozen equals 12 pc? true
+Tomatoes 750 g at INR 40/kg = 3000 paise
+Rejected: cannot add 6 pc to 2 kg
+Rejected: quantity cannot be negative: -1

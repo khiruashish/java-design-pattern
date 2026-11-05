@@ -1,0 +1,5 @@
+=== Payments: Evolving the payments.payment.captured.v1 Event Safely ===
+v1 (today) -> compatible with all 3 consumers
+v2 adds optional 'method' -> compatible with all 3 consumers
+v3 'amountPaise' -> 'amount' as decimal -> BREAKING: [ledger reads 'amountPaise' which no longer exists, analytics reads 'amountPaise' which no longer exists]
+Breaking changes go to a NEW topic/version (...captured.v2), published alongside v1 during migration.

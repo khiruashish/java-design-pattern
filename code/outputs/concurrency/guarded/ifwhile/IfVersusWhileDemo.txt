@@ -1,0 +1,3 @@
+=== Challenge: if (guard) wait() vs while (guard) wait() ===
+if   : consumers got [job-1, null]  <- one woke up to an empty queue
+while: consumers got [job-1, job-2]  <- the guard was re-checked after waking

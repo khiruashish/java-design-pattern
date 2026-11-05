@@ -1,0 +1,5 @@
+=== Grocery Analytics: Summing 5 Million Order Values ===
+Sequential total : INR 12,624,208,440
+Fork/Join total  : INR 12,624,208,440
+Results match    : true
+Parallel stream  : INR 12,624,208,440 (same framework underneath)

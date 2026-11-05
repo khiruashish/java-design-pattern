@@ -1,0 +1,6 @@
+=== Insurance: Car Insurance Quotes from 5 Insurers within 800 ms ===
+  Bharat Shield     INR 11,899
+  Suraksha General  INR 12,450
+  Raksha Direct     INR 13,105
+Missing: [Kavach Insure (timed out at 800 ms), Monsoon Mutual (error)]
+Page returned at 800 ms with partial results, instead of waiting 1,900 ms or failing.

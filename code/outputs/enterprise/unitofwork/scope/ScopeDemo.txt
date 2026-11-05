@@ -1,0 +1,5 @@
+=== Challenge: Identity Map Scope ===
+Request 1 (global map)     : Price[sku=ONION-1KG, paise=4000]
+Request 2 (global map)     : Price[sku=ONION-1KG, paise=4000]  <- stale forever
+Request 2 (per-request map): Price[sku=ONION-1KG, paise=9000]
+An identity map guarantees identity, not freshness: scope it to one unit of work.

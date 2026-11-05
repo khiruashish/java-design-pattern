@@ -1,0 +1,8 @@
+=== Challenge: Bully Election Among 5 Inventory Nodes ===
+  node 2 sends ELECTION to [3, 4, 5]
+  OK from [3, 4]; node 2 backs off
+  node 3 sends ELECTION to [4, 5]
+  OK from [4]; node 3 backs off
+  node 4 sends ELECTION to [5]
+  no answer: node 4 broadcasts COORDINATOR
+New coordinator: node 4

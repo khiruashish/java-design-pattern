@@ -5,7 +5,7 @@
 ![Spring Boot 3](https://img.shields.io/badge/Spring%20Boot-3.3-6db33f)
 ![MkDocs Material](https://img.shields.io/badge/docs-MkDocs%20Material-526cfe)
 
-A complete, runnable handbook of **56 design patterns in Java 21**, from GoF classics to microservices and architecture, written for three audiences at once:
+A complete, runnable handbook of **78 design patterns in Java 21**, from GoF classics to microservices, architecture, enterprise/DDD and testing, written for three audiences at once:
 
 - **Beginners** learning patterns for the first time,
 - **Experienced engineers (up to 15 years)** who want trade-offs, production checklists and war stories,
@@ -21,11 +21,14 @@ Every pattern page has **three real-world examples from different industries** (
 | **Creational (6)** | Singleton, Factory Method, Abstract Factory, Builder, Prototype, Object Pool |
 | **Structural (7)** | Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy |
 | **Behavioral (13)** | Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor, Null Object, Specification |
-| **Concurrency (7)** | Producer-Consumer, Thread Pool, Future/Promise, Read-Write Lock, Immutable Object, Double-Checked Locking, Virtual Threads |
-| **Microservices (18)** | Decomposition (DDD), API Gateway, BFF, Service Discovery, Circuit Breaker, Retry/Timeout/Bulkhead, Rate Limiter, Saga, Transactional Outbox, CQRS, Event Sourcing, Database per Service, Strangler Fig, Sidecar/Service Mesh, Idempotent Consumer, Distributed Tracing, Config Server, Anti-Corruption Layer |
+| **Concurrency (10)** | Producer-Consumer, Thread Pool, Future/Promise, Read-Write Lock, Immutable Object, Double-Checked Locking, Virtual Threads, Guarded Suspension & Balking, Active Object, Fork/Join |
+| **Microservices (28)** | Decomposition (DDD), API Gateway, BFF, Service Discovery, Circuit Breaker, Retry/Timeout/Bulkhead, Rate Limiter, Saga, Transactional Outbox, CQRS, Event Sourcing, Database per Service, Strangler Fig, Sidecar/Service Mesh, Idempotent Consumer, Distributed Tracing, Config Server, Anti-Corruption Layer, plus **data, scale & operations**: Cache-Aside, Sharding, Materialized View, Competing Consumers, Leader Election, Backpressure & Load Shedding, Ambassador, Gateway Aggregation, Health Check, Deployment Strategies (blue-green, canary, feature toggles) |
 | **Architecture (5)** | Layered, Hexagonal, Clean, Event-Driven, Modular Monolith (rules enforced with ArchUnit) |
+| **Enterprise & DDD (6)** | Dependency Injection (IoC), Repository, Unit of Work & Identity Map, Value Object, Aggregate, Domain Events |
+| **Testing (3)** | Test Doubles (dummy, stub, spy, mock, fake), Contract Testing, Test Data Builder & Object Mother |
 | **Guides** | Pattern selection guide, pattern comparisons, anti-patterns, glossary |
 | **Interview** | Company guides (Google, Microsoft, Amazon, SAP, service companies), 12 LLD problems with code, system design patterns, top 100 questions, revision cheat sheet |
+| **Coding Interview** | 12 implement-the-pattern problems (thread-safe Singleton, Builder with validation, Strategy, Observer, Decorator, Command undo/redo, State, Chain, Composite + Visitor, dynamic Proxy, Adapter, Factory registry), each a single runnable file that prints PASS |
 | **Capstone** | **FreshCart**, a runnable grocery platform combining 22 patterns, including failure scenarios |
 
 Each pattern page follows the same structure: TL;DR, intent, analogy, structure diagram, naive approach, three examples (code + output + tests), variations, framework usage, pros/cons, pitfalls, senior deep dive with a war story, comparisons, an interview corner (beginner / mid / senior / coding challenge), a STAR story and a quick revision card.
@@ -46,9 +49,10 @@ Requires **Java 21** and **Maven 3.9+**.
 
 ```bash
 cd code
-mvn test                     # 217 unit and ArchUnit tests
+mvn test                     # 320 unit and ArchUnit tests
 ./run-demos.sh               # runs every *Demo class, writes outputs/
 ./run-demos.sh --check       # verifies outputs match the committed files (what CI runs)
+cd .. && coding-interview/run-all.sh --check   # the 12 coding-interview solutions
 ```
 
 Run a single example:
@@ -81,11 +85,15 @@ java -cp "capstone/target/classes:$(cat capstone/target/classpath.txt)" com.hand
 │   ├── microservices/        # distributed patterns as runnable simulations (H2, FakeClock)
 │   ├── architecture/         # architecture styles + ArchUnit tests
 │   ├── lld/                  # 12 interview LLD problems + consistent hashing
+│   ├── principles/           # OOP pillars, SOLID and design-principle examples
+│   ├── enterprise/           # DI, Repository, Unit of Work, Value Object, Aggregate, Domain Events (H2)
+│   ├── testing/              # test doubles, contract testing, test data builders
 │   ├── capstone/             # FreshCart grocery platform
 │   ├── spring-reference/     # Spring Boot snippets (compiled in CI, not run)
 │   ├── outputs/              # exact console output of every demo, embedded in the docs
 │   └── run-demos.sh
-└── .github/workflows/        # CI: tests, output check, strict site build, GitHub Pages deploy
+├── coding-interview/         # 12 single-file pattern problems (src/, outputs/, run-all.sh --check)
+└── .github/workflows/        # CI: tests, output checks, strict site build, GitHub Pages deploy
 ```
 
 ## How the microservices code runs

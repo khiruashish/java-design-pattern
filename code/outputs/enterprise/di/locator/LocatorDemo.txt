@@ -1,0 +1,4 @@
+=== Challenge: Service Locator vs Dependency Injection ===
+Locator fails at RUNTIME, deep in a call: TaxRates not registered
+Injected invoice: 11200 paise
+Forgetting TaxRates with DI is a COMPILE error: new InjectedInvoice() does not exist.

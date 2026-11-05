@@ -1,0 +1,10 @@
+=== Challenge: When Should Events Be Published? ===
+Publishing immediately inside the use case:
+  COMMIT failed -> rolled back
+  SMS sent: [ORD-77 confirmed]  <- customer told about an order that doesn't exist
+Recording, then publishing after commit:
+  COMMIT failed -> rolled back
+  SMS sent: []
+  COMMIT ok
+  SMS sent: [ORD-78 confirmed]
+In Spring: @TransactionalEventListener(phase = AFTER_COMMIT), or an outbox row for other services.

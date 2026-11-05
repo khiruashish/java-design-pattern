@@ -1,0 +1,4 @@
+=== Challenge: Poison Messages and a Dead-Letter Queue ===
+Sent        : [+919845000001, +919845000002]
+Dead letters: [sms:NOT-A-NUMBER (invalid number NOT-A-NUMBER, 3 attempts)]
+Good messages weren't blocked, and the bad one stopped after 3 tries.

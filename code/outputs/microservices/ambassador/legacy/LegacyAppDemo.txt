@@ -1,0 +1,5 @@
+=== Banking: An Ambassador Gives a Legacy App Auth and Retries ===
+Legacy app -> partner directly : 401 missing credentials
+Legacy app -> localhost:9000   : 200 EMI INR 18,450 due 05-Oct
+Ambassador log: [attempt 1 -> 503, attempt 2 -> 503, attempt 3 -> 200]
+Legacy code unchanged: only its base URL config moved to http://localhost:9000.

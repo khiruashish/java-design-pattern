@@ -1,0 +1,4 @@
+=== Streaming: Probes Every Second, Database Checked Every 10 Seconds ===
+Health probes in one minute: 300
+Queries the database actually received: 6
+Across 200 pods: 60000 probes -> 1200 DB queries per minute

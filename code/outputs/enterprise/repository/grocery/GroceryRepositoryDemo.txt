@@ -1,0 +1,4 @@
+=== Grocery: One Restock Service, Two Repository Adapters ===
+InMemoryProductRepository  restocked [EGG-12 2->50, MILK-1L 4->50], MILK-1L stock now 50
+JdbcProductRepository      restocked [EGG-12 2->50, MILK-1L 4->50], MILK-1L stock now 50
+RestockService has no SQL and no Map: storage is a detail behind the port.

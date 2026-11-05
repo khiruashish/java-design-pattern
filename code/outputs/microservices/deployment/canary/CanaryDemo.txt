@@ -1,0 +1,9 @@
+=== Ride-hailing: Canary Rollout of a New Fare Engine (steps 1% -> 5% -> 25% -> 50%, then promote) ===
+Release 7.3 (healthy):
+    1% canary: baseline 0.32% errors, canary 0.00% -> continue
+    5% canary: baseline 0.20% errors, canary 0.00% -> continue
+   25% canary: baseline 0.37% errors, canary 0.44% -> continue
+   50% canary: baseline 0.30% errors, canary 0.54% -> PROMOTE to 100%
+Release 7.4 (bug: fares fail for airport pickups, ~3% of rides):
+    1% canary: baseline 0.32% errors, canary 4.00% -> ROLLBACK
+The bad release was stopped at 1% of rides, automatically, instead of reaching everyone.

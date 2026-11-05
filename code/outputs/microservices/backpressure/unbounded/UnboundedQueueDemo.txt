@@ -1,0 +1,5 @@
+=== Challenge: Unbounded vs Bounded Queue During a 60s Spike ===
+t=10s unbounded backlog= 4,000 (wait    7s) | bounded backlog=1,200 (wait 2s), rejected so far=2,800
+t=60s unbounded backlog=24,000 (wait   40s) | bounded backlog=1,200 (wait 2s), rejected so far=22,800
+Unbounded: every request is accepted and served 40s late (most clients already timed out), then OOM.
+Bounded  : excess is refused at once with 429, clients back off, accepted work stays fast.

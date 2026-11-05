@@ -1,0 +1,4 @@
+=== Grocery: Cache-Aside for Product Pages ===
+1,000 page views -> DB reads: 1
+After price drop, next view shows INR 39.00 (DB reads: 2)
+11 minutes later the entry expired and was reloaded (DB reads: 3)

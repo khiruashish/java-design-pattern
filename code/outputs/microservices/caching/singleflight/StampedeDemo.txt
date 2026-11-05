@@ -1,0 +1,3 @@
+=== Streaming: 500 Viewers Open a Just-Released Episode ===
+Viewers served: 500
+Database loads: 1 (without coalescing: up to 500)

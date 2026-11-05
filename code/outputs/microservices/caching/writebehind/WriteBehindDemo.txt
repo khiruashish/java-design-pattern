@@ -1,0 +1,6 @@
+=== Travel: Hotel Page-View Counters with Write-Behind ===
+t=1s flush wrote 3 rows
+t=2s flush wrote 3 rows
+t=3s flush wrote 3 rows
+60,000 views -> 9 DB writes; totals {GOA-BEACH-12=19956, JAIPUR-FORT-3=20009, MUNNAR-TEA-8=20035}
+Crash before the next flush would lose 500 views: fine for counters, never for money.

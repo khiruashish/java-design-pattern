@@ -1,0 +1,4 @@
+=== Challenge: Finding the Right Aggregate Boundary ===
+Customer-contains-orders: objects loaded to place 1 order = 5002
+Order-references-customer-id: objects loaded = 1 (O-NEW)
+Two devices ordering at once no longer conflict on one giant Customer version.

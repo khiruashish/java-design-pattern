@@ -1,0 +1,5 @@
+=== Payments: Verifying Calls to the Gateway with a Mock ===
+Missing curd (INR 150)        : verified [refund(pay_1, 15000)]
+Only INR 50 left to refund    : verified [refund(pay_2, 5000)]
+Fully refunded already        : verified [] (no gateway call at all)
+Mockito equivalent: verify(gateway).refund("pay_2", 5000L); verifyNoMoreInteractions(gateway);

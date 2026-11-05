@@ -1,0 +1,6 @@
+=== Payments: Fencing Tokens Stop a Zombie Leader ===
+A becomes leader with token 34, writes batch 1: true
+A pauses for 40s (stop-the-world GC); its lease expires
+B becomes leader with token 35, writes batch 2: true
+A wakes up, still thinks it's leader, writes with token 34: accepted=false
+Payout file: [batch-1 by A, batch-2 by B]

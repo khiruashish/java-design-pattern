@@ -1,0 +1,6 @@
+=== Healthcare: Bed Allocation with a StayPeriod Value Object ===
+Bed 7 current stay: 4 nights
+Next patient admitted on discharge day overlaps? false
+Doctor extends stay -> 5 nights; now overlaps? true
+Original value unchanged: 4 nights
+Rejected: discharge 2026-03-12 must be after admission 2026-03-12

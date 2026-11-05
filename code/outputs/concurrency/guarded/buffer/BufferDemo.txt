@@ -1,0 +1,3 @@
+=== Streaming: Start Playback Only When 6 Seconds Are Buffered ===
+Fast network: playable within 2s? true
+Weak network: playable within 150ms? false -> switch to 480p and retry

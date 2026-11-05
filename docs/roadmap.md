@@ -1,7 +1,7 @@
 # Roadmap & Progress
 
-!!! success "Progress: 71 of 71 items (100%)"
-    Every planned item is done: all **Creational** (6), **Structural** (7), **Behavioral** (13), **Concurrency** (7), **Microservices** (18) and **Architecture** (5) patterns, the guides, the full **Interview** section (company guides, 12 LLD problems, system design patterns, top 100 questions, cheat sheet) and the **FreshCart capstone**. Every example runs: `./run-demos.sh --check` verifies all outputs, and CI runs over 200 unit and ArchUnit tests.
+!!! success "Progress: 93 of 93 items (100%)"
+    Every planned item is done: all **Creational** (6), **Structural** (7), **Behavioral** (13), **Concurrency** (10), **Microservices** (28), **Architecture** (5), **Enterprise & DDD** (6) and **Testing** (3) patterns, the guides, the full **Interview** section (company guides, 12 LLD problems, system design patterns, top 100 questions, cheat sheet) and the **FreshCart capstone**. Every example runs: `./run-demos.sh --check` verifies all outputs, and CI runs over 300 unit and ArchUnit tests.
 
 The handbook is built in batches from the [master prompt](https://github.com/khiruashish/java-design-pattern/blob/main/MASTER_PROMPT.md). This page tracks what's done.
 
@@ -57,6 +57,9 @@ The handbook is built in batches from the [master prompt](https://github.com/khi
 - [x] Immutable Object
 - [x] Double-Checked Locking
 - [x] Virtual Threads
+- [x] Guarded Suspension & Balking
+- [x] Active Object
+- [x] Fork/Join
 
 ## Microservices
 
@@ -78,6 +81,16 @@ The handbook is built in batches from the [master prompt](https://github.com/khi
 - [x] Distributed Tracing
 - [x] Config Server
 - [x] Anti-Corruption Layer
+- [x] Cache-Aside
+- [x] Sharding
+- [x] Materialized View
+- [x] Competing Consumers
+- [x] Leader Election
+- [x] Backpressure & Load Shedding
+- [x] Ambassador
+- [x] Gateway Aggregation
+- [x] Health Check
+- [x] Deployment Strategies (blue-green, canary, feature toggles)
 
 ## Architecture
 
@@ -86,6 +99,21 @@ The handbook is built in batches from the [master prompt](https://github.com/khi
 - [x] Clean
 - [x] Event-Driven
 - [x] Modular Monolith
+
+## Enterprise & DDD
+
+- [x] Dependency Injection (IoC)
+- [x] Repository
+- [x] Unit of Work & Identity Map
+- [x] Value Object
+- [x] Aggregate
+- [x] Domain Events
+
+## Testing
+
+- [x] Test Doubles
+- [x] Contract Testing
+- [x] Test Data Builder & Object Mother
 
 ## Guides & Interview
 

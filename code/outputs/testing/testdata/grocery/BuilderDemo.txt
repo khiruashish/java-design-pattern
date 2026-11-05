@@ -1,0 +1,6 @@
+=== Grocery: Delivery-Fee Tests That Say Only What Matters ===
+small order           -> fee INR 25
+order above INR 499   -> fee INR 0
+small + express       -> fee INR 55
+first order + express -> fee INR 0
+Each case sets 1-3 fields; the other 6 fields of Order come from defaults.

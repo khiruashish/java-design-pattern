@@ -1,0 +1,4 @@
+=== Grocery: 'Top 2 SKUs Today' Across Customer-Sharded Order Databases ===
+Scatter-gather of full totals : [SkuSales[sku=EGGS, units=133], SkuSales[sku=ATTA, units=112]]
+Merging each shard's top 2    : [SkuSales[sku=ATTA, units=112], SkuSales[sku=BREAD, units=95]]  <- EGGS (133 units, the real #1) missed: never in a local top 2
+A query with the shard key (one customer's orders) would touch exactly 1 of 3 shards.

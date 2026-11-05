@@ -1,0 +1,6 @@
+=== Insurance: Domain Event -> Integration Event -> Outbox ===
+In-process handlers see : PolicyLapsed[policyId=POL-2207, customerId=CUST-41, lapsedOn=2026-04-01, missedPremiums=3, underwriterNotes=Customer called twice about premium hike, internalRiskScore=0.82]
+  [renewals] schedule win-back call; [claims] block new claims on POL-2207
+Other services receive  : PolicyLapsedV1[schemaVersion=1, eventType=insurance.policy.lapsed.v1, policyId=POL-2207, customerId=CUST-41, lapsedOn=2026-04-01]
+Outbox row (same DB transaction as the lapse): {key=POL-2207, payload={"schemaVersion":1,"policyId":"POL-2207","customerId":"CUST-41","lapsedOn":"2026-04-01"}, topic=insurance.policy.lapsed.v1}
+Notes and risk score never leave the policy service.

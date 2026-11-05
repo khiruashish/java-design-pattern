@@ -1,0 +1,5 @@
+=== Ride-hailing: City-Based Shards and Splitting a Hot City ===
+Bengaluru zone 12 -> shard-south-1, zone 140 -> shard-south-1
+Before split, Bengaluru's 200 zones: {shard-south-1=200}
+After split,  Bengaluru's 200 zones: {shard-south-1=100, shard-south-3=100}
+Chennai and Delhi routing unchanged: shard-south-2, shard-north-1

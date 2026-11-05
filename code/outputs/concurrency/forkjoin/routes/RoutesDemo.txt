@@ -1,0 +1,3 @@
+=== Logistics: Cheapest Order of 7 Stops After the Hub (7! = 5,040 routes) ===
+Best route: Hub -> Koramangala -> Bellandur -> Jayanagar -> BTM -> HSR -> JP Nagar -> Indiranagar
+Distance  : 37 km

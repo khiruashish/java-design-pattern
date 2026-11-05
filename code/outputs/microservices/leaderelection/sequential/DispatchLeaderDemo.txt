@@ -1,0 +1,9 @@
+=== Logistics: Electing the Route-Optimizer Leader with Sequential Nodes ===
+optimizer-a created /election/n_0000000000
+optimizer-b created /election/n_0000000001
+optimizer-c created /election/n_0000000002
+optimizer-d created /election/n_0000000003
+Leader: optimizer-a
+  optimizer-d notified (predecessor optimizer-c gone) -> watches optimizer-b
+  optimizer-b notified (predecessor optimizer-a gone) -> now LEADER
+Leader: optimizer-b (each death woke exactly one node: no herd effect)

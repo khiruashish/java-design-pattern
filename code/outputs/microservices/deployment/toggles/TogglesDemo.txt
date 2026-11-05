@@ -1,0 +1,6 @@
+=== Banking: Rolling Out 'Instant Loan Offers' with Feature Toggles ===
+Employee (dogfooding)  : true
+Customers enabled at 10%: 1038 of 10,000
+cust-123 asks 3 times   : false, false, false (sticky)
+Raised to 50%           : 4908 of 10,000 (everyone from the 10% still has it)
+Kill switch flipped     : 0 of 10,000, employee=false (no deploy needed)

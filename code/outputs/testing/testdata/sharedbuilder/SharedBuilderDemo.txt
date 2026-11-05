@@ -1,0 +1,6 @@
+=== Challenge: The Shared Builder That Froze Every Account ===
+mutable shared  : test 1 Account[type=SAVINGS, balancePaise=100000, frozen=true]
+                  test 2 Account[type=SAVINGS, balancePaise=500000, frozen=true]  <- frozen leaked in
+immutable base  : test 1 Account[type=SAVINGS, balancePaise=100000, frozen=true]
+                  test 2 Account[type=SAVINGS, balancePaise=500000, frozen=false]
+Test order or parallel runs no longer change results.

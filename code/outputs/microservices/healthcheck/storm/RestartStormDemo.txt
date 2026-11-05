@@ -1,0 +1,4 @@
+=== Challenge: The Database Belongs in Readiness, Not Liveness ===
+DB in liveness : restarts=40, pods able to serve at t=120s (DB back since t=110s): 0/20
+DB in readiness: restarts=0, pods able to serve at t=120s (DB back since t=110s): 20/20
+Restarting can't fix a dependency; it only adds cold starts when the dependency returns.

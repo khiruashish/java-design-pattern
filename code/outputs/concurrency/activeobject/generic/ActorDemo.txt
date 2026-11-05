@@ -1,0 +1,3 @@
+=== Challenge: A Generic Actor<S> Around a Plain HashMap ===
+A plain HashMap hit by 8 threads loses updates (and the count changes every run).
+The same HashMap inside an Actor, 20,000 increments from 8 threads: views=20000

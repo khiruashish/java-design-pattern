@@ -1,0 +1,5 @@
+=== Healthcare: A Tiny IoC Container Autowiring Constructors ===
+WhatsApp -> Asha Rao: appointment Tue 10:30, Dr. Menon
+Same singleton on second lookup: true
+Missing binding  -> No binding for PatientDirectory
+Cycle at startup -> Circular dependency: BillingService -> InsuranceService -> BillingService

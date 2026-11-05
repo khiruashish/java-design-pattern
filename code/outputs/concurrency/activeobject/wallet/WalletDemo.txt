@@ -1,0 +1,3 @@
+=== Payments: A Wallet as an Active Object ===
+Debits of INR 100 approved: 10 of 15 (balance allows exactly 10)
+Statement: balance=0 after 1015 ops

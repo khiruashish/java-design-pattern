@@ -1,0 +1,7 @@
+=== Logistics: Shipping-Label Printer with a Bounded Queue ===
+AWB-1: printed as label #1
+AWB-2: printed as label #2
+AWB-3: printed as label #3
+AWB-4: printed as label #4
+AWB-5: REJECTED: printer queue full, retry AWB-5 later
+Print order: [AWB-1, AWB-2, AWB-3, AWB-4]

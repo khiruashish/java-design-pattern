@@ -1,0 +1,5 @@
+=== Telecom: De-duplicating Subscribers by PhoneNumber ===
+5 raw sign-ups -> 2 subscribers: [+919845012345, +917022199887]
+Masked for SMS logs: [+9198*****345, +9170*****887]
+Rejected: cannot parse '12345'
+Rejected: not a canonical Indian mobile number: +911234567890

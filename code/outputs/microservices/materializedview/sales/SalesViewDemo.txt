@@ -1,0 +1,5 @@
+=== Grocery: Store Sales Dashboard on a Refreshed Summary Table ===
+Raw order lines: 21000; dashboard reads 1 precomputed row:
+  BLR-HSR  2026-07-01 -> 12000 orders, INR 4980000
+Before next refresh -> 12000 orders, INR 4980000 (stale by design)
+After refresh       -> 12500 orders, INR 5187500

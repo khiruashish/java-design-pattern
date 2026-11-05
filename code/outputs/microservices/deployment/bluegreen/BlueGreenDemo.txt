@@ -1,0 +1,6 @@
+=== E-commerce: Blue-Green Release of the Checkout Service ===
+Before release   -> blue: total INR 1,240 (v41)
+Smoke test green -> total INR 1,240 (v42) (no customer traffic yet)
+After switch     -> green: total INR 1,240 (v42)
+Coupon user      -> green: 500 NullPointerException (v42)  <- bug found in production
+Rollback (1 step)-> blue: total INR 1,240 (v41)

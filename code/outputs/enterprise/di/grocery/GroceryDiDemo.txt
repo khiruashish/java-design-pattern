@@ -1,0 +1,8 @@
+=== Grocery: Same CheckoutService, Two Wirings ===
+Production wiring:
+  [SMS to +91-98450] Order ORD-101 confirmed for Today 18:00-19:00
+  ORD-101 paid (rzp_ORD-101_45900), slot Today 18:00-19:00
+Demo wiring (fake payments, recorded messages):
+  ORD-102 paid (fake-ok), slot Tomorrow 09:00-10:00
+  recorded: [+91-99001: Order ORD-102 confirmed for Tomorrow 09:00-10:00]
+CheckoutService.java imports no concrete class: swapping needed zero changes to it.

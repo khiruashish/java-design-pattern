@@ -1,0 +1,6 @@
+=== Challenge: Token Caching in the Ambassador (SMS gateway, 1-hour tokens) ===
+t=+0min header: Bearer tok-1
+t=+54min header: Bearer tok-1
+t=+55min header: Bearer tok-2
+t=+120min header: Bearer tok-3
+6,050 SMS sent, token requests to the auth server: 3 (refreshed 5 minutes before each expiry)

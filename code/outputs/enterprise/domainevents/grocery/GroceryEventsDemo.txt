@@ -1,0 +1,8 @@
+=== Grocery: Order Raises Events, Other Modules React ===
+Use case: order.place() then save in a transaction... committed. Dispatching:
+  [loyalty]   +124 points for CUST-5
+  [sms]       'Order ORD-31 confirmed' -> CUST-5
+  [warehouse] start picking ORD-31
+Use case: order.cancel() committed. Dispatching:
+  [warehouse] stop picking ORD-31 (customer changed mind)
+Events left after dispatch: 0

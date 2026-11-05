@@ -1,0 +1,3 @@
+=== Banking: 'Can I Deploy?' for the Accounts API ===
+accounts-api 9.0.0 -> prod? NO, not verified against [loans@1.3.0]
+after loans 1.4.0 ships -> prod? YES

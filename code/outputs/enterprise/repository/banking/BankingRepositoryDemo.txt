@@ -1,0 +1,5 @@
+=== Banking: Repository with Optimistic Locking ===
+ATM and UPI both loaded Account[id=SB-501, balancePaise=1000000, version=1]
+ATM saves  -> Account[id=SB-501, balancePaise=200000, version=2]
+UPI rejected: Account SB-501 was modified (expected v1, found v2)
+UPI retried on fresh state: insufficient funds (no overdraft)
