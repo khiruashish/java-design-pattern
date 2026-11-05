@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## Watch one order go through
+
+Before the details, here is one checkout moving through FreshCart. Each step names the patterns at work and links to their pages; the code panel shows which part of the capstone does it.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=freshcart-order&amp;embed=1" title="Animated walkthrough of one FreshCart order, end to end" loading="lazy"></iframe>
+
 ## 1. Requirements
 
 **Functional**
