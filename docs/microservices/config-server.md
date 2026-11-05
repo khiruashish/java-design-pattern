@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=config-server&amp;embed=1" title="Animated walkthrough of the Config Server pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#config-server){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** 40 services × 4 environments. Database URLs, timeouts, feature flags and partner endpoints are baked into each JAR's `application.properties`. Changing a timeout means rebuilding and redeploying. Someone committed the production DB password to Git. Nobody knows which timeout is actually running in prod.

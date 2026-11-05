@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=backpressure&amp;embed=1" title="Animated walkthrough of the Backpressure &amp; Load Shedding pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#backpressure){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** during a sale, orders arrive at 1,000/s but the warehouse picking API handles 600/s. If the service queues everything in memory, the queue grows by 400 items every second: after a minute, new requests wait 40 seconds (most clients have already timed out and retried, adding even more load), and then the JVM runs out of memory. Accepting work you can't finish is worse than refusing it.

@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=deployment-strategies&amp;embed=1" title="Animated walkthrough of the Deployment Strategies pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#deployment-strategies){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the team deploys checkout v42 on Friday evening by replacing v41 on every server. A bug for coupon users appears at once, for everyone. Rolling back means another full deploy (15 minutes) while orders fail. Next time, people deploy less often, batches get bigger, and each release gets riskier.

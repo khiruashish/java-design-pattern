@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=saga&amp;embed=1" title="Animated walkthrough of the Saga pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#saga){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** placing a grocery order touches inventory (reserve stock), payments (charge the card) and delivery (book a slot). Each service has **its own database**, so there's no single `BEGIN ... COMMIT` across them. Two-phase commit (2PC/XA) is slow, couples services' availability, and isn't supported by most brokers and NoSQL stores. Yet "charged but no delivery slot" is unacceptable.

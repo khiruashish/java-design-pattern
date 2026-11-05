@@ -20,7 +20,7 @@ tags:
 
 <iframe class="motion-embed" src="../../motion/index.html?p=read-write-lock&amp;embed=1" title="Animated walkthrough of the Read-Write Lock pattern" loading="lazy"></iframe>
 
-Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#read-write-lock){ target=_blank }
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#read-write-lock){ target=_blank }
 
 ## 1. Intent & Problem It Solves
 

@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=idempotent-consumer&amp;embed=1" title="Animated walkthrough of the Idempotent Consumer pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#idempotent-consumer){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a Kafka consumer credits ₹199 to a wallet and crashes before committing its offset; on restart it gets the message again and credits again. A mobile app's "Pay" request times out on a bad network; the app retries; the customer is charged twice. A courier app sends "out for delivery" twice; the customer gets two SMS. Duplicates are **normal** in distributed systems:

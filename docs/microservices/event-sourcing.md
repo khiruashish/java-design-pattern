@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=event-sourcing&amp;embed=1" title="Animated walkthrough of the Event Sourcing pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#event-sourcing){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a CRUD `accounts` table says the balance is ₹11,200. *How* did it get there? Which deposit was reversed? What was the balance at month-end for the regulator? The `UPDATE` destroyed that information. Bolting on audit tables later is error-prone (they drift from reality).

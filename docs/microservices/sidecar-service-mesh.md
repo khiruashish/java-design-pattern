@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=sidecar-service-mesh&amp;embed=1" title="Animated walkthrough of the Sidecar / Service Mesh pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#sidecar-service-mesh){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** 80 services in Java, Go, Node and one PHP legacy app. Each needs encryption between services (mTLS), "who may call whom" rules, retries, timeouts, canary routing, metrics and tracing. Implementing these in every language's libraries means 4× the work, inconsistent behaviour and painful upgrades across all services. And security teams want guarantees that don't depend on every team getting it right.

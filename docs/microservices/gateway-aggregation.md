@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=gateway-aggregation&amp;embed=1" title="Animated walkthrough of the Gateway Aggregation pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#gateway-aggregation){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a travel app's trip screen needs flight status, the hotel, the cab and the weather, from four services. On a 4G connection each round trip costs ~300 ms, so the screen takes over a second, drains the battery and breaks when any one call fails. Every client (iOS, Android, web) re-implements the same fan-out.

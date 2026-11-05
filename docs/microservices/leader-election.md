@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=leader-election&amp;embed=1" title="Animated walkthrough of the Leader Election pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#leader-election){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the grocery service runs on three pods. At 02:00 a job builds the "substitution report" and emails 800 stores. If every pod runs it, stores get three emails and the database does triple work. If only pod-1 is configured to run it, the job silently stops when pod-1 is rescheduled. You need "exactly one, and always one".

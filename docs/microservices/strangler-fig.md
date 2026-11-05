@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=strangler-fig&amp;embed=1" title="Animated walkthrough of the Strangler Fig pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#strangler-fig){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the grocery business runs on a 12-year-old monolith. A full rewrite would take two years with no new features. Meanwhile the old system keeps changing, the rewrite chases a moving target, and launch day is a single enormous risk. Many big-bang rewrites are abandoned.

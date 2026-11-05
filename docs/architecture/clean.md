@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=clean&amp;embed=1" title="Animated walkthrough of the Clean Architecture pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#clean){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the coupon rules of a grocery app are written inside a Spring controller, read data via JPA entities, and return a JSON map. Adding a mobile app with a different response shape means duplicating the rules; upgrading Spring breaks business logic; nobody can say where "the rules" actually are.

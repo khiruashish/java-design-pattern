@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=event-driven&amp;embed=1" title="Animated walkthrough of the Event-Driven pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#event-driven){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** after an order is placed, the order service synchronously calls inventory, loyalty, email, analytics and the recommendation engine. Every new feature adds a call; if the email service is slow, checkout is slow; if analytics is down, orders fail. The order service has become a coordinator of things that aren't its business.

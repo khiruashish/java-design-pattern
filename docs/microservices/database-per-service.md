@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=database-per-service&amp;embed=1" title="Animated walkthrough of the Database per Service pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#database-per-service){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** five "microservices" share one big database. The order team renames a column and the reporting service breaks. The catalog team can't move to a search engine because three other services join its tables. A long-running analytics query locks rows that checkout needs. You have a **distributed monolith**: all the costs of microservices, and none of the independence.

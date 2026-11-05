@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=sharding&amp;embed=1" title="Animated walkthrough of the Sharding pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#sharding){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a payments ledger grows by 20 million rows a day. One PostgreSQL primary handles reads with replicas, but **writes** all go to one machine; it's at 85% CPU, vacuum can't keep up, and the next bigger instance doesn't exist. You need more than one primary.

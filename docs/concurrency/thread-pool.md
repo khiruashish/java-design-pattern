@@ -20,7 +20,7 @@ tags:
 
 <iframe class="motion-embed" src="../../motion/index.html?p=thread-pool&amp;embed=1" title="Animated walkthrough of the Thread Pool pattern" loading="lazy"></iframe>
 
-Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 33 patterns](../motion/index.html#thread-pool){ target=_blank }
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#thread-pool){ target=_blank }
 
 ## 1. Intent & Problem It Solves
 

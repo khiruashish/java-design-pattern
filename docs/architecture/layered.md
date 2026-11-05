@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=layered&amp;embed=1" title="Animated walkthrough of the Layered pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#layered){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** without structure, a grocery app's HTTP handler parses JSON, checks stock, calculates discounts, writes SQL and formats the response, all in one 400-line method. Changing the database means touching UI code; testing a discount rule needs a web server and a database.

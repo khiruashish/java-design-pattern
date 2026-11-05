@@ -17,6 +17,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=competing-consumers&amp;embed=1" title="Animated walkthrough of the Competing Consumers pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. [Open the full explorer with all 66 patterns](../motion/index.html#competing-consumers){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** every order needs an invoice PDF. At 5 pm a single worker can render 50 per second, but orders arrive at 200 per second; the backlog grows all evening. Running the renderer inside the checkout request makes checkout slow. You want to put the work on a queue and add workers until the queue keeps up, and you want a crashed worker's job to be picked up by someone else.
