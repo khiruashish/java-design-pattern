@@ -5543,6 +5543,9 @@ design pattern in this handbook is a combination of these four.</p>
 <p><strong>Definition.</strong> Bundle data with the operations on it, and <strong>hide the internal state</strong> so it can only change through
 methods that enforce the object's rules (its <em>invariants</em>). Encapsulation is about <strong>protecting invariants</strong>, not just
 about making fields <code>private</code> and adding getters and setters.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=encapsulation&amp;embed=1" title="Animated walkthrough of Encapsulation" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the demo below run step by step, with the matching code lit up. Switch to <strong>Without it</strong> to see what goes wrong without encapsulation. <a href="../../motion/#encapsulation" target="_blank">Open in the explorer</a></p>
 <p><strong>Key features:</strong> private fields; behaviour methods instead of setters; validation in the constructor and methods;
 immutable or read-only views of internal collections (<code>List.copyOf</code>, <code>unmodifiableList</code>); package-private helpers.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Demo + Output</label></div>
@@ -5654,6 +5657,9 @@ unmodifiable view or a copy, and copy incoming mutable arguments.</p>
 <h2 id="2-abstraction">2. Abstraction<a class="headerlink" href="#2-abstraction" title="Permanent link">&para;</a></h2>
 <p><strong>Definition.</strong> Expose <strong>what</strong> something does and hide <strong>how</strong> it does it. Callers depend on a simplified model
 (an interface or abstract class), and the complexity lives behind it.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=abstraction&amp;embed=1" title="Animated walkthrough of Abstraction" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the demo below run step by step, with the matching code lit up. Switch to <strong>Without it</strong> to see what goes wrong without abstraction. <a href="../../motion/#abstraction" target="_blank">Open in the explorer</a></p>
 <p><strong>Key features:</strong> interfaces or abstract classes as contracts; names in the caller's language (<code>put</code>, <code>get</code>), not
 the implementation's (<code>gzipThenWriteToBucket</code>); implementations you can swap.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Abstraction</label><label for="__tabbed_2_2">Implementations</label><label for="__tabbed_2_3">Demo + Output</label></div>
@@ -5793,6 +5799,9 @@ simplify use. <code>BankAccount</code> is mainly encapsulation; <code>FileStorag
 <h2 id="3-inheritance">3. Inheritance<a class="headerlink" href="#3-inheritance" title="Permanent link">&para;</a></h2>
 <p><strong>Definition.</strong> A subclass <strong>reuses and specialises</strong> a parent class (an "is-a" relationship). The subclass inherits fields and
 methods, can override behaviour, and can be used wherever the parent is expected (see <a href="../solid/lsp/">LSP</a>).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=inheritance&amp;embed=1" title="Animated walkthrough of Inheritance" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the demo below run step by step, with the matching code lit up. Switch to <strong>Without it</strong> to see what goes wrong without inheritance. <a href="../../motion/#inheritance" target="_blank">Open in the explorer</a></p>
 <p><strong>Key features:</strong> <code>extends</code> (a single class), <code>abstract</code> hooks, <code>protected</code> members for subclasses, <code>final</code> to forbid
 overriding, <code>sealed</code> to restrict who may extend, and <code>super(...)</code> constructor chaining.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Demo + Output</label></div>
@@ -5908,6 +5917,9 @@ self-use, make hooks <code>protected abstract</code>, make the rest <code>final<
 <hr />
 <h2 id="4-polymorphism">4. Polymorphism<a class="headerlink" href="#4-polymorphism" title="Permanent link">&para;</a></h2>
 <p><strong>Definition.</strong> "Many forms": the <strong>same call</strong> produces <strong>different behaviour</strong> depending on the type.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=polymorphism&amp;embed=1" title="Animated walkthrough of Polymorphism" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the demo below run step by step, with the matching code lit up. Switch to <strong>Without it</strong> to see what goes wrong without polymorphism. <a href="../../motion/#polymorphism" target="_blank">Open in the explorer</a></p>
 <table>
 <thead>
 <tr>
