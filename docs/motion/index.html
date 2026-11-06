@@ -28,6 +28,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#8a5a0b; --t-enterprise:#f8ecd6;
   --c-testing:#44607a; --t-testing:#e3ebf3;
   --c-principles:#2c6e69; --t-principles:#dff0ee;
+  --c-oop:#7a3b69; --t-oop:#f5e4f0;
   --c-lld:#6b4423; --t-lld:#f3e8dc;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
@@ -47,6 +48,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
   --c-principles:#7fd1c8; --t-principles:#15302d;
+  --c-oop:#e09ad0; --t-oop:#35192d;
   --c-lld:#d9a877; --t-lld:#33241a;
   --on-cat:#10151c; color-scheme:dark;
 }}
@@ -63,6 +65,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
   --c-principles:#7fd1c8; --t-principles:#15302d;
+  --c-oop:#e09ad0; --t-oop:#35192d;
   --c-lld:#d9a877; --t-lld:#33241a;
   --on-cat:#10151c; color-scheme:dark;
 }
@@ -374,6 +377,7 @@ const CATS={
   architecture:{name:"Architecture",blurb:"how a codebase is organized"},
   enterprise:{name:"Enterprise & DDD",blurb:"how domain code is modelled"},
   testing:{name:"Testing",blurb:"how code gets tested"},
+  oop:{name:"OOP pillars",blurb:"the four building blocks"},
   principles:{name:"SOLID",blurb:"principles for class design"},
   lld:{name:"LLD problems",blurb:"interview designs, end to end"},
   tour:{name:"FreshCart tour",blurb:"one order, end to end"}
@@ -2338,6 +2342,95 @@ Result move(<span class="k">int</span> r, <span class="k">int</span> c) {
   {say:"X plays 2,2 and the diagonal sum reaches +3, which is n, so X wins.",send:[["px","game","move(2,2)"],["game","sums","diag +1"]],tag:{sums:"diagonal = +3 → X wins",game:"X_WINS"}},
   {say:"Any move after that is rejected: the game is over.",send:[["po","game","move(1,0)"],["game","po","game over"]]}
  ]},
+/* ───────── OOP pillars ───────── */
+{id:"encapsulation",name:"Encapsulation",cat:"oop",mod:"principles",pkg:"oop",ex:["encapsulation"],
+ intent:"Bundle data with the operations on it and hide the internal state, so it can only change through methods that enforce the object's rules.",
+ when:"Always, for any object with rules about its state: a balance that can't go negative, an order total that must match its lines.",
+ analogy:"An ATM. You can deposit and withdraw through the machine, which checks your balance; you can't open the safe and take notes out yourself.",
+ tip:"Encapsulation means protecting rules, not adding a getter and setter for every field. Hand out read-only views (List.copyOf, unmodifiableList), never the internal collection.",
+ code:`<span class="k">public class</span> BankAccount {
+  <span class="k">private long</span> balanceCents;                                <span class="c">// hidden state</span>
+  <span class="k">private final</span> List&lt;String&gt; history = <span class="k">new</span> ArrayList&lt;&gt;();
+  <span class="k">public void</span> withdraw(<span class="k">long</span> cents) {
+    <span class="k">if</span> (cents &gt; balanceCents) <span class="k">throw new</span> IllegalStateException("insufficient funds");
+    balanceCents -= cents; history.add("withdraw " + cents);
+  }
+  <span class="k">public</span> List&lt;String&gt; history() { <span class="k">return</span> Collections.unmodifiableList(history); }  <span class="c">// read-only view</span>
+}`,
+ nodes:[N("caller","Caller",110,200,{kind:"client",sub:"outside the class"}),N("acct","BankAccount",400,200,{sub:"balance 10,000"}),
+  N("bal","private balanceCents",680,90,{sub:"10,000"}),N("hist","private history",680,310,{sub:"[open 10000]"})],
+ edges:[["caller","acct"],["acct","bal","h"],["acct","hist","h"]],
+ steps:[
+  {say:"The balance and the history are private. Outside code can only use the account's methods.",on:["acct","bal","hist"]},
+  {say:"deposit(2,500) and withdraw(4,000) go through methods that check the rules first.",send:[["caller","acct","deposit(2500)"],["acct","bal","+2,500"],["caller","acct","withdraw(4000)"],["acct","bal","−4,000"]],tag:{bal:"8,500",acct:"balance 8,500",hist:"[open, deposit, withdraw]"}},
+  {say:"withdraw(1,000,000) would take the balance below zero, so the method refuses it.",send:[["caller","acct","withdraw(1000000)"],["acct","caller","rejected"]],tag:{acct:"insufficient funds"}},
+  {say:"The caller gets the history as a read-only view. Trying to add a fake entry fails.",send:[["caller","acct","history().add(…)"],["acct","caller","read-only"]],tag:{hist:"unchanged ✓"}}
+ ]},
+{id:"abstraction",name:"Abstraction",cat:"oop",mod:"principles",pkg:"oop",ex:["abstraction"],
+ intent:"Expose what something does and hide how it does it, so callers depend on a simple model while the complexity stays behind it.",
+ when:"A caller needs a capability (store a file, send a message, charge a card) and shouldn't care how it's done or by whom.",
+ analogy:"A car's accelerator pedal. You press it to go faster; whether the engine is petrol or electric is hidden behind it.",
+ tip:"Name the interface in the caller's words (put, get), not the implementation's (gzipThenWriteToBucket). If callers need to know the details, the abstraction leaks.",
+ code:`<span class="k">public interface</span> FileStorage {             <span class="c">// what, not how</span>
+  <span class="k">void</span> put(String key, <span class="k">byte</span>[] content);
+  Optional&lt;<span class="k">byte</span>[]&gt; get(String key);
+}
+<span class="k">public class</span> ReportArchiver {
+  <span class="k">private final</span> FileStorage storage;       <span class="c">// knows only the interface</span>
+  String archiveAndReadBack(String name, String body) { storage.put(name, bytes(body)); <span class="k">return</span> read(storage.get(name)); }
+}
+<span class="k">new</span> ReportArchiver(<span class="k">new</span> CompressingStorage(<span class="k">new</span> InMemoryStorage()));   <span class="c">// gzip hidden behind put/get</span>`,
+ nodes:[N("arch","ReportArchiver",130,200,{sub:"knows put() and get()"}),N("fs","FileStorage",410,80,{sub:"«interface»",kind:"iface"}),
+  N("gz","CompressingStorage",410,320,{sub:"gzip, then delegates",hidden:1}),N("mem","InMemoryStorage",680,320,{sub:"empty"})],
+ edges:[["arch","fs"],["gz","fs","i"],["mem","fs","i"],["gz","mem","h"]],
+ steps:[
+  {say:"The archiver depends only on FileStorage: put() and get(). It has no idea how files are stored.",on:["arch","fs"]},
+  {say:"With in-memory storage behind the interface, the report goes in and comes back out unchanged: round trip ok.",send:[["arch","fs","put(report)"],["fs","mem","handled by"],["mem","arch","same text back"]],tag:{mem:"1 file",arch:"round trip ok: true"}},
+  {say:"Now CompressingStorage is plugged in. It gzips on put and unzips on get, handing the bytes to the in-memory store.",show:["gz"],send:[["arch","fs","put(report)"],["fs","gz","handled by"],["gz","mem","gzip bytes"]],tag:{gz:"gzip over in-memory"}},
+  {say:"The archiver's code didn't change and the round trip still works. The complexity stays behind the interface.",send:[["mem","gz","gzip bytes"],["gz","arch","unzipped text"]],tag:{arch:"round trip ok: true"}}
+ ]},
+{id:"inheritance",name:"Inheritance",cat:"oop",mod:"principles",pkg:"oop",ex:["inheritance"],
+ intent:"Let a subclass reuse and specialise a parent class in an 'is-a' relationship, overriding only what differs.",
+ when:"Closely related types share most of their state and behaviour, and each subtype genuinely can stand in for the parent.",
+ analogy:"A recipe and its variations: the base dal recipe stays the same, and each regional version changes only the tempering.",
+ tip:"Prefer composition when you only want to reuse code. Make template methods final and expose small protected hooks, so subclasses can't break the shared behaviour.",
+ code:`<span class="k">public abstract class</span> Vehicle {
+  <span class="k">protected</span> Vehicle(String plate, <span class="k">int</span> wheels) { ... }
+  <span class="k">protected abstract long</span> tollCents();                    <span class="c">// the hook each subclass fills in</span>
+  <span class="k">public final</span> String describe() { <span class="k">return</span> name + " " + plate + " (" + wheels + " wheels) toll=" + tollCents(); }
+}
+<span class="k">public class</span> Car <span class="k">extends</span> Vehicle { <span class="k">protected long</span> tollCents() { <span class="k">return</span> 250; } }
+<span class="k">public class</span> Truck <span class="k">extends</span> Vehicle { <span class="k">protected long</span> tollCents() { <span class="k">return</span> 400L * axles; } }   <span class="c">// 3 axles → 1,200</span>`,
+ nodes:[N("booth","Toll booth",110,80,{kind:"client"}),N("v","Vehicle",400,80,{sub:"abstract · describe() is final",kind:"iface"}),
+  N("car","Car",250,300,{sub:"toll 250"}),N("truck","Truck",550,300,{sub:"toll 400 × axles"})],
+ edges:[["booth","v"],["car","v","i"],["truck","v","i"]],
+ steps:[
+  {say:"Vehicle holds what every vehicle shares: the plate, the wheels and a final describe(). Each subclass fills in only tollCents().",on:["v"]},
+  {say:"Car reuses everything and adds one rule: a toll of 250.",send:[["booth","car","describe()"],["car","booth","Car (4 wheels) toll=250"]]},
+  {say:"Truck passes its wheel count up through super(...) and specialises the toll: 400 per axle, so 1,200 for 3 axles.",send:[["booth","truck","describe()"],["truck","booth","Truck (8 wheels) toll=1200"]],tag:{truck:"3 axles · toll 1,200"}},
+  {say:"Both can be used wherever a Vehicle is expected. Because describe() is final, no subclass can break the shared format.",on:["car","truck","v"]}
+ ]},
+{id:"polymorphism",name:"Polymorphism",cat:"oop",mod:"principles",pkg:"oop",ex:["polymorphism"],
+ intent:"Make the same call produce different behaviour depending on the object's type, so callers don't need to check types.",
+ when:"Several types share an operation but each does it its own way: fees per payment method, area per shape, tax per item type.",
+ analogy:"Pressing 'play' on any music player: a phone, a car stereo and a smart speaker each play in their own way, and you press the same button.",
+ tip:"With a sealed interface and switch pattern matching (Java 21), the compiler tells you every place that must handle a new type.",
+ code:`<span class="k">public sealed interface</span> Payment <span class="k">permits</span> Card, Upi, Cash {
+  <span class="k">long</span> amountCents();  <span class="k">long</span> feeCents();
+}
+<span class="k">record</span> Card(<span class="k">long</span> amountCents, String last4) <span class="k">implements</span> Payment { <span class="k">public long</span> feeCents() { <span class="k">return</span> amountCents * 2 / 100; } }
+<span class="k">record</span> Upi(<span class="k">long</span> amountCents, String vpa)    <span class="k">implements</span> Payment { <span class="k">public long</span> feeCents() { <span class="k">return</span> 0; } }
+<span class="k">record</span> Cash(<span class="k">long</span> amountCents)               <span class="k">implements</span> Payment { <span class="k">public long</span> feeCents() { <span class="k">return</span> 0; } }
+<span class="k">for</span> (Payment p : payments) print(p.feeCents());    <span class="c">// same call, different behaviour</span>`,
+ nodes:[N("loop","Receipt loop",130,200,{kind:"client",sub:"p.feeCents()"}),N("pay","Payment",420,70,{sub:"«sealed interface»",kind:"iface"}),
+  N("card","Card ending 4242",260,310,{sub:"fee 2%"}),N("upi","UPI ana@bank",470,310,{sub:"fee 0"}),N("cash","Cash",670,310,{sub:"fee 0"})],
+ edges:[["loop","pay"],["card","pay","i"],["upi","pay","i"],["cash","pay","i"]],
+ steps:[
+  {say:"The loop holds a list of Payment values and makes the same call on each one: feeCents().",on:["loop","pay"]},
+  {say:"For a card payment of 10,000, Card's version runs: a 2% fee, so 200.",send:[["loop","card","feeCents()"],["card","loop","200"]]},
+  {say:"For UPI (5,000) and cash (700), their own versions run and return 0. The loop never checks which kind it has.",send:[["loop","upi","feeCents()"],["upi","loop","0"],["loop","cash","feeCents()"],["cash","loop","0"]]},
+  {say:"Adding wallet payments means one new record. The loop doesn't change, and because Payment is sealed, the compiler points to every switch that must handle it.",on:["pay"]}
+ ]},
 ];
 
 /* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
@@ -3202,6 +3295,41 @@ PICK.o.push({t:"Practise an LLD interview problem",h:"low-level design rounds",n
   {t:"Discount engine: stacking promotions",p:"lld-discount"},
   {t:"Tic-tac-toe: O(1) win check",p:"lld-tic-tac-toe"}]}});
 
+/* ───────── OOP pillars: code lines, "without it", picker ───────── */
+Object.assign(HL,{
+"encapsulation":[[1,2],[3,5],[4],[7]],
+"abstraction":[[0,1,2],[5,6],[8],[6]],
+"inheritance":[[0,3],[5],[1,6],[3]],
+"polymorphism":[[0,6],[3],[4,5,6],[0]]
+});
+Object.assign(NAIVE,{
+"encapsulation":{nodes:[N("caller","Caller",110,200,{kind:"client"}),N("acct","BankAccount",450,200,{sub:"public long balance = 8,500"})],
+ edges:[["caller","acct"]],
+ steps:[{say:"Without encapsulation, the balance is a public field that any code can write.",send:[["caller","acct","balance = …"]]},
+  {say:"A bug elsewhere subtracts 1,000,000 directly. No rule is checked.",send:[["caller","acct","balance -= 1000000"]],tag:{acct:"balance −991,500 ✗"}},
+  {say:"Nobody can tell which code changed it, because there's no single method to check or log.",tag:{acct:"no history, no checks ✗"}}]},
+"abstraction":{nodes:[N("arch","ReportArchiver",250,200,{sub:"GZIPOutputStream + file paths inside"}),N("disk","Local disk",620,200)],
+ edges:[["arch","disk"]],
+ steps:[{say:"Without abstraction, the archiver handles gzip streams and file paths itself.",send:[["arch","disk","gzip + write /var/reports"]]},
+  {say:"Moving to cloud storage means rewriting the archiver, and every other class that saved files the same way.",tag:{arch:"rewrite for cloud storage ✗"}},
+  {say:"Tests need a real disk and real paths.",tag:{disk:"tests touch the disk ✗"}}]},
+"inheritance":{nodes:[N("car","Car",220,200,{sub:"copied: plate · wheels · describe()"}),N("truck","Truck",560,200,{sub:"copied: plate · wheels · describe()"})],
+ edges:[],
+ steps:[{say:"Without a shared parent (or a shared component), Car and Truck each copy the plate, wheels and describe() code.",on:["car","truck"]},
+  {say:"The format of describe() changes, and only Car is updated.",tag:{car:"new format",truck:"old format ✗"}},
+  {say:"Receipts now print two different formats, and the next vehicle type copies the code again.",tag:{truck:"drifted copy ✗"}}]},
+"polymorphism":{nodes:[N("loop","Receipt loop",250,200,{sub:"if card … else if upi … else if cash"}),N("dev","New: wallet payments",620,200,{kind:"client"})],
+ edges:[["dev","loop"]],
+ steps:[{say:"Without polymorphism, the loop checks each payment's type and works out the fee itself.",on:["loop"]},
+  {say:"The same if/else chain gets copied into receipts, refunds and reports.",tag:{loop:"type checks ×4"}},
+  {say:"Wallet payments arrive, one copy of the chain is missed, and wallet fees come out wrong.",send:[["dev","loop","add wallet"]],tag:{loop:"one chain missed ✗"}}]}
+});
+(()=>{const b=PICK.o.find(o=>o.t==="Improve a class design");b.h="OOP and SOLID";b.n.o.push(
+  {t:"An object's data can be changed from anywhere",p:"encapsulation"},
+  {t:"Callers know too much about how something works",p:"abstraction"},
+  {t:"Closely related classes copy the same code",p:"inheritance"},
+  {t:"Code keeps checking an object's type before acting",p:"polymorphism"})})();
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -3334,8 +3462,8 @@ function variantOf(p,kind,i){
 function renderModes(kind,i){
   const p=base,b=BREAKS[p.id]||[],has=NAIVE[p.id]||b.length;
   $("#modes").hidden=!has;if(!has)return;
-  const pr=p.cat==="principles", ld=p.cat==="lld";
-  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":ld?"This design":"With the pattern"}</button>`;
+  const pr=p.cat==="principles", ld=p.cat==="lld", oo=p.cat==="oop";
+  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":ld?"This design":oo?"Uses the pillar":"With the pattern"}</button>`;
   if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":ld?"Naive design":"Without it"}</button>`;
   h+=`</div>`;
   if(b.length)h+=`<div class="breaks"><span>Break it:</span>${b.map((x,j)=>`<button data-k="break" data-i="${j}" aria-pressed="${kind==="break"&&i===j}">⚡ ${esc(x.label)}</button>`).join("")}</div>`;
@@ -3345,7 +3473,7 @@ function setVariant(kind,i=0,auto=true){
   stop();const v=variantOf(base,kind,i);main.set(v);
   document.documentElement.classList.toggle("naive",kind==="naive");
   $("#steps").innerHTML=v.steps.map((s,j)=>`<li tabindex="0" data-i="${j}">${esc(s.say)}</li>`).join("");
-  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":base.cat==="lld"?"· shows this design":"· shows the pattern version";
+  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":base.cat==="lld"?"· shows this design":base.cat==="oop"?"· shows the version that uses the pillar":"· shows the pattern version";
   renderModes(kind,i);main.playStep(false);
   if(auto&&!reduce)setTimeout(()=>{if(main.p===v&&main.step===0&&!playing)autoplay()},400);
 }
