@@ -4879,6 +4879,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>Write a lazily initialised, thread-safe Singleton. Then show how <strong>reflection</strong> and <strong>serialization</strong> can create a
 second instance, and defend against both.</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../creational/singleton/">Read the full Singleton page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=singleton&amp;embed=1" title="Animated walkthrough of the Singleton pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>The <strong>holder idiom</strong> gives lazy, lock-free initialisation, because the JVM runs a class initialiser exactly once and
 synchronizes it for you. <strong>Double-checked locking</strong> is the version interviewers ask you to write by hand, and its field

@@ -5103,6 +5103,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>Every API request passes <strong>authentication → rate limiting → validation → handler</strong>. Any step may reject the request with
 its own status code. Steps must be addable and reorderable, and one step must also run <strong>after</strong> the handler (audit).</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../behavioral/chain-of-responsibility/">Read the full Chain of Responsibility page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=chain-of-responsibility&amp;embed=1" title="Animated walkthrough of the Chain of Responsibility pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>Each handler receives the request and a <strong><code>next</code></strong> link. It either returns a response itself (short-circuit) or calls
 <code>next.proceed(request)</code>. Code placed <em>after</em> <code>next.proceed</code> runs on the way back, which is how servlet filters,

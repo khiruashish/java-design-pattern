@@ -5019,6 +5019,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>A remote <code>PriceService</code> is slow and sometimes times out. Add <strong>retries</strong>, <strong>caching</strong> and <strong>logging</strong> without changing it,
 and without a subclass for every combination (<code>RetryingCachingLoggingPriceService</code>...).</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../structural/decorator/">Read the full Decorator page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=decorator&amp;embed=1" title="Animated walkthrough of the Decorator pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>Each concern is a class that <strong>implements the same interface and wraps another instance of it</strong>. Stack them like layers.
 <strong>Order matters</strong>: logging outside caching logs every call, while caching outside retrying means a cached price never

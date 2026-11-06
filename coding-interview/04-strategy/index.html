@@ -4963,6 +4963,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>Checkout applies a discount rule chosen by customer tier: percentage, flat amount above a threshold, buy-3-get-the-cheapest-free,
 or <strong>the best of several rules</strong>. Adding a rule must not change <code>Checkout</code>.</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../behavioral/strategy/">Read the full Strategy page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=strategy&amp;embed=1" title="Animated walkthrough of the Strategy pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>Extract the varying part into a <strong>one-method interface</strong>. Each rule is an implementation, and in modern Java often just a
 lambda from a static factory method. The context (<code>Checkout</code>) receives its strategies and never asks "which one is this?".

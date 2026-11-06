@@ -5075,6 +5075,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>A vending machine behaves differently depending on its state: <strong>Idle</strong>, <strong>HasMoney(credit)</strong> or <strong>SoldOut</strong>. Support
 insert, select and refund. It should give change, ask for more money, and refuse coins when it's sold out.</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../behavioral/state/">Read the full State page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=state&amp;embed=1" title="Animated walkthrough of the State pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>Replace <code>if (state == X &amp;&amp; action == Y)</code> ladders with <strong>one type per state</strong>. Each state implements the actions that are
 legal for it and <strong>returns the next state</strong>. Defaults on the interface handle the illegal ones. With <code>sealed</code> records the

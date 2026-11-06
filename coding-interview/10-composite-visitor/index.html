@@ -5131,6 +5131,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>Model arithmetic expressions such as <code>(x + 2) * (3 + -1)</code> as a tree. Implement <strong>evaluate</strong>, <strong>pretty-print</strong> and
 <strong>simplify</strong> (<code>y * 1 + 0</code> → <code>y</code>, and constant folding). New operations must not require editing the node classes.</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>This problem combines two patterns. Watch them side by side before you code: the tree (Composite) and the operation that walks it (Visitor).</p>
+<iframe class="motion-embed motion-compare" src="../../motion/index.html?compare=composite~visitor&amp;embed=1" title="Composite and Visitor played side by side" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p><strong>Composite</strong>: leaves (<code>Num</code>, <code>Var</code>) and branches (<code>Add</code>, <code>Mul</code>, <code>Neg</code>) share one type, so operations recurse uniformly.
 <strong>Visitor</strong>: put operations <em>outside</em> the nodes. In Java 21 a <code>switch</code> over a <code>sealed</code> interface, with record

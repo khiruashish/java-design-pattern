@@ -5047,6 +5047,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5408,6 +5419,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#see-the-pattern-in-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See the pattern in motion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5517,6 +5539,10 @@
 <p>Implement a text editor that supports <code>insert</code> and <code>delete</code> with <strong>unlimited undo and redo</strong>. A new edit after an undo must
 discard the redo history.</p>
 </blockquote>
+<h2 id="see-the-pattern-in-motion">See the pattern in motion<a class="headerlink" href="#see-the-pattern-in-motion" title="Permanent link">&para;</a></h2>
+<p>Before you write any code, watch the pattern this problem is built on. Switch to <strong>Without it</strong> to see the bug the pattern prevents. <a href="../../behavioral/command/">Read the full Command page</a>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=command&amp;embed=1" title="Animated walkthrough of the Command pattern" loading="lazy"></iframe>
+
 <h2 id="key-idea">Key idea<a class="headerlink" href="#key-idea" title="Permanent link">&para;</a></h2>
 <p>Turn each action into an <strong>object that can <code>execute()</code> and <code>undo()</code> itself</strong>. The editor keeps two stacks: run pushes
 onto <em>undo</em>, undo moves a command onto <em>redo</em>, and redo moves it back. A <strong>new</strong> command clears <em>redo</em>, because the
