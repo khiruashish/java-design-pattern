@@ -5828,7 +5828,7 @@ Combine it with <strong>fencing tokens</strong> so a leader that was paused or p
 <h2 id="see-it-in-motion">See It in Motion<a class="headerlink" href="#see-it-in-motion" title="Permanent link">&para;</a></h2>
 <iframe class="motion-embed" src="../../motion/index.html?p=leader-election&amp;embed=1" title="Animated walkthrough of the Leader Election pattern" loading="lazy"></iframe>
 
-<p>Press <strong>Play</strong> to watch the calls travel between components, or step through with <strong>Next</strong> and <strong>Back</strong>. Switch to <strong>Without it</strong> to see what goes wrong without the pattern. <a href="../../motion/#leader-election" target="_blank">Open the full explorer with all 66 patterns</a></p>
+<p>Press <strong>Play</strong> to watch the calls travel between components, or step through with <strong>Next</strong> and <strong>Back</strong>. Switch to <strong>Without it</strong> to see what goes wrong without the pattern. <a href="../../motion/#leader-election" target="_blank">Open the full explorer with all 75 patterns</a></p>
 <h2 id="1-intent-problem-it-solves">1. Intent &amp; Problem It Solves<a class="headerlink" href="#1-intent-problem-it-solves" title="Permanent link">&para;</a></h2>
 <p><strong>The problem in plain English:</strong> the grocery service runs on three pods. At 02:00 a job builds the "substitution report" and emails 800 stores. If every pod runs it, stores get three emails and the database does triple work. If only pod-1 is configured to run it, the job silently stops when pod-1 is rescheduled. You need "exactly one, and always one".</p>
 <p><strong>Definition (Azure Architecture Center, <em>Leader Election pattern</em>):</strong></p>

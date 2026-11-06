@@ -4476,6 +4476,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#enterprise-testing-look-alikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise &amp; testing look-alikes
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5638,6 +5649,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#enterprise-testing-look-alikes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise &amp; testing look-alikes
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6287,6 +6309,38 @@
 </table>
 <blockquote>
 <p><strong>Say:</strong> "A saga is about coordinating many services; an outbox is about not losing one service's event. In practice each saga step publishes through an outbox."</p>
+</blockquote>
+<h2 id="enterprise-testing-look-alikes">Enterprise &amp; testing look-alikes<a class="headerlink" href="#enterprise-testing-look-alikes" title="Permanent link">&para;</a></h2>
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=repository~unit-of-work|value-object~immutable-object|domain-events~observer|test-doubles~contract-testing&amp;embed=1" title="Enterprise and testing look-alikes: animations played side by side" loading="lazy"></iframe>
+
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Key difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Repository vs. Unit of Work</strong></td>
+<td>A repository is where you get and put aggregates; a unit of work tracks what changed in one use case and writes it all at once. JPA gives you both</td>
+</tr>
+<tr>
+<td><strong>Value Object vs. Immutable Object</strong></td>
+<td>Both never change. Immutability is about safe sharing between threads; a value object is about meaning: defined by its values, validated, with its own rules</td>
+</tr>
+<tr>
+<td><strong>Domain Events vs. Observer</strong></td>
+<td>Observer is the in-memory mechanism; a domain event is a business fact, often delivered through it after the transaction commits</td>
+</tr>
+<tr>
+<td><strong>Test Doubles vs. Contract Testing</strong></td>
+<td>Doubles fake a dependency so one unit is tested alone; contract tests check that the real dependency still behaves the way those doubles assumed</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Say:</strong> "My unit tests use a fake catalog client; the contract test is what proves the real catalog still matches that fake."</p>
 </blockquote>
 <hr />
 <p><a class="md-button" href="../pattern-selection-guide/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg></span> Pattern Selection Guide</a>
