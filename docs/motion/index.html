@@ -28,6 +28,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#8a5a0b; --t-enterprise:#f8ecd6;
   --c-testing:#44607a; --t-testing:#e3ebf3;
   --c-principles:#2c6e69; --t-principles:#dff0ee;
+  --c-lld:#6b4423; --t-lld:#f3e8dc;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -46,6 +47,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
   --c-principles:#7fd1c8; --t-principles:#15302d;
+  --c-lld:#d9a877; --t-lld:#33241a;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -61,6 +63,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
   --c-principles:#7fd1c8; --t-principles:#15302d;
+  --c-lld:#d9a877; --t-lld:#33241a;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -372,6 +375,7 @@ const CATS={
   enterprise:{name:"Enterprise & DDD",blurb:"how domain code is modelled"},
   testing:{name:"Testing",blurb:"how code gets tested"},
   principles:{name:"SOLID",blurb:"principles for class design"},
+  lld:{name:"LLD problems",blurb:"interview designs, end to end"},
   tour:{name:"FreshCart tour",blurb:"one order, end to end"}
 };
 const P=[
@@ -2077,6 +2081,263 @@ pact.given("product milk-1l exists")
   {say:"At startup an EmailSender is plugged in behind the interface.",send:[["on","ms","send()"],["ms","em","handled by"]]},
   {say:"The business wants SMS. An SmsSender is added and injected; OrderNotifier doesn't change.",show:["sms"],send:[["on","ms","send()"],["ms","sms","handled by"]],tag:{on:"unchanged ✓"}}
  ]},
+/* ───────── LLD interview problems ───────── */
+{id:"lld-parking-lot",name:"Parking Lot",cat:"lld",ex:[],
+ repoLinks:[["ParkingLot.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/parkinglot/ParkingLot.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/parkinglot/ParkingLotDemo.txt"]],
+ intent:"Park bikes, cars and trucks across floors, issue a ticket on entry and charge on exit, with swappable rules for where to park and what to charge.",
+ when:"A classic LLD round. It shows Strategy for allocation and pricing, records for tickets and receipts, and thread safety at the gates.",
+ analogy:"A mall car park: the barrier hands you a ticket, signs point you to a free bay that fits, and the exit machine charges by the hour.",
+ tip:"Keep allocation and pricing behind interfaces, so 'nearest spot' or 'weekend rates' is one new class. Make park() and exit() synchronized (or lock per floor) so two cars can't get the same spot.",
+ code:`<span class="k">interface</span> AllocationStrategy { Optional&lt;Spot&gt; choose(List&lt;Spot&gt; spots, VehicleType type); }
+<span class="k">interface</span> PricingStrategy { <span class="k">long</span> feePaise(VehicleType type, Duration parked); }
+<span class="k">synchronized</span> Optional&lt;Ticket&gt; park(Vehicle vehicle, Instant at) { ... allocation.choose(...) ... }
+<span class="k">synchronized</span> Receipt exit(String ticketId, Instant at) {
+  Ticket t = active.remove(ticketId);             <span class="c">// unknown or reused ticket → exception</span>
+  <span class="k">return new</span> Receipt(t.id(), t.vehicle().plate(), parked, pricing.feePaise(type, parked));
+}`,
+ nodes:[N("gate","Entry / exit gate",100,200,{kind:"client"}),N("lot","ParkingLot",330,200,{sub:"synchronized park() / exit()"}),
+  N("alloc","AllocationStrategy",330,70,{sub:"nearest, smallest fit",kind:"iface"}),N("price","PricingStrategy",330,330,{sub:"30 min free, then hourly",kind:"iface"}),
+  N("f0","Floor 0",640,110,{sub:"S1 free · M1 free"}),N("f1","Floor 1",640,290,{sub:"M1 free · L1 free"})],
+ edges:[["gate","lot"],["lot","alloc"],["lot","price"],["lot","f0"],["lot","f1"]],
+ steps:[
+  {say:"A bike arrives. The lot asks the allocation strategy, which picks the smallest spot that fits on the nearest floor: F0-S1.",send:[["gate","lot","park(bike)"],["lot","alloc","choose()"],["lot","f0","take S1"]],tag:{f0:"S1 bike · M1 free"}},
+  {say:"Two cars and a truck follow and get F0-M1, F1-M1 and F1-L1, each with a ticket.",send:[["gate","lot","park ×3"],{par:[["lot","f0","M1"],["lot","f1","M1, L1"]]}],tag:{f0:"S1 bike · M1 car",f1:"M1 car · L1 truck"}},
+  {say:"Another car finds no medium or large spot left, so it's turned away: FULL.",send:[["gate","lot","park(car)"],["lot","gate","FULL"]],tag:{lot:"no spot fits"}},
+  {say:"A car leaves after 2 h 5 min. The pricing strategy charges 3 started hours: ₹120. Trying to reuse that ticket is rejected.",send:[["gate","lot","exit(T-2)"],["lot","price","fee(CAR, 2h05m)"],["price","lot","₹120"]],tag:{lot:"T-2 closed · reuse rejected"}}
+ ]},
+{id:"lld-elevator",name:"Elevator System",cat:"lld",ex:[],
+ repoLinks:[["ElevatorSystem.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/elevator/ElevatorSystem.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/elevator/ElevatorDemo.txt"]],
+ intent:"Send each hall call to the best of several cars, and move each car through its stops without reversing while it still has stops ahead.",
+ when:"An LLD round on scheduling: Strategy for the dispatcher and a direction state per car.",
+ analogy:"A hotel lift lobby: you press up, the system sends the car already heading your way, and it picks up others going the same direction.",
+ tip:"Separate the dispatcher (which car?) from each car's movement (keep going while there are stops ahead). In a real system a scheduler thread drives tick().",
+ code:`<span class="k">interface</span> Dispatcher { Car choose(List&lt;Car&gt; cars, <span class="k">int</span> floor, Direction wanted); }
+String hallCall(<span class="k">int</span> floor, Direction wanted) { Car c = dispatcher.choose(cars, floor, wanted); c.addStop(floor); <span class="k">return</span> c.id; }
+<span class="k">void</span> carCall(String carId, <span class="k">int</span> floor) { car(carId).addStop(floor); }
+List&lt;String&gt; tick() { <span class="k">return</span> cars.stream().map(Car::step).toList(); }   <span class="c">// move a floor or open doors</span>`,
+ nodes:[N("hall","Hall buttons",100,110,{kind:"client"}),N("cab","Button inside E1",100,310,{kind:"client"}),N("disp","Dispatcher",360,110,{sub:"nearest suitable car"}),
+  N("e1","Car E1",640,110,{sub:"floor 1 · idle"}),N("e2","Car E2",640,310,{sub:"floor 7 · idle"})],
+ edges:[["hall","disp"],["disp","e1"],["disp","e2"],["cab","e1"]],
+ steps:[
+  {say:"Two hall calls arrive. The dispatcher sends 3 UP to E1 and 7 DOWN to E2, which is already at 7.",send:[["hall","disp","3 UP, 7 DOWN"],{par:[["disp","e1","3 UP"],["disp","e2","7 DOWN"]]}],tag:{e1:"moving UP · stops: 3",e2:"floor 7 · doors open"}},
+  {say:"A passenger in E1 presses 6. The car adds it to its stops.",send:[["cab","e1","carCall(6)"]],tag:{e1:"moving UP · stops: 3, 6"}},
+  {say:"A new call, 5 UP, comes in. E1 is moving up and will pass 5, so the dispatcher gives it to E1.",send:[["hall","disp","5 UP"],["disp","e1","5 UP"]],tag:{e1:"moving UP · stops: 5, 6"}},
+  {say:"E1 keeps going up, opening its doors at 3, 5 and 6, then goes idle. It never reverses while stops remain ahead.",on:["e1"],tag:{e1:"floor 6 · idle",e2:"floor 7 · idle"}}
+ ]},
+{id:"lld-vending",name:"Vending Machine",cat:"lld",ex:[],
+ repoLinks:[["VendingMachine.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/vending/VendingMachine.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/vending/VendingMachineDemo.txt"]],
+ intent:"Take coins, sell products and give change, with behaviour that depends on the machine's state: idle, or holding money.",
+ when:"An LLD round on the State pattern, modelled with sealed types and pattern matching.",
+ analogy:"A ticket machine at a station: until you put money in, pressing a destination only says 'insert coins'.",
+ tip:"Make states immutable records and return the next state from each action. Greedy change works for ₹1/2/5/10; with a limited coin supply you may need DP or to refuse the sale.",
+ code:`<span class="k">sealed interface</span> State <span class="k">permits</span> Idle, HasMoney {}
+<span class="k">record</span> Idle() <span class="k">implements</span> State {}
+<span class="k">record</span> HasMoney(<span class="k">int</span> credit) <span class="k">implements</span> State {}
+String insert(<span class="k">int</span> coin) { ... state = <span class="k">new</span> HasMoney(credit + coin); }
+String select(String slot) {
+  <span class="k">return switch</span> (state) {
+    <span class="k">case</span> Idle i     -&gt; "insert coins first";
+    <span class="k">case</span> HasMoney m -&gt; m.credit() &gt;= price ? dispense(slot, m.credit() - price) : "insert more";
+  };
+}`,
+ nodes:[N("user","Customer",100,200,{kind:"client"}),N("vm","VendingMachine",360,200,{sub:"state: Idle"}),
+  N("a1","A1 Masala chips",650,90,{sub:"₹20 · 3 left"}),N("b1","B1 Mango juice",650,200,{sub:"sold out"}),N("tray","Coin tray",650,320,{sub:"empty"})],
+ edges:[["user","vm"],["vm","a1"],["vm","b1"],["vm","tray"]],
+ steps:[
+  {say:"In the Idle state, selecting a product only asks for coins.",send:[["user","vm","select A1"],["vm","user","insert coins first"]]},
+  {say:"₹10 moves the machine to HasMoney(10). Chips cost ₹20, so it asks for ₹10 more. A ₹3 coin is rejected.",send:[["user","vm","insert ₹10"],["user","vm","select A1"],["vm","user","₹10 more"]],tag:{vm:"state: HasMoney(₹10)"}},
+  {say:"More coins bring the credit to ₹27. Mango juice is sold out, so the credit is kept.",send:[["user","vm","₹10, ₹5, ₹2"],["user","vm","select B1"],["vm","user","sold out"]],tag:{vm:"state: HasMoney(₹27)"}},
+  {say:"Chips are dispensed with change in the fewest coins, [5, 2], and the machine returns to Idle.",send:[["user","vm","select A1"],{par:[["vm","a1","dispense"],["vm","tray","change [5, 2]"]]}],tag:{vm:"state: Idle",a1:"₹20 · 2 left",tray:"₹5 + ₹2"}}
+ ]},
+{id:"lld-lru-cache",name:"LRU Cache",cat:"lld",ex:[],
+ repoLinks:[["LruCache.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/lrucache/LruCache.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/lrucache/LruCacheDemo.txt"]],
+ intent:"Keep a fixed number of entries with O(1) get and put, evicting the least recently used entry when full.",
+ when:"An LLD round on data-structure design: a HashMap for lookup plus a doubly linked list for order of use.",
+ analogy:"A small desk with room for three files: whatever you touch goes on top, and when a fourth arrives, the one at the bottom goes back to the cabinet.",
+ tip:"In Java, LinkedHashMap(capacity, 0.75f, true) with removeEldestEntry does this in a few lines. Guard the map and the list with one lock.",
+ code:`<span class="k">private final</span> Map&lt;K, Node&lt;K, V&gt;&gt; map = <span class="k">new</span> HashMap&lt;&gt;();
+<span class="k">private final</span> Node&lt;K, V&gt; head = <span class="k">new</span> Node&lt;&gt;(), tail = <span class="k">new</span> Node&lt;&gt;();   <span class="c">// sentinels</span>
+<span class="k">public</span> V get(K key) { <span class="k">var</span> n = map.get(key); <span class="k">if</span> (n == <span class="k">null</span>) <span class="k">return null</span>; moveToHead(n); <span class="k">return</span> n.value; }
+<span class="k">public void</span> put(K key, V value) {
+  ... linkAtHead(n); map.put(key, n);
+  <span class="k">if</span> (map.size() &gt; capacity) { <span class="k">var</span> lru = tail.prev; unlink(lru); map.remove(lru.key); }
+}`,
+ nodes:[N("app","Product service",100,200,{kind:"client"}),N("map","HashMap",330,80,{sub:"key → node, O(1)"}),
+  N("n1","1st (newest)",330,300,{sub:"MILK"}),N("n2","2nd",510,300,{sub:"RICE"}),N("n3","3rd (oldest)",690,300,{sub:"MANGO"}),N("ev","Evicted",690,110,{sub:"–",hidden:1})],
+ edges:[["app","map"],["n1","n2"],["n2","n3"]],
+ steps:[
+  {say:"The cache holds three products. The map finds any node in O(1); the list keeps them in order of use, newest first.",on:["map","n1","n2","n3"]},
+  {say:"get(MANGO): the map finds its node, and it moves to the front of the list.",send:[["app","map","get(MANGO)"],["map","n3","node"]],tag:{n1:"MANGO",n2:"MILK",n3:"RICE"}},
+  {say:"put(BREAD) makes four. The node at the back, RICE, is the least recently used, so it's unlinked and removed from the map.",show:["ev"],send:[["app","map","put(BREAD)"],["n3","ev","evict"]],tag:{n1:"BREAD",n2:"MANGO",n3:"MILK",ev:"RICE"}},
+  {say:"get(RICE) now returns null. Both operations stay O(1), and one lock makes it thread-safe: 8 threads × 1,000 puts gives exactly 7,900 evictions.",send:[["app","map","get(RICE)"],["map","app","null"]],tag:{map:"thread-safe · 7,900 evictions"}}
+ ]},
+{id:"lld-splitwise",name:"Splitwise (Expense Sharing)",cat:"lld",ex:[],
+ repoLinks:[["ExpenseSharing.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/splitwise/ExpenseSharing.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/splitwise/ExpenseSharingDemo.txt"]],
+ intent:"Record shared expenses split equally, by percentage or exactly, keep balances that always add up to zero, and settle up in few payments.",
+ when:"An LLD round on Strategy (split rules), money as whole paise, and a greedy settlement algorithm.",
+ analogy:"A trip notebook where everyone writes down what they paid. At the end, the people who owe most pay the person who's owed most.",
+ tip:"Use long paise, never double, and hand leftover paise to specific people by a fixed rule, so the balances always sum to exactly zero.",
+ code:`<span class="k">interface</span> SplitStrategy { Map&lt;String, Long&gt; shares(<span class="k">long</span> amountPaise, List&lt;String&gt; people); }
+<span class="k">static</span> SplitStrategy equal() { ... leftover paise go to the first people ... }
+<span class="k">void</span> addExpense(String paidBy, <span class="k">long</span> amountPaise, List&lt;String&gt; participants, SplitStrategy split) { ... }
+Map&lt;String, Long&gt; balances() { ... }       <span class="c">// always sums to exactly 0</span>
+List&lt;String&gt; settleUp() { ... biggest debtor pays biggest creditor, repeat ... }`,
+ nodes:[N("kabir","Kabir",130,80,{sub:"–"}),N("meera","Meera",130,200,{sub:"–"}),N("ravi","Ravi",130,320,{sub:"–"}),
+  N("asha","Asha",420,200,{sub:"paid for the trip"}),N("split","SplitStrategy",690,200,{sub:"equal · percent · exact",kind:"iface"})],
+ edges:[["kabir","asha"],["meera","asha"],["ravi","asha"],["asha","split"]],
+ steps:[
+  {say:"Asha pays for the Goa trip. Each expense is split by a strategy: equally, by percentage, or by exact amounts.",send:[["asha","split","addExpense(…)"]]},
+  {say:"Balances are kept in paise. Asha is owed ₹7,249.99; Kabir owes ₹5,750, Meera ₹750, Ravi ₹749.99. They add up to exactly zero.",tag:{asha:"gets back ₹7,249.99",kabir:"owes ₹5,750.00",meera:"owes ₹750.00",ravi:"owes ₹749.99"}},
+  {say:"Settling up: the biggest debtor pays the biggest creditor, then repeat. Three payments clear everything.",send:[{par:[["kabir","asha","₹5,750.00"],["meera","asha","₹750.00"],["ravi","asha","₹749.99"]]}],tag:{asha:"settled",kabir:"settled",meera:"settled",ravi:"settled"}}
+ ]},
+{id:"lld-snake-ladder",name:"Snake and Ladder",cat:"lld",ex:[],
+ repoLinks:[["SnakeAndLadder.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/snakeladder/SnakeAndLadder.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/snakeladder/SnakeAndLadderDemo.txt"]],
+ intent:"Model a configurable board of snakes and ladders, players taking turns with dice, an exact roll to finish, and checks that the board makes sense.",
+ when:"An LLD round on Builder with validation, and on injecting the dice so tests are repeatable.",
+ analogy:"Setting up the board game: you check every snake goes down and every ladder goes up before anyone rolls.",
+ tip:"Pass the dice in as an IntSupplier so tests can use fixed rolls. Validate in the builder so an impossible board can never exist.",
+ code:`Board board = Board.builder(30).ladder(3, 22).snake(17, 4).build();    <span class="c">// build() validates</span>
+SnakeAndLadder game = <span class="k">new</span> SnakeAndLadder(board, seededDice, List.of("Asha", "Ravi"));
+String playTurn() {
+  <span class="k">int</span> roll = dice.getAsInt();
+  <span class="k">int</span> next = pos + roll &gt; size ? pos : board.jumpFrom(pos + roll);   <span class="c">// exact roll to finish</span>
+}`,
+ nodes:[N("dice","Seeded dice",150,70,{sub:"same rolls every run"}),N("game","SnakeAndLadder",150,200,{sub:"takes turns"}),
+  N("board","Board",450,200,{sub:"30 squares · ladder 3→22 · snake 17→4"}),N("asha","Asha",700,110,{sub:"square 14"}),N("ravi","Ravi",700,300,{sub:"square 0"})],
+ edges:[["dice","game"],["game","board"],["game","asha"],["game","ravi"]],
+ steps:[
+  {say:"The board is made with a builder that checks every snake goes down and every ladder goes up. A 'snake' from 5 to 12 is rejected.",on:["board"]},
+  {say:"Ravi rolls 3, lands at the foot of the ladder on 3, and climbs straight to 22.",send:[["dice","game","3"],["game","ravi","0 → 3 → 22"]],tag:{ravi:"square 22"}},
+  {say:"Asha rolls 3 from 14, lands on the snake's head at 17, and slides down to 4.",send:[["dice","game","3"],["game","asha","14 → 17 → 4"]],tag:{asha:"square 4"}},
+  {say:"Ravi needs exactly 1 from 29. Rolls of 4 and 5 leave him where he is; a 1 wins the game.",send:[["dice","game","1"],["game","ravi","29 → 30"]],tag:{ravi:"square 30 · wins",game:"game over"}}
+ ]},
+{id:"lld-library",name:"Library Management",cat:"lld",ex:[],
+ repoLinks:[["Library.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/library/Library.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/library/LibraryDemo.txt"]],
+ intent:"Lend book copies to members with limits by member type, queue reservations when no copy is free, and charge fines for late returns.",
+ when:"An LLD round on Strategy (the fine policy), notifications to waiting members, and clear rules per member type.",
+ analogy:"A college library desk: students borrow 2 books for 14 days, faculty 5 for 30, and the next person on the waiting list is told when a book comes back.",
+ tip:"Keep fines in a FinePolicy so the rules change without touching lending. Pass the notifier in as a callback so it can become an async event later.",
+ code:`<span class="k">interface</span> FinePolicy { <span class="k">long</span> finePaise(MemberType type, <span class="k">long</span> daysLate); }
+Library(FinePolicy fines, BiConsumer&lt;Member, String&gt; notifier) { ... }
+String borrow(Member m, String isbn, LocalDate today) { ... loan limit, else join the reservation queue ... }
+String giveBack(Member m, String isbn, LocalDate today) {
+  <span class="k">long</span> fine = fines.finePaise(m.type(), daysLate);
+  nextInQueue(isbn).ifPresent(r -&gt; notifier.accept(r, title + " is ready for pickup"));
+}`,
+ nodes:[N("asha","Asha",110,80,{kind:"client",sub:"student"}),N("ravi","Ravi",110,200,{kind:"client",sub:"student"}),N("iyer","Dr. Iyer",110,320,{kind:"client",sub:"faculty"}),
+  N("lib","Library",410,200,{sub:"Effective Java: 1 copy free"}),N("q","Reservation queue",680,90,{sub:"empty"}),N("fine","FinePolicy",680,310,{sub:"by member type",kind:"iface"})],
+ edges:[["asha","lib"],["ravi","lib"],["iyer","lib"],["lib","q"],["lib","fine"]],
+ steps:[
+  {say:"Asha borrows the only free copy of Effective Java, due in 14 days.",send:[["asha","lib","borrow"]],tag:{lib:"Effective Java: on loan to Asha"}},
+  {say:"Ravi and Dr. Iyer ask for it too. With no copy free, they join the reservation queue in order.",send:[["ravi","lib","borrow"],["iyer","lib","borrow"],["lib","q","reserve ×2"]],tag:{q:"1 Ravi · 2 Dr. Iyer"}},
+  {say:"Asha returns it 6 days late. The fine policy charges a student ₹30, and Ravi is told it's ready for pickup.",send:[["asha","lib","return, 6 days late"],["lib","fine","fine?"],["fine","lib","₹30"],["lib","ravi","ready for pickup"]],tag:{asha:"student · fine ₹30"}},
+  {say:"Dr. Iyer can't jump the queue: the copy is held for Ravi, and Dr. Iyer is next in line.",send:[["iyer","lib","borrow"],["lib","iyer","reserved for Ravi"]],tag:{q:"1 Dr. Iyer",lib:"Effective Java: on loan to Ravi"}}
+ ]},
+{id:"lld-movie-booking",name:"Movie Ticket Booking",cat:"lld",ex:[],
+ repoLinks:[["ShowBooking.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/moviebooking/ShowBooking.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/moviebooking/ShowBookingDemo.txt"]],
+ intent:"Let users hold seats for a few minutes while paying (all or nothing), confirm only while the hold is valid, and never double-book a seat.",
+ when:"An LLD round on concurrency and per-seat state (free, held, booked) with holds that expire.",
+ analogy:"Putting clothes aside at a shop counter: they're yours for 5 minutes while you fetch your wallet, then they go back on the rack.",
+ tip:"Make hold and confirm atomic (synchronized here; a conditional UPDATE or Redis SET NX in production) and pass the clock in so expiry is testable.",
+ code:`<span class="k">record</span> SeatState(Status status, String user, Instant holdExpires) {}
+<span class="k">synchronized boolean</span> hold(String user, List&lt;String&gt; wanted, Instant now) {
+  <span class="k">if</span> (!wanted.stream().allMatch(s -&gt; isFree(s, now))) <span class="k">return false</span>;   <span class="c">// all or nothing</span>
+  wanted.forEach(s -&gt; seats.put(s, <span class="k">new</span> SeatState(HELD, user, now.plus(holdTime))));
+  <span class="k">return true</span>;
+}
+<span class="k">synchronized boolean</span> confirm(String user, List&lt;String&gt; held, Instant now) { ... only while the hold is valid ... }`,
+ nodes:[N("asha","Asha",110,100,{kind:"client"}),N("ravi","Ravi",110,300,{kind:"client"}),N("show","ShowBooking",400,200,{sub:"synchronized hold / confirm"}),
+  N("seats","Seat map",680,200,{sub:"A1 . · A2 . · A3 . · A4 ."})],
+ edges:[["asha","show"],["ravi","show"],["show","seats"]],
+ steps:[
+  {say:"Asha holds A1 and A2 for 5 minutes while she pays.",send:[["asha","show","hold A1, A2"],["show","seats","HELD"]],tag:{seats:"A1 h · A2 h · A3 . · A4 ."}},
+  {say:"Ravi asks for A2 and A3. A2 is already held, so nothing is held for him: all or nothing.",send:[["ravi","show","hold A2, A3"],["show","ravi","false"]]},
+  {say:"He holds A3 on its own instead. Asha pays at +2 minutes, inside her hold, and her seats are booked.",send:[["ravi","show","hold A3"],["asha","show","confirm at +2 min"]],tag:{seats:"A1 X · A2 X · A3 h · A4 ."}},
+  {say:"Ravi pays at +6 minutes. His hold has expired, so confirm fails, he's refunded and A3 is free again. In a race of 50 users for seat B7, exactly 1 hold is granted.",send:[["ravi","show","confirm at +6 min"],["show","ravi","false: expired"]],tag:{seats:"A1 X · A2 X · A3 . · A4 .",show:"50 racers → 1 hold"}}
+ ]},
+{id:"lld-notification",name:"Notification System",cat:"lld",ex:[],
+ repoLinks:[["NotificationService.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/notification/NotificationService.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/notification/NotificationDemo.txt"]],
+ intent:"Send order updates by email, SMS and push according to each user's preferences, format each channel properly, retry brief failures, and never let one channel block the others.",
+ when:"An LLD round on Strategy (senders), Template Method (message templates) and Decorator (retries).",
+ analogy:"A family group message: some relatives want a call, some a text, some an email, and one wrong number shouldn't stop the others hearing the news.",
+ tip:"Wrap senders in a retry decorator, record failures instead of throwing, and move delivery onto a queue for real traffic.",
+ code:`<span class="k">interface</span> Sender { <span class="k">void</span> send(User user, String text); }
+<span class="k">static</span> Sender withRetry(Sender inner, <span class="k">int</span> attempts, List&lt;String&gt; log) { ... }    <span class="c">// decorator</span>
+NotificationService register(Channel channel, Sender sender) { ... }
+<span class="k">void</span> notify(User user, MessageTemplate template, Map&lt;String, String&gt; data) {
+  <span class="k">for</span> (Channel c : user.optedIn())
+    <span class="k">try</span> { senders.get(c).send(user, template.render(user, data)); } <span class="k">catch</span> (Exception e) { failures.add(...); }
+}`,
+ nodes:[N("svc","NotificationService",170,200,{sub:"per user preferences"}),N("email","Email",520,80,{sub:"–"}),N("sms","SMS",520,200,{sub:"with retry decorator"}),
+  N("push","Push",520,320,{sub:"–"}),N("f","Failures",720,320,{sub:"none"})],
+ edges:[["svc","email"],["svc","sms"],["svc","push"],["push","f"]],
+ steps:[
+  {say:"Order ORD-9 is out for delivery. Asha has opted in to email and SMS, so the service renders one message per channel.",send:[{par:[["svc","email","Hi Asha, order ORD-9…"],["svc","sms","Hi Asha, order ORD-9…"]]}],tag:{email:"sent to asha@…"}},
+  {say:"The SMS is cut to fit the length limit. The gateway returns 503 once; the retry decorator tries again and it goes through.",on:["sms"],tag:{sms:"retry 1 after 503 · sent"}},
+  {say:"Another user's push token has expired. The failure is recorded, and their email still goes out.",send:[["svc","push","push to U1"],["push","f","token expired"]],tag:{push:"failed",f:"1 failure recorded"}}
+ ]},
+{id:"lld-logging",name:"Logging Framework",cat:"lld",ex:[],
+ repoLinks:[["MiniLogger.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/logging/MiniLogger.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/logging/LoggingDemo.txt"]],
+ intent:"Log at levels with named loggers in a hierarchy, pass each record along a chain of appenders with their own thresholds and formats, and stay cheap when a level is switched off.",
+ when:"An LLD round on Chain of Responsibility (appenders), Strategy (formatters) and hierarchical configuration.",
+ analogy:"An office post room: every letter is passed along the line. The filing clerk keeps copies of most, and only urgent ones go to the manager's pager.",
+ tip:"Check the level before building the message (or take a Supplier<String>), and make appenders asynchronous with a bounded queue in production.",
+ code:`<span class="k">record</span> LogRecord(<span class="k">long</span> epochMillis, Level level, String logger, String message) {}
+Appender(String name, Level threshold, Formatter formatter, Consumer&lt;String&gt; sink)
+Appender then(Appender next) { <span class="k">this</span>.next = next; <span class="k">return</span> next; }        <span class="c">// build the chain</span>
+<span class="k">void</span> handle(LogRecord r) { <span class="k">if</span> (r.level() &gt;= threshold) sink.accept(formatter.format(r)); <span class="k">if</span> (next != <span class="k">null</span>) next.handle(r); }
+<span class="k">void</span> log(String loggerName, Level level, String message) { <span class="k">if</span> (level &gt;= effectiveLevel(loggerName)) chain.handle(record); }`,
+ nodes:[N("code","Application",130,200,{kind:"client",sub:"com.shop.* loggers"}),N("lg","MiniLogger",360,200,{sub:"level check first"}),
+  N("con","console",620,80,{sub:"DEBUG and up · text"}),N("file","file",620,200,{sub:"INFO and up · JSON"}),N("pager","pager",620,320,{sub:"ERROR only"})],
+ edges:[["code","lg"],["lg","con"],["con","file"],["file","pager"]],
+ steps:[
+  {say:"The cart logs INFO 'item added'. The logger's level allows it, so a record goes down the chain of appenders.",send:[["code","lg","INFO item added"],["lg","con","record"],["con","file","record"]],tag:{con:"printed",file:"JSON written"}},
+  {say:"A DEBUG message from com.shop.payment.upi: payment loggers are set to DEBUG, so the console prints it, but the file's INFO threshold skips it.",send:[["code","lg","DEBUG UPI intent"],["lg","con","record"],["con","file","record"]],tag:{con:"printed",file:"below INFO: skipped"}},
+  {say:"An ERROR from com.shop.payment passes every threshold: console, JSON file, and a page to the on-call engineer.",send:[["code","lg","ERROR PayFast timeout"],["lg","con","record"],["con","file","record"],["file","pager","record"]],tag:{file:"JSON written",pager:"paged on-call"}}
+ ]},
+{id:"lld-discount",name:"Grocery Discount Engine",cat:"lld",ex:[],
+ repoLinks:[["DiscountEngine.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/discount/DiscountEngine.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/discount/DiscountDemo.txt"]],
+ intent:"Apply promotion rules to a cart: some rules stack, only the best exclusive coupon applies, and the total never goes below zero.",
+ when:"An LLD round on Specification (when a rule applies) and Strategy (how much it takes off).",
+ analogy:"A supermarket till that applies 'buy 2 get 1 free' and member discounts automatically, then lets you use one coupon: the best one.",
+ tip:"Keep each rule as data plus small functions, so marketing can add rules without new code paths. Show the customer which rules applied and why.",
+ code:`<span class="k">record</span> Rule(String name, Spec when, ToLongFunction&lt;Cart&gt; discount, <span class="k">boolean</span> exclusive) {}
+<span class="k">interface</span> Spec <span class="k">extends</span> Predicate&lt;Cart&gt; {}
+<span class="k">static</span> Spec subtotalAtLeast(<span class="k">long</span> paise) { ... }    <span class="k">static</span> Spec tier(String tier) { ... }
+List&lt;Applied&gt; apply(Cart cart) {
+  <span class="c">// stacking rules: every one that matches · exclusive rules: only the biggest · total never below 0</span>
+}`,
+ nodes:[N("cart","GOLD cart",110,200,{kind:"client",sub:"subtotal ₹1,377"}),N("eng","DiscountEngine",370,200,{sub:"checks each rule's Spec"}),
+  N("r1","Mango 2+1 free",660,60,{sub:"stacks"}),N("r2","Gold: 10% off dairy",660,160,{sub:"stacks"}),N("r3","FLAT150 over ₹1,000",660,260,{sub:"exclusive coupon"}),N("r4","SAVE5% over ₹2,000",660,360,{sub:"exclusive coupon"})],
+ edges:[["cart","eng"],["eng","r1"],["eng","r2"],["eng","r3"],["eng","r4"]],
+ steps:[
+  {say:"The engine tests each rule's condition against the cart: a Specification such as 'tier is GOLD' or 'subtotal is at least ₹1,000'.",send:[["cart","eng","apply"],{par:[["eng","r1","matches?"],["eng","r2","matches?"],["eng","r3","matches?"],["eng","r4","matches?"]]}]},
+  {say:"Every stacking rule that matches applies: mango 2+1 free takes ₹399 off, Gold 10% on dairy takes ₹18.",tag:{r1:"−₹399",r2:"−₹18",r4:"doesn't match"}},
+  {say:"Among exclusive coupons only the best matching one applies. FLAT150 matches; SAVE5% needs ₹2,000.",tag:{r3:"−₹150 (best coupon)"}},
+  {say:"The total is ₹810, never below zero, with each applied rule listed for the customer.",send:[["eng","cart","total ₹810"]],tag:{cart:"total ₹810.00"}}
+ ]},
+{id:"lld-tic-tac-toe",name:"Tic-Tac-Toe",cat:"lld",ex:[],
+ repoLinks:[["TicTacToe.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/tictactoe/TicTacToe.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/tictactoe/TicTacToeDemo.txt"]],
+ intent:"Play on an n×n board, reject illegal moves, and detect a win or draw after each move in O(1) using running sums.",
+ when:"An LLD round on clean game state and an efficient win check.",
+ analogy:"Keeping a tally for every row, column and diagonal as you play, instead of re-reading the whole board after each move.",
+ tip:"X adds +1 and O adds −1 to its row, column and diagonals; a line wins when it reaches ±n. For k-in-a-row on bigger boards, check around the last move instead.",
+ code:`<span class="k">private final int</span>[] rows, cols;  <span class="k">private int</span> diagonal, antiDiagonal;
+Result move(<span class="k">int</span> r, <span class="k">int</span> c) {
+  <span class="k">if</span> (result != IN_PROGRESS || board[r][c] != 0) <span class="k">throw new</span> IllegalStateException("illegal move");
+  <span class="k">int</span> delta = (current == X) ? 1 : -1;
+  rows[r] += delta; cols[c] += delta; <span class="k">if</span> (r == c) diagonal += delta; <span class="k">if</span> (r + c == n - 1) antiDiagonal += delta;
+  <span class="k">if</span> (abs(rows[r]) == n || abs(cols[c]) == n || abs(diagonal) == n || abs(antiDiagonal) == n) <span class="k">return</span> win();
+}`,
+ nodes:[N("px","Player X",110,110,{kind:"client"}),N("po","Player O",110,300,{kind:"client"}),N("game","TicTacToe",390,200,{sub:"3×3 board"}),
+  N("sums","Line sums",660,200,{sub:"rows · cols · diagonals"})],
+ edges:[["px","game"],["po","game"],["game","sums"]],
+ steps:[
+  {say:"Players take turns. Each move updates its row, column and diagonal sums: +1 for X, −1 for O.",send:[["px","game","move(0,0)"],["game","sums","row0, col0, diag +1"],["po","game","move(0,1)"],["game","sums","row0, col1 −1"]]},
+  {say:"Checking for a win only looks at the sums the move touched, so it's O(1), not a scan of the board.",on:["sums"],tag:{sums:"diagonal = +2"}},
+  {say:"X plays 2,2 and the diagonal sum reaches +3, which is n, so X wins.",send:[["px","game","move(2,2)"],["game","sums","diag +1"]],tag:{sums:"diagonal = +3 → X wins",game:"X_WINS"}},
+  {say:"Any move after that is rejected: the game is over.",send:[["po","game","move(1,0)"],["game","po","game over"]]}
+ ]},
 ];
 
 /* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
@@ -2850,6 +3111,97 @@ PICK.o.push({t:"Improve a class design",h:"SOLID principles",n:{q:"What's wrong 
   {t:"Classes must implement methods they don't need",p:"isp"},
   {t:"Business logic depends on low-level details",p:"dip"}]}});
 
+/* ───────── LLD problems: code lines, "without it", picker ───────── */
+Object.assign(HL,{
+"lld-parking-lot":[[2,0],[2],[2],[3,4,5,1]],
+"lld-elevator":[[0,1],[2],[0,1],[3]],
+"lld-vending":[[1,6],[2,3,7],[3,7],[7]],
+"lld-lru-cache":[[0,1],[2],[3,4,5],[2]],
+"lld-splitwise":[[0,1,2],[3],[4]],
+"lld-snake-ladder":[[0],[2,3,4],[3,4],[4]],
+"lld-library":[[2],[2],[3,4,5],[2]],
+"lld-movie-booking":[[0,1,3],[2],[6],[6]],
+"lld-notification":[[3,4,5],[1],[5]],
+"lld-logging":[[3,4],[1,3],[2,3]],
+"lld-discount":[[0,1,2],[3,4],[4],[3,4]],
+"lld-tic-tac-toe":[[3,4],[5],[4,5],[2]]
+});
+Object.assign(NAIVE,{
+"lld-parking-lot":{nodes:[N("g1","Gate 1",100,110,{kind:"client"}),N("g2","Gate 2",100,300,{kind:"client"}),N("lot","ParkingLot",400,200,{sub:"if/else rules · no lock"}),N("f","Spot F0-M1",680,200,{sub:"free"})],
+ edges:[["g1","lot"],["g2","lot"],["lot","f"]],
+ steps:[{say:"Without strategies, allocation and pricing are hard-coded if/else inside ParkingLot.",on:["lot"]},
+  {say:"Without a lock, two gates park two cars at the same moment, and both are given spot F0-M1.",send:[{par:[["g1","lot","park(car)"],["g2","lot","park(car)"]]},["lot","f","M1 ×2"]],tag:{f:"two cars, one spot ✗"}},
+  {say:"Adding weekend rates means editing the core class again and retesting everything.",tag:{lot:"edit + retest ✗"}}]},
+"lld-elevator":{nodes:[N("hall","Hall buttons",120,200,{kind:"client"}),N("e1","Car E1",480,200,{sub:"serves calls in arrival order"})],
+ edges:[["hall","e1"]],
+ steps:[{say:"Without a scheduler, one car serves calls strictly in the order they arrive.",send:[["hall","e1","3 UP, 7 DOWN, 5 UP"]]},
+  {say:"It goes up to 3, up to 7, then back down to 5, having passed 5 on the way up without stopping.",tag:{e1:"1 → 3 → 7 → 5"}},
+  {say:"People wait longer, the car travels further, and the other car sits idle.",tag:{e1:"10 floors travelled, 1 car idle ✗"}}]},
+"lld-vending":{nodes:[N("user","Customer",120,200,{kind:"client"}),N("vm","VendingMachine",460,200,{sub:"boolean hasMoney; int credit"})],
+ edges:[["user","vm"]],
+ steps:[{say:"Without state objects, the machine juggles flags: hasMoney, credit, dispensing…",on:["vm"]},
+  {say:"Every method checks every flag combination. One forgotten case dispenses chips with no money inserted.",send:[["user","vm","select A1"]],tag:{vm:"dispensed for ₹0 ✗"}},
+  {say:"Adding a maintenance mode means touching every method again.",tag:{vm:"4 flags in every method ✗"}}]},
+"lld-lru-cache":{nodes:[N("app","Product service",120,200,{kind:"client"}),N("list","ArrayList of entries",480,200,{sub:"searched from the start"})],
+ edges:[["app","list"]],
+ steps:[{say:"Without the map and linked list, the cache keeps its entries in a plain list.",send:[["app","list","get(MANGO)"]]},
+  {say:"Every get scans the list and every move shifts elements: O(n) per call.",tag:{list:"O(n) per get"}},
+  {say:"At 100,000 entries each lookup takes milliseconds, and the cache becomes slower than the database it protects.",tag:{list:"slower than the DB ✗"}}]},
+"lld-splitwise":{nodes:[N("ravi","Ravi",140,200,{kind:"client",sub:"–"}),N("asha","Expense",460,200,{sub:"amounts as double"})],
+ edges:[["ravi","asha"]],
+ steps:[{say:"Without whole paise, each share is a double: ₹3,000 split 7 ways is 428.5714…",tag:{asha:"shares: 428.571428…"}},
+  {say:"Rounding each share on its own loses or invents paise.",tag:{asha:"shares add to ₹2,999.99"}},
+  {say:"The balances no longer add up to zero, and someone is quietly a paisa short on every trip.",tag:{ravi:"short ₹0.01 ✗"}}]},
+"lld-snake-ladder":{nodes:[N("game","Game",280,200,{sub:"Math.random() dice · no checks"}),N("t","Unit test",640,200,{kind:"client"})],
+ edges:[["t","game"]],
+ steps:[{say:"Without injected dice, the game calls Math.random() directly.",on:["game"]},
+  {say:"A test can't force a ladder or a snake, so the result changes on every run.",send:[["t","game","play"]],tag:{t:"different result each run ✗"}},
+  {say:"Without builder checks, a 'snake' from 5 up to 12 is accepted and players can loop forever.",tag:{game:"snake 5 → 12 accepted ✗"}}]},
+"lld-library":{nodes:[N("asha","Asha",110,110,{kind:"client"}),N("iyer","Dr. Iyer",110,300,{kind:"client"}),N("lib","Library",420,200,{sub:"if student … else if faculty …"})],
+ edges:[["asha","lib"],["iyer","lib"]],
+ steps:[{say:"Without a fine policy or a queue, fine rules are if/else inside return, and reservations aren't tracked.",send:[["asha","lib","return late"]]},
+  {say:"When the book comes back, whoever asks first gets it, even if someone reserved it a week ago.",send:[["iyer","lib","borrow"]],tag:{iyer:"jumped the queue ✗"}},
+  {say:"Changing the faculty fine means editing lending code and retesting all of it.",tag:{lib:"edit + retest ✗"}}]},
+"lld-movie-booking":{nodes:[N("asha","Asha",120,100,{kind:"client"}),N("ravi","Ravi",120,300,{kind:"client"}),N("seat","Seat A2",560,200,{sub:"free"})],
+ edges:[["asha","seat"],["ravi","seat"]],
+ steps:[{say:"Without holds or locking, both users check A2 at the same moment and see it free.",send:[{par:[["asha","seat","free?"],["ravi","seat","free?"]]}]},
+  {say:"Both pay, and both are told the seat is theirs.",send:[{par:[["asha","seat","book"],["ravi","seat","book"]]}]},
+  {say:"Two people turn up for one seat, and one of them needs a refund and an apology.",tag:{seat:"booked twice ✗"}}]},
+"lld-notification":{nodes:[N("svc","NotificationService",200,200,{sub:"in sequence, no retry"}),N("push","Push",560,90),N("sms","SMS",560,200),N("email","Email",560,310)],
+ edges:[["svc","push"],["svc","sms"],["svc","email"]],
+ steps:[{say:"Without isolation or retries, the service sends each channel in turn and stops at the first error.",send:[["svc","push","push"]]},
+  {say:"The push token has expired, and an exception is thrown.",send:[["push","svc","exception"]],tag:{push:"failed"}},
+  {say:"SMS and email are never tried, so the customer hears nothing about their order.",tag:{sms:"never sent ✗",email:"never sent ✗"}}]},
+"lld-logging":{nodes:[N("code","Application",160,200,{kind:"client",sub:"System.out.println everywhere"}),N("out","stdout",560,200)],
+ edges:[["code","out"]],
+ steps:[{say:"Without a logging framework, code prints straight to standard output.",send:[["code","out","println(…)"]]},
+  {say:"There are no levels, so debug noise can't be switched off in production, and building the strings costs time even when nobody reads them.",tag:{out:"40,000 lines a minute"}},
+  {say:"Errors drown in the noise, and nothing pages the on-call engineer when payments fail.",tag:{out:"PayFast timeout missed ✗"}}]},
+"lld-discount":{nodes:[N("cart","Cart",120,200,{kind:"client"}),N("eng","CheckoutService",470,200,{sub:"if gold && dairy … if coupon …"})],
+ edges:[["cart","eng"]],
+ steps:[{say:"Without a rules engine, every promotion is an if statement inside checkout.",send:[["cart","eng","total()"]]},
+  {say:"Two exclusive coupons both apply, because nothing checks that they're exclusive.",tag:{eng:"FLAT150 + SAVE5% ✗"}},
+  {say:"A big enough pile of discounts makes the total negative, and the shop owes the customer money.",tag:{eng:"total −₹42 ✗"}}]},
+"lld-tic-tac-toe":{nodes:[N("px","Player X",120,200,{kind:"client"}),N("game","TicTacToe",440,200,{sub:"rescans the whole board"})],
+ edges:[["px","game"]],
+ steps:[{say:"Without running sums, every move rescans every row, column and diagonal.",send:[["px","game","move"]]},
+  {say:"That's O(n²) work per move: fine for 3×3, slow for a 100×100 board in an online game.",tag:{game:"10,000 cells checked per move"}},
+  {say:"Without a check on the game state, a move after someone has won is still accepted.",tag:{game:"move after a win accepted ✗"}}]}
+});
+PICK.o.push({t:"Practise an LLD interview problem",h:"low-level design rounds",n:{q:"Which problem?",o:[
+  {t:"Parking lot: spots, tickets, fees",p:"lld-parking-lot"},
+  {t:"Elevator system: dispatching cars",p:"lld-elevator"},
+  {t:"Vending machine: states and change",p:"lld-vending"},
+  {t:"LRU cache: O(1) get and put",p:"lld-lru-cache"},
+  {t:"Splitwise: sharing expenses",p:"lld-splitwise"},
+  {t:"Snake and ladder: a board game",p:"lld-snake-ladder"},
+  {t:"Library: loans, holds and fines",p:"lld-library"},
+  {t:"Movie booking: seat holds",p:"lld-movie-booking"},
+  {t:"Notifications: channels and retries",p:"lld-notification"},
+  {t:"Logging framework: levels and appenders",p:"lld-logging"},
+  {t:"Discount engine: stacking promotions",p:"lld-discount"},
+  {t:"Tic-tac-toe: O(1) win check",p:"lld-tic-tac-toe"}]}});
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -2982,9 +3334,9 @@ function variantOf(p,kind,i){
 function renderModes(kind,i){
   const p=base,b=BREAKS[p.id]||[],has=NAIVE[p.id]||b.length;
   $("#modes").hidden=!has;if(!has)return;
-  const pr=p.cat==="principles";
-  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":"With the pattern"}</button>`;
-  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":"Without it"}</button>`;
+  const pr=p.cat==="principles", ld=p.cat==="lld";
+  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":ld?"This design":"With the pattern"}</button>`;
+  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":ld?"Naive design":"Without it"}</button>`;
   h+=`</div>`;
   if(b.length)h+=`<div class="breaks"><span>Break it:</span>${b.map((x,j)=>`<button data-k="break" data-i="${j}" aria-pressed="${kind==="break"&&i===j}">⚡ ${esc(x.label)}</button>`).join("")}</div>`;
   $("#modes").innerHTML=h;
@@ -2993,7 +3345,7 @@ function setVariant(kind,i=0,auto=true){
   stop();const v=variantOf(base,kind,i);main.set(v);
   document.documentElement.classList.toggle("naive",kind==="naive");
   $("#steps").innerHTML=v.steps.map((s,j)=>`<li tabindex="0" data-i="${j}">${esc(s.say)}</li>`).join("");
-  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":"· shows the pattern version";
+  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":base.cat==="lld"?"· shows this design":"· shows the pattern version";
   renderModes(kind,i);main.playStep(false);
   if(auto&&!reduce)setTimeout(()=>{if(main.p===v&&main.step===0&&!playing)autoplay()},400);
 }
@@ -3146,11 +3498,11 @@ function startQuiz(){
   const store={get(k,d){try{const v=localStorage.getItem("pim-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("pim-"+k,JSON.stringify(v))}catch(e){}}};
   let fam="all", deck=[], cur=null, opts=[], answered=false, usedHint=false, qtok=0;
   let score=0, asked=0, streak=0, best=store.get("best",0), hard=false;
-  const QP=P.filter(p=>p.cat!=="tour");
+  const QP=P.filter(p=>p.cat!=="tour"&&p.cat!=="lld");
   const pool=()=>fam==="all"?QP:QP.filter(p=>p.cat===fam);
   const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   function renderFam(){
-    $("#qfam").innerHTML=[["all",`All ${QP.length}`],...Object.entries(CATS).filter(([k])=>k!=="tour").map(([k,c])=>[k,c.name])]
+    $("#qfam").innerHTML=[["all",`All ${QP.length}`],...Object.entries(CATS).filter(([k])=>k!=="tour"&&k!=="lld").map(([k,c])=>[k,c.name])]
       .map(([k,l])=>`<button class="chip" data-f="${k}" aria-current="${k===fam}">${l}</button>`).join("");
   }
   function renderScore(){
