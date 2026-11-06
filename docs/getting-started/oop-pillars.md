@@ -38,6 +38,10 @@ flowchart LR
 methods that enforce the object's rules (its *invariants*). Encapsulation is about **protecting invariants**, not just
 about making fields `private` and adding getters and setters.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=encapsulation&amp;embed=1" title="Animated walkthrough of Encapsulation" loading="lazy"></iframe>
+
+Press **Play** to watch the demo below run step by step, with the matching code lit up. Switch to **Without it** to see what goes wrong without encapsulation. [Open in the explorer](../motion/index.html#encapsulation){ target=_blank }
+
 **Key features:** private fields; behaviour methods instead of setters; validation in the constructor and methods;
 immutable or read-only views of internal collections (`List.copyOf`, `unmodifiableList`); package-private helpers.
 
@@ -73,6 +77,10 @@ immutable or read-only views of internal collections (`List.copyOf`, `unmodifiab
 
 **Definition.** Expose **what** something does and hide **how** it does it. Callers depend on a simplified model
 (an interface or abstract class), and the complexity lives behind it.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=abstraction&amp;embed=1" title="Animated walkthrough of Abstraction" loading="lazy"></iframe>
+
+Press **Play** to watch the demo below run step by step, with the matching code lit up. Switch to **Without it** to see what goes wrong without abstraction. [Open in the explorer](../motion/index.html#abstraction){ target=_blank }
 
 **Key features:** interfaces or abstract classes as contracts; names in the caller's language (`put`, `get`), not
 the implementation's (`gzipThenWriteToBucket`); implementations you can swap.
@@ -122,6 +130,10 @@ simplify use. `BankAccount` is mainly encapsulation; `FileStorage` is mainly abs
 
 **Definition.** A subclass **reuses and specialises** a parent class (an "is-a" relationship). The subclass inherits fields and
 methods, can override behaviour, and can be used wherever the parent is expected (see [LSP](solid/lsp.md)).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=inheritance&amp;embed=1" title="Animated walkthrough of Inheritance" loading="lazy"></iframe>
+
+Press **Play** to watch the demo below run step by step, with the matching code lit up. Switch to **Without it** to see what goes wrong without inheritance. [Open in the explorer](../motion/index.html#inheritance){ target=_blank }
 
 **Key features:** `extends` (a single class), `abstract` hooks, `protected` members for subclasses, `final` to forbid
 overriding, `sealed` to restrict who may extend, and `super(...)` constructor chaining.
@@ -183,6 +195,10 @@ classDiagram
 ## 4. Polymorphism
 
 **Definition.** "Many forms": the **same call** produces **different behaviour** depending on the type.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=polymorphism&amp;embed=1" title="Animated walkthrough of Polymorphism" loading="lazy"></iframe>
+
+Press **Play** to watch the demo below run step by step, with the matching code lit up. Switch to **Without it** to see what goes wrong without polymorphism. [Open in the explorer](../motion/index.html#polymorphism){ target=_blank }
 
 | Kind | Resolved at | Java mechanism |
 |---|---|---|
