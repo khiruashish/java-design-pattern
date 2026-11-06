@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=unit-of-work&amp;embed=1" title="Animated walkthrough of the Unit of Work &amp; Identity Map pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#unit-of-work){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** placing a grocery order inserts an order row, inserts several line rows and decrements stock for each product. If every repository call commits on its own and the third write fails, you're left with an order that has no lines, or stock taken for an order that doesn't exist. Separately, if two parts of the same request load the same booking, they get **two different objects**; one changes the seat, the other still has the old one and may save it back.

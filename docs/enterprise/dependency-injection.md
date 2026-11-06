@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=dependency-injection&amp;embed=1" title="Animated walkthrough of the Dependency Injection pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#dependency-injection){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a `CheckoutService` that does `new RazorPayGateway()` inside its methods is welded to RazorPay. You can't test it without charging a real card, you can't run a demo without network access, and switching to another gateway means editing checkout code. The class is doing two jobs: the business rule *and* deciding which concrete classes to use.

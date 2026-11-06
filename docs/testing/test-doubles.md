@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=test-doubles&amp;embed=1" title="Animated walkthrough of the Test Doubles pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#test-doubles){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the slot-reminder service checks a delivery-slot API, looks up the customer in PostgreSQL and sends an SMS. A test that uses the real things is slow, flaky (the slot API changes every minute), costs money (SMS), and can't easily reproduce rare paths like "API timed out twice".

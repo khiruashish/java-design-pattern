@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=value-object&amp;embed=1" title="Animated walkthrough of the Value Object pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#value-object){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** `long quantity` doesn't say whether it means grams, kilograms or pieces. `String phone` accepts "098450-12345" and "+91 98450 12345" as two different customers. `LocalDate from, LocalDate to` lets someone create a stay that ends before it starts. Every service re-implements (slightly differently) the same checks. This is called **primitive obsession**.

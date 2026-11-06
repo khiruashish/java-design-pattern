@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=aggregate&amp;embed=1" title="Animated walkthrough of the Aggregate pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#aggregate){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** an order has lines. A rule says "max 4 dozen mangoes per order during the flash sale" and "COD orders can't exceed INR 20,000". If any code can grab `order.getLines()` and add to it, or update `order_line` rows directly, those rules are only as strong as the most careless caller. In the other direction, if you make the boundary too big (a `Customer` that contains every order ever), every new order loads thousands of objects and two phones ordering at once conflict.
