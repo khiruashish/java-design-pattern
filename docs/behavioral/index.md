@@ -30,3 +30,9 @@ flowchart TD
     Q -->|Operations over a stable hierarchy| V[Visitor]
     Q -->|Business rules to combine| SP[Specification]
 ```
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=behavioral&amp;embed=1" title="Animated player for every behavioral pattern" loading="lazy"></iframe>

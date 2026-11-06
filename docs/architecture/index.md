@@ -40,6 +40,13 @@ flowchart LR
 | Many teams needing independent deployment and scaling | [Microservices](../microservices/index.md), split along proven module boundaries |
 | Many consumers reacting to the same business facts | Event-driven integration |
 
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=architecture&amp;embed=1" title="Animated player for every architecture pattern" loading="lazy"></iframe>
+
 ---
 
 [:material-arrow-left: Deployment Strategies](../microservices/deployment-strategies.md){ .md-button }

@@ -58,6 +58,10 @@ System design rounds ask you to design a large system (a URL shortener, a feed, 
 
 Spreading keys across cache or database nodes with `hash(key) % N` moves almost every key when N changes. Consistent hashing places nodes and keys on a ring; adding a node moves only about 1/N of the keys. Virtual nodes even out the distribution.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=sd-consistent-hashing&amp;embed=1" title="Animated walkthrough of Consistent hashing" loading="lazy"></iframe>
+
+[Open in the explorer](../motion/index.html#sd-consistent-hashing){ target=_blank }
+
 === "ConsistentHashRing.java"
 
     ```java
@@ -120,6 +124,10 @@ flowchart LR
     K --> RM[Order history<br/>CQRS read model]
 ```
 
+<iframe class="motion-embed" src="../../motion/index.html?p=freshcart-order&amp;embed=1" title="Animated walkthrough of one FreshCart order" loading="lazy"></iframe>
+
+[Open in the explorer](../motion/index.html#freshcart-order){ target=_blank }
+
 - **Patterns:** [BFF](../microservices/backend-for-frontend.md), [Saga](../microservices/saga.md) with a pivot at payment, [Outbox](../microservices/transactional-outbox.md), [Idempotency keys](../microservices/idempotent-consumer.md), [CQRS](../microservices/cqrs.md) for order history, [Circuit Breaker](../microservices/circuit-breaker.md) on payment, flash-sale stock with atomic conditional updates.
 - See the [Capstone](../projects/grocery-platform.md) for a runnable version.
 
@@ -162,6 +170,10 @@ flowchart LR
     Q1 & Q2 & Q3 -.failures.-> DLQ[[DLQ]]
 ```
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-notification&amp;embed=1" title="Animated walkthrough of the notification design" loading="lazy"></iframe>
+
+[Open in the explorer](../motion/index.html#lld-notification){ target=_blank }
+
 - **Patterns:** [Strategy](../behavioral/strategy.md) per channel, [Template Method](../behavioral/template-method.md) for messages, [idempotent](../microservices/idempotent-consumer.md) dedupe, [rate limiting](../microservices/rate-limiter.md) per user, bulkheads per provider, DLQs. See the [Notification LLD](lld-problems.md#9-notification-system).
 
 ### Chat / messaging
@@ -173,6 +185,10 @@ flowchart LR
 - **Rate limiter:** token buckets in Redis with Lua, local fallback ([Rate Limiter](../microservices/rate-limiter.md)).
 - **Distributed cache:** consistent hashing, replication for hot keys, eviction ([LRU](lld-problems.md#4-lru-cache)), cache-aside.
 - **Job scheduler:** jobs table with `SELECT ... FOR UPDATE SKIP LOCKED`, leader election for the scheduler loop, idempotent jobs, retries with backoff, DLQ.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=rate-limiter&amp;embed=1" title="Animated walkthrough of the rate limiter" loading="lazy"></iframe>
+
+[Open in the explorer](../motion/index.html#rate-limiter){ target=_blank }
 
 ## 4. Numbers worth remembering
 

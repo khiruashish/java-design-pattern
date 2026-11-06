@@ -36,6 +36,10 @@ tags:
 **Key point:** DRY is about **knowledge**, not about text. Two identical-looking lines that represent *different* rules
 are not duplication. One rule written in two different ways *is*.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-dry&amp;embed=1" title="Animated walkthrough of DRY: Don't Repeat Yourself" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-dry){ target=_blank }
+
 === "❌ Before: copy-pasted rule that drifted"
 
     ```java
@@ -75,6 +79,10 @@ are not duplication. One rule written in two different ways *is*.
 **Key point:** prefer the solution that is easiest to **read, review and change**, even if it's less general or less "elegant".
 Simplicity is about how much a reader has to keep in their head, not about line count.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-kiss&amp;embed=1" title="Animated walkthrough of KISS: Keep It Simple" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-kiss){ target=_blank }
+
 === "Code"
 
     ```java
@@ -110,6 +118,10 @@ would do, deeply nested streams, one-letter names, "clever" bit tricks without a
 **Key point:** speculative features have a cost you pay **now**: building them, testing them, carrying them along and
 delaying other work. They usually turn out wrong, because the real requirement differs from the one you guessed.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-yagni&amp;embed=1" title="Animated walkthrough of YAGNI: You Aren't Gonna Need It" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-yagni){ target=_blank }
+
 === "Code"
 
     ```java
@@ -144,6 +156,10 @@ write simple code now, and **refactor** to an abstraction when the second varian
 **Key point:** inheritance gives **white-box reuse**: the child sees and depends on the parent's internals. Composition
 gives **black-box reuse**: you hold a reference to an interface and forward calls to it. You can change it at run time,
 combine several behaviours, and never depend on how the delegate works internally.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-composition&amp;embed=1" title="Animated walkthrough of Composition over Inheritance" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-composition){ target=_blank }
 
 === "❌ Inheritance: double counting"
 
@@ -201,6 +217,10 @@ and documented for extension** (`AbstractList`, Template Method bases, sealed hi
 creates, and `O`'s direct fields. Chained calls into **someone else's internals** (`customer.getWallet().setCents(...)`)
 couple you to the whole structure.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-demeter&amp;embed=1" title="Animated walkthrough of Law of Demeter (Principle of Least Knowledge)" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-demeter){ target=_blank }
+
 === "Code"
 
     ```java title="Paperboy.java (before vs after)"
@@ -237,6 +257,10 @@ couple you to the whole structure.
 **Key point:** if the caller does `if (obj.getX() …) obj.setY(…)`, the decision belongs **inside** `obj`. That keeps
 behaviour next to the data it depends on (encapsulation) and stops callers from re-implementing the rule differently.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-tell-dont-ask&amp;embed=1" title="Animated walkthrough of Tell, Don't Ask" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-tell-dont-ask){ target=_blank }
+
 === "Code"
 
     ```java
@@ -267,6 +291,10 @@ behaviour next to the data it depends on (encapsulation) and stops callers from 
 
 **Key point:** detect invalid input or state **at the earliest point**, usually the constructor or method entry, and
 throw a clear exception. A failure far from its cause, like a negative invoice three services later, is much harder to diagnose.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-fail-fast&amp;embed=1" title="Animated walkthrough of Fail Fast" loading="lazy"></iframe>
+
+Press **Play** to watch the "after" code from this section at work. Switch to **Breaks it** to see the "before" code fail. [Open in the explorer](../motion/index.html#dp-fail-fast){ target=_blank }
 
 === "❌ Fail slow"
 

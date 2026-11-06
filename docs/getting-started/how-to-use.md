@@ -42,6 +42,16 @@ Suggested order: Singleton → Factory Method → Builder → Strategy → Obser
 - [ ] **Week 3:** Structural + 5 LLD problems (Parking Lot, Elevator, Vending Machine, LRU Cache, Rate Limiter).
 - [ ] **Week 4:** Microservice patterns + mock interviews using the 🔴 tabs.
 
+## Using the animations
+
+Most pages have a **See It in Motion** player near the top. It draws the pattern as boxes and plays the calls between them step by step.
+
+- **Play**, **Back** and **Next** move through the steps, and the step list below the player lets you jump to any step. The arrow keys and the space bar work too.
+- **Code for this step** lights up the lines that do what the current step shows.
+- **Without it** replays the same scenario without the pattern, so you can see what goes wrong. Principle pages call it **Breaks it**, LLD problems call it **Naive design**, and anti-patterns open on **The anti-pattern** with **The fix** one click away.
+- **Break it** buttons on some microservices pages make a dependency fail while the pattern is in place.
+- The [full explorer](../motion/index.html){ target=_blank } has every animation in one place, plus [side-by-side comparisons](../comparisons.md), a [quiz](../interview/pattern-quiz.md) and a [pattern picker](../pattern-selection-guide.md).
+
 ## Running the code
 
 ```bash
