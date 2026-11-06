@@ -5634,6 +5634,9 @@ asking for their data, and <strong>fail fast</strong> on invalid input.</p>
 </blockquote>
 <p><strong>Key point:</strong> DRY is about <strong>knowledge</strong>, not about text. Two identical-looking lines that represent <em>different</em> rules
 are not duplication. One rule written in two different ways <em>is</em>.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-dry&amp;embed=1" title="Animated walkthrough of DRY: Don't Repeat Yourself" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-dry" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">❌ Before: copy-pasted rule that drifted</label><label for="__tabbed_1_2">✅ After: one value object owns the rule</label><label for="__tabbed_1_3">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5733,6 +5736,9 @@ are not duplication. One rule written in two different ways <em>is</em>.</p>
 </blockquote>
 <p><strong>Key point:</strong> prefer the solution that is easiest to <strong>read, review and change</strong>, even if it's less general or less "elegant".
 Simplicity is about how much a reader has to keep in their head, not about line count.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-kiss&amp;embed=1" title="Animated walkthrough of KISS: Keep It Simple" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-kiss" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5834,6 +5840,9 @@ would do, deeply nested streams, one-letter names, "clever" bit tricks without a
 </blockquote>
 <p><strong>Key point:</strong> speculative features have a cost you pay <strong>now</strong>: building them, testing them, carrying them along and
 delaying other work. They usually turn out wrong, because the real requirement differs from the one you guessed.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-yagni&amp;embed=1" title="Animated walkthrough of YAGNI: You Aren't Gonna Need It" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-yagni" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5946,6 +5955,9 @@ write simple code now, and <strong>refactor</strong> to an abstraction when the 
 <p><strong>Key point:</strong> inheritance gives <strong>white-box reuse</strong>: the child sees and depends on the parent's internals. Composition
 gives <strong>black-box reuse</strong>: you hold a reference to an interface and forward calls to it. You can change it at run time,
 combine several behaviours, and never depend on how the delegate works internally.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-composition&amp;embed=1" title="Animated walkthrough of Composition over Inheritance" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-composition" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">❌ Inheritance: double counting</label><label for="__tabbed_4_2">✅ Composition: forwarding wrapper</label><label for="__tabbed_4_3">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6086,6 +6098,9 @@ and documented for extension</strong> (<code>AbstractList</code>, Template Metho
 <p><strong>Key point:</strong> a method <code>m</code> of object <code>O</code> should only call methods on: <code>O</code> itself, <code>m</code>'s parameters, objects <code>m</code>
 creates, and <code>O</code>'s direct fields. Chained calls into <strong>someone else's internals</strong> (<code>customer.getWallet().setCents(...)</code>)
 couple you to the whole structure.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-demeter&amp;embed=1" title="Animated walkthrough of Law of Demeter (Principle of Least Knowledge)" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-demeter" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6193,6 +6208,9 @@ couple you to the whole structure.</p>
 </blockquote>
 <p><strong>Key point:</strong> if the caller does <code>if (obj.getX() …) obj.setY(…)</code>, the decision belongs <strong>inside</strong> <code>obj</code>. That keeps
 behaviour next to the data it depends on (encapsulation) and stops callers from re-implementing the rule differently.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-tell-dont-ask&amp;embed=1" title="Animated walkthrough of Tell, Don't Ask" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-tell-dont-ask" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6275,6 +6293,9 @@ behaviour next to the data it depends on (encapsulation) and stops callers from 
 </blockquote>
 <p><strong>Key point:</strong> detect invalid input or state <strong>at the earliest point</strong>, usually the constructor or method entry, and
 throw a clear exception. A failure far from its cause, like a negative invoice three services later, is much harder to diagnose.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=dp-fail-fast&amp;embed=1" title="Animated walkthrough of Fail Fast" loading="lazy"></iframe>
+
+<p>Press <strong>Play</strong> to watch the "after" code from this section at work. Switch to <strong>Breaks it</strong> to see the "before" code fail. <a href="../../motion/#dp-fail-fast" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:3"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">❌ Fail slow</label><label for="__tabbed_7_2">✅ Fail fast</label><label for="__tabbed_7_3">▶ Demo + Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

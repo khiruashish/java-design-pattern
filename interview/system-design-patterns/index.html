@@ -5880,6 +5880,9 @@
 <p><strong>Invalidation:</strong> delete the key on writes (not update) to avoid races; use short TTLs as a safety net; version keys (<code>product:42:v7</code>) for bulk changes.</p>
 <h3 id="consistent-hashing">Consistent hashing<a class="headerlink" href="#consistent-hashing" title="Permanent link">&para;</a></h3>
 <p>Spreading keys across cache or database nodes with <code>hash(key) % N</code> moves almost every key when N changes. Consistent hashing places nodes and keys on a ring; adding a node moves only about 1/N of the keys. Virtual nodes even out the distribution.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=sd-consistent-hashing&amp;embed=1" title="Animated walkthrough of Consistent hashing" loading="lazy"></iframe>
+
+<p><a href="../../motion/#sd-consistent-hashing" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">ConsistentHashRing.java</label><label for="__tabbed_1_2">ConsistentHashingDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6062,6 +6065,9 @@
     CO --&gt;|outbox| K[[Kafka]]
     K --&gt; N[Notifications]
     K --&gt; RM[Order history&lt;br/&gt;CQRS read model]</div>
+<iframe class="motion-embed" src="../../motion/index.html?p=freshcart-order&amp;embed=1" title="Animated walkthrough of one FreshCart order" loading="lazy"></iframe>
+
+<p><a href="../../motion/#freshcart-order" target="_blank">Open in the explorer</a></p>
 <ul>
 <li><strong>Patterns:</strong> <a href="../../microservices/backend-for-frontend/">BFF</a>, <a href="../../microservices/saga/">Saga</a> with a pivot at payment, <a href="../../microservices/transactional-outbox/">Outbox</a>, <a href="../../microservices/idempotent-consumer/">Idempotency keys</a>, <a href="../../microservices/cqrs/">CQRS</a> for order history, <a href="../../microservices/circuit-breaker/">Circuit Breaker</a> on payment, flash-sale stock with atomic conditional updates.</li>
 <li>See the <a href="../../projects/grocery-platform/">Capstone</a> for a runnable version.</li>
@@ -6095,6 +6101,9 @@
     D --&gt; Q2[[sms queue]] --&gt; SMS[SMS provider]
     D --&gt; Q3[[push queue]] --&gt; PU[Push provider]
     Q1 &amp; Q2 &amp; Q3 -.failures.-&gt; DLQ[[DLQ]]</div>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-notification&amp;embed=1" title="Animated walkthrough of the notification design" loading="lazy"></iframe>
+
+<p><a href="../../motion/#lld-notification" target="_blank">Open in the explorer</a></p>
 <ul>
 <li><strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> per channel, <a href="../../behavioral/template-method/">Template Method</a> for messages, <a href="../../microservices/idempotent-consumer/">idempotent</a> dedupe, <a href="../../microservices/rate-limiter/">rate limiting</a> per user, bulkheads per provider, DLQs. See the <a href="../lld-problems/#9-notification-system">Notification LLD</a>.</li>
 </ul>
@@ -6108,6 +6117,9 @@
 <li><strong>Distributed cache:</strong> consistent hashing, replication for hot keys, eviction (<a href="../lld-problems/#4-lru-cache">LRU</a>), cache-aside.</li>
 <li><strong>Job scheduler:</strong> jobs table with <code>SELECT ... FOR UPDATE SKIP LOCKED</code>, leader election for the scheduler loop, idempotent jobs, retries with backoff, DLQ.</li>
 </ul>
+<iframe class="motion-embed" src="../../motion/index.html?p=rate-limiter&amp;embed=1" title="Animated walkthrough of the rate limiter" loading="lazy"></iframe>
+
+<p><a href="../../motion/#rate-limiter" target="_blank">Open in the explorer</a></p>
 <h2 id="4-numbers-worth-remembering">4. Numbers worth remembering<a class="headerlink" href="#4-numbers-worth-remembering" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

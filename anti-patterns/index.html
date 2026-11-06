@@ -5676,6 +5676,9 @@
 <li><strong>Why it hurts:</strong> violates Single Responsibility; impossible to test in isolation; one change breaks unrelated features.</li>
 <li><strong>Instead:</strong> split by responsibility and bounded context; extract <a href="../behavioral/strategy/">Strategies</a>, <a href="../behavioral/state/">States</a>, a <a href="../structural/facade/">Facade</a> per use case; keep domain logic in domain objects.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-god-object&amp;embed=1" title="Animated walkthrough of the God Object / God Class anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-god-object" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: God Object</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">❌ Before</label><label for="__tabbed_1_2">✅ After</label></div>
@@ -5712,6 +5715,9 @@
 <li><strong>Why it hurts:</strong> indirection without benefit; newcomers can't find the code that runs.</li>
 <li><strong>Instead:</strong> apply YAGNI. Introduce a pattern when the <strong>second</strong> variation arrives. Patterns are responses to forces, not goals.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-golden-hammer&amp;embed=1" title="Animated walkthrough of the Golden Hammer (pattern overuse) anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-golden-hammer" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Golden Hammer</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">❌ Before</label><label for="__tabbed_2_2">✅ After</label></div>
@@ -5742,6 +5748,9 @@
 <li><strong>Why it hurts:</strong> drift and inconsistent behavior (the classic "fixed it in 51 of 54 places").</li>
 <li><strong>Instead:</strong> one definition: <a href="../creational/factory-method/">Factory Method</a>, <a href="../behavioral/template-method/">Template Method</a>, <a href="../behavioral/specification/">Specification</a>.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-copy-paste&amp;embed=1" title="Animated walkthrough of the Copy-Paste Programming anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-copy-paste" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Copy-Paste Programming</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">❌ Before</label><label for="__tabbed_3_2">✅ After</label></div>
@@ -5773,6 +5782,9 @@
 <li><strong>Why it hurts:</strong> floating-point money errors, invalid values deep in the system, unclear APIs (<code>transfer(String, String, double)</code>).</li>
 <li><strong>Instead:</strong> small <strong>immutable value objects</strong> (<code>Money</code>, <code>Email</code>, <code>OrderId</code>) with validation in the constructor. See <a href="../concurrency/immutable-object/">Immutable Object</a>.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-primitive-obsession&amp;embed=1" title="Animated walkthrough of the Primitive Obsession anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-primitive-obsession" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Primitive Obsession</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">❌ Before</label><label for="__tabbed_4_2">✅ After</label></div>
@@ -5801,6 +5813,9 @@
 <li><strong>Why it hurts:</strong> 2ⁿ states, most invalid; rules scattered.</li>
 <li><strong>Instead:</strong> a single status with an explicit <a href="../behavioral/state/">State</a> machine.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-boolean-flags&amp;embed=1" title="Animated walkthrough of the Boolean Flag Explosion anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-boolean-flags" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Boolean Flag Explosion</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">❌ Before</label><label for="__tabbed_5_2">✅ After</label></div>
@@ -5835,6 +5850,9 @@
 <li><strong>Why it hurts:</strong> hidden dependencies, untestable code, order-dependent tests, concurrency bugs.</li>
 <li><strong>Instead:</strong> <strong>constructor injection</strong>; DI-managed singletons; immutable shared state. See <a href="../creational/singleton/">Singleton</a>.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-service-locator&amp;embed=1" title="Animated walkthrough of the Service Locator and Global State anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-service-locator" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Service Locator and Global State</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">❌ Before</label><label for="__tabbed_6_2">✅ After</label></div>
@@ -5866,6 +5884,9 @@
 <li><strong>Why it hurts:</strong> invariants can be broken from anywhere (<code>order.setStatus(DELIVERED)</code> on a cancelled order).</li>
 <li><strong>Instead:</strong> put behavior and invariants on the domain objects (<code>order.cancel()</code> enforces its rules). Keep services for orchestration.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-anemic-domain&amp;embed=1" title="Animated walkthrough of the Anemic Domain Model (debated) anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-anemic-domain" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Anemic Domain Model</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">❌ Before</label><label for="__tabbed_7_2">✅ After</label></div>
@@ -5902,6 +5923,9 @@
 <li><strong>Why it hurts:</strong> meaning is lost; values change in one place and not another.</li>
 <li><strong>Instead:</strong> named constants, enums, configuration, and <a href="../structural/adapter/">Adapters</a> that translate vendor codes once.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-magic-numbers&amp;embed=1" title="Animated walkthrough of the Magic Numbers and Strings anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-magic-numbers" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Magic Numbers and Strings</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">❌ Before</label><label for="__tabbed_8_2">✅ After</label></div>
@@ -5930,6 +5954,9 @@
 <li><strong>Why it hurts:</strong> silent failures; impossible debugging; NPEs far from the cause.</li>
 <li><strong>Instead:</strong> let exceptions propagate or translate them into domain errors; return result types (<code>Optional</code>, sealed results); use <a href="../behavioral/null-object/">Null Object</a> only where "nothing" is genuinely correct.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-swallowed-exceptions&amp;embed=1" title="Animated walkthrough of the Swallowed Exceptions / Exceptions as Control Flow anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-swallowed-exceptions" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Swallowed Exceptions</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">❌ Before</label><label for="__tabbed_9_2">✅ After</label></div>
@@ -5968,6 +5995,9 @@
 <li><strong>Why it hurts:</strong> cognitive load; false leads during incidents.</li>
 <li><strong>Instead:</strong> delete with tests and usage metrics as a safety net; feature flags with expiry dates.</li>
 </ul>
+<iframe class="motion-embed" src="../motion/index.html?p=ap-lava-flow&amp;embed=1" title="Animated walkthrough of the Lava Flow anti-pattern" loading="lazy"></iframe>
+
+<p>It opens on <strong>The anti-pattern</strong> causing trouble; switch to <strong>The fix</strong> to see the cure in action. <a href="../motion/#ap-lava-flow" target="_blank">Open in the explorer</a></p>
 <details class="example">
 <summary>Before / after: Lava Flow</summary>
 <div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">❌ Before</label><label for="__tabbed_10_2">✅ After</label></div>
