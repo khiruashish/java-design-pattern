@@ -36,6 +36,10 @@ Machine-coding and object-oriented design rounds (common at Amazon, Microsoft, F
 
 **Requirements:** multiple floors; spot sizes small/medium/large; bikes, cars and trucks (a vehicle fits its size or larger); issue a ticket on entry; charge on exit (first 30 minutes free, then per started hour by vehicle type); show free spots; reject reused tickets. **Patterns:** [Strategy](../behavioral/strategy.md) for allocation and pricing, so rules can change per lot.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-parking-lot&amp;embed=1" title="Animated walkthrough of the Parking Lot design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-parking-lot){ target=_blank }
+
 ```mermaid
 classDiagram
     class ParkingLot {
@@ -93,6 +97,10 @@ classDiagram
 
 **Requirements:** N elevators; hall calls (floor + direction) and car calls (button inside); serve requests efficiently; don't reverse while there are stops ahead. **Patterns:** [State](../behavioral/state.md) (direction per car), [Strategy](../behavioral/strategy.md) (dispatcher), SCAN scheduling.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-elevator&amp;embed=1" title="Animated walkthrough of the Elevator System design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-elevator){ target=_blank }
+
 ```mermaid
 classDiagram
     class ElevatorSystem {
@@ -139,6 +147,10 @@ classDiagram
 
 **Requirements:** accept ₹1/2/5/10 coins; select a product; dispense if paid enough and in stock; return change with the fewest coins; cancel and refund. **Pattern:** [State](../behavioral/state.md), with sealed types and pattern matching so each state's behaviour is explicit.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-vending&amp;embed=1" title="Animated walkthrough of the Vending Machine design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-vending){ target=_blank }
+
 ```mermaid
 stateDiagram-v2
     [*] --> Idle
@@ -172,6 +184,10 @@ stateDiagram-v2
 
 **Requirements:** fixed capacity; `get` and `put` in O(1); evict the least recently used entry; thread-safe. **Design:** `HashMap<K, Node>` + doubly linked list with sentinel head/tail; a lock around both.
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-lru-cache&amp;embed=1" title="Animated walkthrough of the LRU Cache design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-lru-cache){ target=_blank }
+
 ```mermaid
 flowchart LR
     H[head sentinel] <--> A["MANGO (MRU)"] <--> B[MILK] <--> C["RICE (LRU)"] <--> T[tail sentinel]
@@ -203,6 +219,10 @@ flowchart LR
 ## 5. Splitwise (Expense Sharing)
 
 **Requirements:** groups of people; expenses paid by one person and split equally, by percentage or by exact amounts; show balances; settle up with few payments; never lose a paisa to rounding. **Patterns:** [Strategy](../behavioral/strategy.md) for split types; a greedy max-creditor/max-debtor settlement.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-splitwise&amp;embed=1" title="Animated walkthrough of the Splitwise (Expense Sharing) design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-splitwise){ target=_blank }
 
 ```mermaid
 classDiagram
@@ -245,6 +265,10 @@ classDiagram
 
 **Requirements:** configurable board; snakes go down, ladders go up; players take turns; exact roll needed to finish; first to the last square wins. **Patterns:** [Builder](../creational/builder.md) with validation, [Strategy](../behavioral/strategy.md) for dice (seeded/fixed in tests).
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-snake-ladder&amp;embed=1" title="Animated walkthrough of the Snake and Ladder design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-snake-ladder){ target=_blank }
+
 === "SnakeAndLadder.java"
 
     ```java
@@ -269,6 +293,10 @@ classDiagram
 
 **Requirements:** books with copies; members (students: 2 loans, 14 days; faculty: 5 loans, 30 days); reservations queue when no copy is free; fines for late returns by member type; notify the next member when a reserved book comes back. **Patterns:** [Strategy](../behavioral/strategy.md) (fine policy), [Observer](../behavioral/observer.md) (notifications).
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-library&amp;embed=1" title="Animated walkthrough of the Library Management design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-library){ target=_blank }
+
 === "Library.java"
 
     ```java
@@ -292,6 +320,10 @@ classDiagram
 ## 8. Movie Ticket Booking
 
 **Requirements:** a show's seat map; users select several seats; seats are **held** for 5 minutes while paying; all-or-nothing holds; confirm only while the hold is valid; expired holds become available; **no double booking** under concurrency. This is the core of BookMyShow-style designs.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-movie-booking&amp;embed=1" title="Animated walkthrough of the Movie Ticket Booking design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-movie-booking){ target=_blank }
 
 ```mermaid
 stateDiagram-v2
@@ -325,6 +357,10 @@ stateDiagram-v2
 ## 9. Notification System
 
 **Requirements:** send order updates by email, SMS and push; respect user preferences; templates with per-channel formatting (SMS length limits); retry transient failures; one failing channel must not block the others. **Patterns:** [Strategy](../behavioral/strategy.md) (sender per channel), [Factory](../creational/factory-method.md)/registry, [Template Method](../behavioral/template-method.md) (message skeleton), [Decorator](../structural/decorator.md) (retry).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-notification&amp;embed=1" title="Animated walkthrough of the Notification System design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-notification){ target=_blank }
 
 ```mermaid
 classDiagram
@@ -373,6 +409,10 @@ classDiagram
 
 **Requirements:** levels DEBUG < INFO < WARN < ERROR; named loggers in a hierarchy (`com.shop.payment` inherits from `com.shop`); multiple appenders with their own thresholds and formats (console, JSON file, pager); cheap when a level is disabled. **Patterns:** [Chain of Responsibility](../behavioral/chain-of-responsibility.md), [Strategy](../behavioral/strategy.md) (formatter).
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-logging&amp;embed=1" title="Animated walkthrough of the Logging Framework design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-logging){ target=_blank }
+
 === "MiniLogger.java"
 
     ```java
@@ -397,6 +437,10 @@ classDiagram
 
 **Requirements:** rules like "buy 2 get 1 free" on a SKU, "10% off dairy for Gold members", "₹150 off over ₹1,000", "5% off over ₹2,000"; some rules stack, while among **exclusive** coupons only the best applies; the total never goes negative; new rules without changing the engine. **Patterns:** [Specification](../behavioral/specification.md) (eligibility), [Strategy](../behavioral/strategy.md) (discount calculation).
 
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-discount&amp;embed=1" title="Animated walkthrough of the Grocery Discount Engine design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-discount){ target=_blank }
+
 === "DiscountEngine.java"
 
     ```java
@@ -420,6 +464,10 @@ classDiagram
 ## 12. Tic-Tac-Toe
 
 **Requirements:** n×n board; two players alternate; detect win or draw after each move in O(1); reject illegal moves and moves after the game ends.
+
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-tic-tac-toe&amp;embed=1" title="Animated walkthrough of the Tic-Tac-Toe design" loading="lazy"></iframe>
+
+Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to **Naive design** to see a simpler design fail. [Open in the explorer](../motion/index.html#lld-tic-tac-toe){ target=_blank }
 
 === "TicTacToe.java"
 
