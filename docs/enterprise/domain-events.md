@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=domain-events&amp;embed=1" title="Animated walkthrough of the Domain Events pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#domain-events){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** `placeOrder()` starts simple, then grows: award loyalty points, send an SMS, tell the warehouse, update analytics, notify the fraud team. Each addition makes the order module depend on another module, the transaction gets longer, and a failing SMS gateway now blocks orders.

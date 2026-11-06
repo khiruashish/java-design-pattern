@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=contract-testing&amp;embed=1" title="Animated walkthrough of the Contract Testing pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#contract-testing){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** the inventory team renames `available` to `availableQty` in a "harmless cleanup". Their unit tests pass. The order service's unit tests pass too (they use a stub with the old field). Both deploy, and order placement breaks in production. The usual fix, a shared end-to-end environment, is slow, flaky and always on the wrong versions.

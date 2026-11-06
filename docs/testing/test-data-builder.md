@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=test-data-builder&amp;embed=1" title="Animated walkthrough of the Test Data Builder &amp; Object Mother pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#test-data-builder){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** `Order` has nine fields. A delivery-fee test only cares about the subtotal and "express", but has to write `new Order("O1", "C1", "560034", "18:00", "UPI", true, false, List.of(...), null)`. A reader can't tell which values matter. When a tenth field is added, 140 tests stop compiling.

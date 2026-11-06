@@ -25,6 +25,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-architecture:#b0285a; --t-architecture:#fbe3ec;
   --ok:#1a7f43; --ok-t:#e1f4e8; --bad:#c0362c; --bad-t:#fbe5e3;
   --c-tour:#4d6f0f; --t-tour:#ebf3da;
+  --c-enterprise:#8a5a0b; --t-enterprise:#f8ecd6;
+  --c-testing:#44607a; --t-testing:#e3ebf3;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -40,6 +42,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --ok:#5fd38d; --ok-t:#16301f; --bad:#ff7d72; --bad-t:#3a1a17;
   --c-tour:#a9d65e; --t-tour:#24300f;
+  --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
+  --c-testing:#9db8d4; --t-testing:#1d2a38;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -52,6 +56,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-architecture:#ff86b0; --t-architecture:#3d1a28;
   --ok:#5fd38d; --ok-t:#16301f; --bad:#ff7d72; --bad-t:#3a1a17;
   --c-tour:#a9d65e; --t-tour:#24300f;
+  --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
+  --c-testing:#9db8d4; --t-testing:#1d2a38;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -360,6 +366,8 @@ const CATS={
   concurrency:{name:"Concurrency",blurb:"how threads cooperate"},
   microservices:{name:"Microservices",blurb:"how services work together"},
   architecture:{name:"Architecture",blurb:"how a codebase is organized"},
+  enterprise:{name:"Enterprise & DDD",blurb:"how domain code is modelled"},
+  testing:{name:"Testing",blurb:"how code gets tested"},
   tour:{name:"FreshCart tour",blurb:"one order, end to end"}
 };
 const P=[
@@ -1708,6 +1716,200 @@ com.freshcart.ordering           <span class="c">// uses CatalogApi only</span>
   {say:"Modules can also talk through in-process events: ordering publishes, payments reacts.",send:[["ord","pay","OrderPlaced (event)"]],tag:{pay:"payment started"}},
   {say:"Someone makes ordering import a class from catalog.internal. The module test fails the build before it can merge.",send:[["ord","catInt","import ✗"],["ver","ord","violation!"]],tag:{ver:"build failed ✗"}}
  ]},
+/* ───────── ENTERPRISE & DDD ───────── */
+{id:"dependency-injection",name:"Dependency Injection",cat:"enterprise",mod:"enterprise",pkg:"di",ex:["grocery","banking","container","locator"],
+ intent:"Give an object the things it depends on from outside, usually through its constructor, instead of letting it create or look them up.",
+ when:"A class talks to something you might want to swap: a database, a payment gateway, a clock, an HTTP client. Every Spring bean is wired this way.",
+ analogy:"A chef who is handed ingredients by the kitchen porter instead of driving to the market mid-shift. Change the supplier and the chef doesn't change.",
+ tip:"Prefer constructor injection with final fields. A service locator ('get me the gateway') hides what a class needs and makes it harder to test.",
+ code:`<span class="k">class</span> CheckoutService {
+  <span class="k">private final</span> PaymentGateway payments;
+  <span class="k">private final</span> Clock clock;
+  CheckoutService(PaymentGateway payments, Clock clock) {   <span class="c">// injected</span>
+    <span class="k">this</span>.payments = payments; <span class="k">this</span>.clock = clock;
+  }
+}
+<span class="k">new</span> CheckoutService(<span class="k">new</span> FakeGateway(), Clock.fixed(...));   <span class="c">// in a test</span>`,
+ nodes:[N("ctr","Spring container",130,80,{sub:"builds the object graph"}),N("test","Unit test",130,320,{kind:"client"}),N("svc","CheckoutService",400,200,{sub:"needs a gateway and a clock"}),
+  N("gw","RazorpayGateway",680,80,{sub:"real"}),N("clk","Clock",680,200,{sub:"system clock"}),N("fake","FakeGateway",680,320,{sub:"records charges",hidden:1})],
+ edges:[["ctr","svc"],["test","svc"],["svc","gw"],["svc","clk"],["svc","fake"]],
+ steps:[
+  {say:"CheckoutService asks for what it needs in its constructor. It never calls new on a gateway or reads the system clock itself.",on:["svc"]},
+  {say:"At startup the container creates the real gateway and clock and passes them in.",send:[["ctr","svc","inject(gateway, clock)"]],tag:{svc:"wired: Razorpay + system clock"}},
+  {say:"At runtime the service uses whatever it was given.",send:[{par:[["svc","gw","charge ₹499"],["svc","clk","now()"]]}]},
+  {say:"A unit test passes in a fake gateway and a fixed clock instead. Same class, no network, the same result on every run.",show:["fake"],send:[["test","svc","new(fake, fixed clock)"],["svc","fake","charge ₹499"]],tag:{svc:"wired: fake + fixed clock",clk:"fixed: 10:00"}}
+ ]},
+{id:"repository",name:"Repository",cat:"enterprise",mod:"enterprise",pkg:"repository",ex:["grocery","banking","logistics","copies"],
+ intent:"Let business code load and save domain objects as if they lived in an in-memory collection, and hide how they're really stored.",
+ when:"Business logic needs to load or save aggregates, and you want no SQL, JPA queries or storage calls mixed into it.",
+ analogy:"A library desk: you ask for a book by title and hand it back when you're done. Which shelf, basement or branch it lives in isn't your problem.",
+ tip:"One repository per aggregate root, with methods in domain words (lowStock()), not generic queries everywhere. Spring Data writes many of these for you.",
+ code:`<span class="k">interface</span> ProductRepository {                 <span class="c">// domain port</span>
+  Optional&lt;Product&gt; findBySku(Sku sku);
+  List&lt;Product&gt; lowStock(<span class="k">int</span> threshold);
+  <span class="k">void</span> save(Product p);
+}
+<span class="k">class</span> JpaProductRepository <span class="k">implements</span> ProductRepository { ... }       <span class="c">// production</span>
+<span class="k">class</span> InMemoryProductRepository <span class="k">implements</span> ProductRepository { ... }  <span class="c">// tests</span>`,
+ nodes:[N("svc","RestockService",120,200,{sub:"business rules"}),N("repo","ProductRepository",400,200,{sub:"«interface»",kind:"iface"}),
+  N("jpa","JpaProductRepository",650,90,{sub:"SQL lives here"}),N("mem","InMemoryRepository",650,310,{sub:"a HashMap"})],
+ edges:[["svc","repo"],["jpa","repo","i"],["mem","repo","i"]],
+ steps:[
+  {say:"The restock rule needs the products that are running low. It asks the repository in domain words.",send:[["svc","repo","lowStock(10)"]]},
+  {say:"In production the JPA implementation turns that into SQL and maps the rows back into Product objects.",send:[["repo","jpa","handled by"],["jpa","repo","3 Products"],["repo","svc","3 Products"]],tag:{jpa:"SELECT … WHERE qty < 10"}},
+  {say:"The service reorders and saves the products back, still without any SQL in sight.",send:[["svc","repo","save(product)"]],tag:{svc:"reorder placed"}},
+  {say:"In unit tests an in-memory repository plays the same role, so the rule is tested in milliseconds.",send:[["svc","repo","lowStock(10)"],["repo","mem","handled by"],["mem","repo","3 Products"]],tag:{mem:"used by tests · 2 ms"}}
+ ]},
+{id:"unit-of-work",name:"Unit of Work & Identity Map",cat:"enterprise",mod:"enterprise",pkg:"unitofwork",ex:["grocery","erp","travel","scope"],
+ intent:"Track every object a business transaction creates, changes or deletes, and write them all in one database transaction at the end. An identity map loads each record into exactly one object.",
+ when:"One use case touches several objects that must be saved together and consistently. JPA's EntityManager does this for you.",
+ analogy:"A basket at the till: you collect everything first, then pay once. If the card is declined, nothing leaves the shop.",
+ tip:"Keep a unit of work to one use case. Long-lived persistence contexts serve stale data and hold on to a lot of memory.",
+ code:`@Transactional                                    <span class="c">// one unit of work</span>
+<span class="k">void</span> moveStock(Sku sku, StoreId from, StoreId to, <span class="k">int</span> qty) {
+  Stock a = stock.find(sku, from);                <span class="c">// loaded once (identity map)</span>
+  Stock b = stock.find(sku, to);
+  a.remove(qty); b.add(qty);                      <span class="c">// tracked, not written yet</span>
+}                                                 <span class="c">// commit: both UPDATEs or neither</span>`,
+ nodes:[N("uc","moveStock()",110,200,{kind:"client",sub:"one use case"}),N("uow","Unit of work",380,200,{sub:"tracking: nothing"}),
+  N("a","Stock · Store 7",650,80,{sub:"qty 40"}),N("b","Stock · Store 9",650,200,{sub:"qty 5"}),N("db","Database",650,320,{sub:"Store 7: 40 · Store 9: 5"})],
+ edges:[["uc","uow"],["uow","a"],["uow","b"],["uow","db"]],
+ steps:[
+  {say:"The use case loads stock for two stores. The unit of work loads each record once and remembers it.",send:[["uc","uow","find ×2"],{par:[["uow","a","load"],["uow","b","load"]]}],tag:{uow:"tracking: 2 objects"}},
+  {say:"Asking for Store 7's stock again returns the same object, not a second copy. That's the identity map.",send:[["uc","uow","find(Store 7) again"],["uow","uc","same object"]]},
+  {say:"The business code moves 10 units. Nothing is written yet; the changes are only tracked.",on:["a","b"],tag:{a:"qty 30 (changed)",b:"qty 15 (changed)",uow:"tracking: 2 changed"}},
+  {say:"At the end the unit of work writes both changes in one transaction: both updates, or neither.",send:[["uow","db","BEGIN · 2 UPDATEs · COMMIT"]],tag:{uow:"committed",db:"Store 7: 30 · Store 9: 15"}}
+ ]},
+{id:"value-object",name:"Value Object",cat:"enterprise",mod:"enterprise",pkg:"valueobject",ex:["grocery","healthcare","telecom","ids"],
+ intent:"Model a small concept (a quantity, a phone number, a date range) as an immutable type defined only by its values. It validates itself and carries its own rules.",
+ when:"A primitive like a String, a long or a pair of dates has rules, units or a format. In Java 21 this is usually a record.",
+ analogy:"A ₹100 note. Any ₹100 note is as good as another; you care about the value, not which physical note it is.",
+ tip:"Validate in the constructor so an invalid value can't exist at all. Compare value objects with equals(), never ==.",
+ code:`<span class="k">record</span> Quantity(BigDecimal amount, Unit unit) {
+  Quantity {
+    <span class="k">if</span> (amount.signum() &lt;= 0) <span class="k">throw new</span> IllegalArgumentException("must be positive");
+  }
+  Quantity plus(Quantity o) { <span class="k">return new</span> Quantity(amount.add(o.in(unit).amount()), unit); }
+}
+<span class="k">new</span> Quantity(TWO, KG).equals(<span class="k">new</span> Quantity(TWO, KG));   <span class="c">// true: same value, same thing</span>`,
+ nodes:[N("in","Cart input",110,200,{kind:"client",sub:"\"2 kg\", \"-3\""}),N("q","Quantity",400,200,{sub:"record · validates itself"}),
+  N("ok","Quantity(2, KG)",680,100,{sub:"immutable",hidden:1}),N("bad","Rejected",680,300,{sub:"IllegalArgumentException",hidden:1})],
+ edges:[["in","q"],["q","ok"],["q","bad"]],
+ steps:[
+  {say:"Raw input arrives as text. Each value must pass through the Quantity constructor to exist.",on:["in","q"]},
+  {say:"'2 kg' is valid, so a Quantity is created. It can never change after that.",show:["ok"],send:[["in","q","\"2 kg\""],["q","ok","new"]]},
+  {say:"'-3' breaks the rule in the constructor, so an invalid quantity never exists anywhere in the system.",show:["bad"],send:[["in","q","\"-3\""],["q","bad","throw"]]},
+  {say:"Rules live on the type: adding 500 g to 2 kg converts the units instead of adding 2 + 500. Two equal quantities are interchangeable.",send:[["in","q","plus(500 g)"],["q","ok","new value"]],tag:{ok:"Quantity(2.5, KG)"}}
+ ]},
+{id:"aggregate",name:"Aggregate",cat:"enterprise",mod:"enterprise",pkg:"aggregate",ex:["grocery","banking","cinema","sizing"],
+ intent:"Treat a cluster of objects (a root plus what it contains) as one unit that's loaded, changed and saved together, so its rules always hold. Outsiders may only talk to the root.",
+ when:"You need to decide what must be consistent immediately (inside one aggregate, one transaction) and what can catch up later (between aggregates, through events).",
+ analogy:"A car. You use the steering wheel and pedals; you don't reach in and turn the front wheels yourself. The car keeps its parts consistent.",
+ tip:"Keep aggregates small, refer to other aggregates by id, and change one aggregate per transaction.",
+ code:`<span class="k">class</span> Order {                                  <span class="c">// aggregate root</span>
+  <span class="k">private final</span> List&lt;OrderLine&gt; lines = <span class="k">new</span> ArrayList&lt;&gt;();
+  <span class="k">void</span> addLine(Sku sku, <span class="k">int</span> qty, Money price) {
+    <span class="k">if</span> (lines.size() == 50) <span class="k">throw new</span> TooManyLines();
+    lines.add(<span class="k">new</span> OrderLine(sku, qty, price));
+    recalcTotal();                             <span class="c">// rule: total = sum of lines</span>
+  }
+}`,
+ nodes:[N("svc","CartService",110,200,{kind:"client"}),N("root","Order",380,200,{sub:"root · total ₹160"}),
+  N("l1","OrderLine: milk",650,80,{sub:"₹60"}),N("l2","OrderLine: eggs",650,200,{sub:"₹100"}),N("l3","OrderLine: paneer",650,320,{sub:"₹90",hidden:1})],
+ edges:[["svc","root"],["root","l1","h"],["root","l2","h"],["root","l3","h"]],
+ steps:[
+  {say:"Order is the root. The lines belong to it, and its rule is that the total always equals the sum of the lines.",on:["root","l1","l2"]},
+  {say:"To add paneer, the service calls the root. The root adds the line and recalculates the total in the same step.",show:["l3"],send:[["svc","root","addLine(paneer, ₹90)"],["root","l3","new line"]],tag:{root:"root · total ₹250"}},
+  {say:"Code outside can't get hold of a line and change its price; the only way in is through the root's methods.",send:[["svc","root","line.setPrice()?"],["root","svc","not exposed"]]},
+  {say:"The whole order is saved in one transaction. Other aggregates, like the customer, are referenced by id and updated later through events.",on:["root"],tag:{root:"saved · customer C-1042"}}
+ ]},
+{id:"domain-events",name:"Domain Events",cat:"enterprise",mod:"enterprise",pkg:"domainevents",ex:["grocery","healthcare","insurance","timing"],
+ intent:"Record something that happened in the business as an immutable event raised by an aggregate, and let other parts react once the change is committed.",
+ when:"One business change should trigger follow-ups (loyalty points, an SMS, warehouse picking) without the aggregate knowing about them.",
+ analogy:"A wedding announcement in the paper. It states a fact; the caterer, the florist and the relatives each act on it in their own way.",
+ tip:"Name events in the past tense and dispatch them after commit, or a rolled-back order may still send an SMS. Across services, publish them through an outbox.",
+ code:`<span class="k">class</span> Order {
+  <span class="k">void</span> place() {
+    status = PLACED;
+    events.add(<span class="k">new</span> OrderPlaced(id, customerId, total));   <span class="c">// record the fact</span>
+  }
+}
+@TransactionalEventListener(phase = AFTER_COMMIT)
+<span class="k">void</span> award(OrderPlaced e) { loyalty.addPoints(e.customerId(), e.total()); }`,
+ nodes:[N("svc","PlaceOrder use case",110,200,{kind:"client"}),N("ord","Order",340,200,{sub:"events: none"}),N("disp","Event dispatcher",560,200,{sub:"after commit"}),
+  N("loy","Loyalty",720,80,{sub:"–"}),N("sms","SMS",720,200,{sub:"–"}),N("wh","Warehouse",720,320,{sub:"–"})],
+ edges:[["svc","ord"],["ord","disp"],["disp","loy"],["disp","sms"],["disp","wh"]],
+ steps:[
+  {say:"The use case asks the order to place itself. The order changes its state and records an OrderPlaced event.",send:[["svc","ord","place()"]],tag:{ord:"PLACED · 1 event"}},
+  {say:"The transaction commits first. Only then are the recorded events dispatched.",send:[["ord","disp","OrderPlaced"]]},
+  {say:"Each handler reacts on its own: loyalty points, the confirmation SMS, a warehouse pick list.",send:[{par:[["disp","loy","OrderPlaced"],["disp","sms","OrderPlaced"],["disp","wh","OrderPlaced"]]}],tag:{loy:"+50 points",sms:"SMS sent",wh:"pick list"}},
+  {say:"The Order class knows none of them. A new reaction is a new handler; Order doesn't change.",on:["ord"]}
+ ]},
+/* ───────── TESTING ───────── */
+{id:"test-doubles",name:"Test Doubles",cat:"testing",mod:"testing",pkg:"doubles",ex:["grocery","payments","travel","overmocking"],
+ intent:"Replace a real dependency in a unit test with a stand-in, so the test is fast, repeatable and about one thing. Dummies, stubs, spies, mocks and fakes are the kinds of stand-in.",
+ when:"The real dependency is slow, costs money, isn't deterministic (time, randomness, network), or doesn't exist yet.",
+ analogy:"A crash-test dummy. You learn how the car protects a person without putting a real person at risk.",
+ tip:"Prefer fakes and checking the end state over mocks that verify every call. Tests that check every interaction break whenever the code is refactored.",
+ code:`<span class="k">var</span> gateway = <span class="k">new</span> FakeGateway();                                  <span class="c">// fake: works, in memory</span>
+<span class="k">var</span> clock = Clock.fixed(Instant.parse("2026-11-06T10:00:00Z"), UTC); <span class="c">// stub</span>
+<span class="k">var</span> sms = <span class="k">new</span> SmsSpy();                                           <span class="c">// spy: records calls</span>
+<span class="k">var</span> checkout = <span class="k">new</span> Checkout(gateway, clock, sms);
+checkout.pay(order);
+assertThat(gateway.charges()).containsExactly(499_00);              <span class="c">// check state</span>
+assertThat(sms.sent()).hasSize(1);`,
+ nodes:[N("test","CheckoutTest",110,200,{kind:"client"}),N("sut","Checkout",360,200,{sub:"code under test"}),
+  N("gw","FakeGateway",640,80,{sub:"fake · in memory"}),N("clk","Fixed clock",640,200,{sub:"stub"}),N("sms","SmsSpy",640,320,{sub:"spy"})],
+ edges:[["test","sut"],["sut","gw"],["sut","clk"],["sut","sms"]],
+ steps:[
+  {say:"The test builds Checkout with stand-ins instead of the real payment gateway, clock and SMS provider.",send:[["test","sut","new Checkout(doubles)"]]},
+  {say:"The test runs the code. Checkout charges, reads the time and sends an SMS, all to the doubles.",send:[["test","sut","pay(order)"],{par:[["sut","gw","charge ₹499"],["sut","clk","now()"],["sut","sms","send()"]]}]},
+  {say:"Each double does one job: the fake records the charge, the stub always says 10:00, the spy remembers the SMS.",tag:{gw:"charges: [₹499]",clk:"stub · always 10:00",sms:"spy · sent: 1"}},
+  {say:"The test checks the outcome. No network, no money spent, the same result every run, in milliseconds.",send:[{par:[["gw","test","charges"],["sms","test","sent count"]]}],tag:{test:"passed in 4 ms"}}
+ ]},
+{id:"contract-testing",name:"Contract Testing",cat:"testing",mod:"testing",pkg:"contract",ex:["grocery","core","messages","matching","broker"],
+ intent:"Check that a provider's API or events still give each consumer what it relies on. Consumers write the expectations, the provider checks them in its own build, and a broker answers 'can I deploy?'.",
+ when:"Services owned by different teams talk to each other, and end-to-end test environments are slow and flaky.",
+ analogy:"A plug-and-socket standard. The phone maker and the charger maker never meet; both test against the standard.",
+ tip:"Match on shape and type, not exact values, and include only the fields the consumer really uses. Otherwise every harmless provider change breaks the contract.",
+ code:`<span class="c">// consumer side (checkout): what it relies on</span>
+pact.given("product milk-1l exists")
+    .uponReceiving("get product").path("/products/milk-1l")
+    .willRespondWith().status(200)
+    .body(<span class="k">new</span> PactDslJsonBody().stringType("sku").integerType("pricePaise"));
+<span class="c">// provider side (catalog) runs the same contract against its real API in CI</span>
+<span class="c">// broker: can-i-deploy --pacticipant catalog --version 2.4.1 --to prod</span>`,
+ nodes:[N("cons","Checkout team",110,90,{sub:"consumer"}),N("prov","Catalog team",110,310,{sub:"provider"}),N("broker","Contract broker",400,200,{sub:"stores contracts"}),
+  N("ci","Catalog CI",680,310,{sub:"verifies contracts"}),N("prod","Production",680,90,{sub:"catalog 2.3.0"})],
+ edges:[["cons","broker"],["prov","ci"],["broker","ci"],["broker","prod"]],
+ steps:[
+  {say:"The checkout team writes down exactly what it needs from catalog: GET /products/{sku} returns a text sku and a whole-number pricePaise.",send:[["cons","broker","contract v12"]],tag:{broker:"checkout ↔ catalog: v12"}},
+  {say:"The catalog team changes its API. Its CI pulls every consumer's contract and runs it against the real service.",send:[["prov","ci","commit 2.4.0"],["broker","ci","contracts"]]},
+  {say:"The change renamed pricePaise to price. The contract fails in catalog's own build, before anything is deployed.",send:[["ci","broker","failed"]],tag:{ci:"2.4.0: pricePaise missing ✗"}},
+  {say:"The team keeps the old field, the contract passes, and the broker says yes to deploying.",send:[["prov","ci","commit 2.4.1"],["ci","broker","verified"],["broker","prod","can deploy 2.4.1"]],tag:{ci:"2.4.1 passes ✓",prod:"catalog 2.4.1"}}
+ ]},
+{id:"test-data-builder",name:"Test Data Builder & Object Mother",cat:"testing",mod:"testing",pkg:"testdata",ex:["grocery","insurance","ledger","sharedbuilder"],
+ intent:"Build test objects from sensible defaults, so each test sets only the fields that matter to it. An Object Mother adds named, realistic examples on top.",
+ when:"Test setup is longer than the test itself, or adding one constructor parameter breaks dozens of tests.",
+ analogy:"Ordering the house pizza. You only say what's different: 'same, but extra cheese'.",
+ tip:"Defaults should describe a valid, boring object. If a test depends on a value, set it in that test, even when it equals the default.",
+ code:`<span class="k">class</span> OrderBuilder {
+  <span class="k">private</span> Customer customer = aCustomer().build();
+  <span class="k">private</span> List&lt;Line&gt; lines = List.of(aLine().build());
+  <span class="k">private</span> Slot slot = Slot.standard();
+  OrderBuilder express() { slot = Slot.express(); <span class="k">return this</span>; }
+  Order build() { <span class="k">return new</span> Order(customer, lines, slot); }
+}
+<span class="k">var</span> order = anOrder().express().build();   <span class="c">// only what matters is visible</span>`,
+ nodes:[N("t1","Test: express fee",130,90,{kind:"client"}),N("t2","Test: big basket",130,310,{kind:"client"}),N("b","anOrder()",420,200,{sub:"defaults: customer, 1 line, standard slot"}),
+  N("o1","Order",690,90,{sub:"express slot",hidden:1}),N("o2","Order",690,310,{sub:"60 lines",hidden:1})],
+ edges:[["t1","b"],["t2","b"],["b","o1"],["b","o2"]],
+ steps:[
+  {say:"The builder starts from a valid, boring order: a default customer, one line, a standard slot.",on:["b"]},
+  {say:"The express-fee test changes only the slot, so the test reads as exactly what it checks.",show:["o1"],send:[["t1","b",".express()"],["b","o1","build()"]]},
+  {say:"The big-basket test changes only the lines. Everything else stays at the defaults.",show:["o2"],send:[["t2","b",".withLines(60)"],["b","o2","build()"]]},
+  {say:"Order gains a new required field. You add one default to the builder, and none of the 40 tests change.",on:["b"],tag:{b:"defaults + giftWrap = false"}}
+ ]},
 ];
 
 /* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
@@ -2333,6 +2535,84 @@ const PICK={q:"What are you trying to do?",o:[
   {t:"Teams react to facts without calling each other",p:"event-driven"},
   {t:"Strong module boundaries in one deployable",p:"modular-monolith"}]}}
 ]};
+
+/* ───────── enterprise & testing: code lines, "without it", pairs, picker ───────── */
+Object.assign(HL,{
+"dependency-injection":[[3],[3,4],[1,2],[7]],
+"repository":[[2],[5],[3],[6]],
+"unit-of-work":[[2,3],[2],[4],[0,5]],
+"value-object":[[0],[0,1],[2],[4,6]],
+"aggregate":[[0,1],[2,4,5],[1],[0]],
+"domain-events":[[1,2,3],[6],[7],[3]],
+"test-doubles":[[0,1,2,3],[4],[0,1,2],[5,6]],
+"contract-testing":[[1,2,3,4],[5],[4],[6]],
+"test-data-builder":[[1,2,3],[4,7],[5],[1,2,3]]
+});
+Object.assign(NAIVE,{
+"dependency-injection":{nodes:[N("svc","CheckoutService",250,200,{sub:"new RazorpayGateway()"}),N("test","Unit test",110,330,{kind:"client"}),N("gw","RazorpayGateway",620,100,{sub:"real network"}),N("clk","LocalDateTime.now()",620,300)],
+ edges:[["svc","gw"],["svc","clk"],["test","svc"]],
+ steps:[{say:"Without injection, CheckoutService creates its own gateway and reads the system clock directly.",send:[{par:[["svc","gw","new + charge"],["svc","clk","now()"]]}]},
+  {say:"A unit test can't swap them, so every test run makes a real payment call.",send:[["test","svc","checkout()"],["svc","gw","real charge"]],tag:{gw:"real charge ✗"}},
+  {say:"Tests become slow and flaky, and a 'next-day delivery' test fails every evening after 6 pm.",tag:{clk:"depends on the time ✗",test:"flaky ✗"}}]},
+"repository":{nodes:[N("svc","RestockService",250,200,{sub:"SQL inside business code"}),N("db","PostgreSQL",620,200)],
+ edges:[["svc","db"]],
+ steps:[{say:"Without a repository, the business method writes SQL and maps rows itself.",send:[["svc","db","SELECT … qty < 10"],["db","svc","rows"]]},
+  {say:"Every rule that needs products repeats similar queries and mapping code.",tag:{svc:"SQL in 8 services"}},
+  {say:"Testing the restock rule now needs a real database, and a column rename breaks business code.",tag:{svc:"needs a DB to test ✗"}}]},
+"unit-of-work":{nodes:[N("uc","moveStock()",140,200,{kind:"client",sub:"saves each change at once"}),N("db","Database",600,200,{sub:"Store 7: 40 · Store 9: 5"})],
+ edges:[["uc","db"]],
+ steps:[{say:"Without a unit of work, each change is saved the moment it's made.",send:[["uc","db","UPDATE Store 7 → 30"]],tag:{db:"Store 7: 30 · Store 9: 5"}},
+  {say:"The second update fails: a constraint error, or the app crashes.",send:[["uc","db","UPDATE Store 9"],["db","uc","error ✗"]]},
+  {say:"Ten units have vanished: taken from one store and never added to the other.",tag:{db:"Store 7: 30 · Store 9: 5 ✗"}}]},
+"value-object":{nodes:[N("in","Cart",140,200,{kind:"client",sub:"int qty, String unit"}),N("svc","Pricing",470,90,{sub:"assumes kg"}),N("inv","Inventory",470,310,{sub:"assumes grams"})],
+ edges:[["in","svc"],["in","inv"]],
+ steps:[{say:"Without a value object, a quantity is just an int and a string passed around.",send:[{par:[["in","svc","qty = 2"],["in","inv","qty = 2"]]}]},
+  {say:"Each place applies its own rules: pricing reads 2 as kilograms, inventory as grams.",tag:{svc:"2 kg",inv:"2 g ✗"}},
+  {say:"Nothing stops -3 either, so a negative quantity reaches the invoice.",send:[["in","svc","qty = -3"]],tag:{svc:"invoice: -3 kg ✗"}}]},
+"aggregate":{nodes:[N("svc","CartService",130,200,{kind:"client"}),N("l2","OrderLine: eggs",470,90,{sub:"price ₹100"}),N("ord","Order",470,310,{sub:"total ₹160"})],
+ edges:[["svc","l2"],["svc","ord"]],
+ steps:[{say:"Without an aggregate root, any code can reach in and change a line directly.",send:[["svc","l2","setPrice(₹80)"]],tag:{l2:"price ₹80"}},
+  {say:"The order's total is never told about the change.",on:["ord"]},
+  {say:"The cart shows ₹140 but the customer is charged ₹160. The rule 'total = sum of lines' is broken.",tag:{ord:"total ₹160 ✗ (lines add to ₹140)"}}]},
+"domain-events":{nodes:[N("ord","Order.place()",220,200,{sub:"calls everything itself"}),N("loy","Loyalty",600,90),N("sms","SMS",600,200),N("wh","Warehouse",600,310)],
+ edges:[["ord","loy"],["ord","sms"],["ord","wh"]],
+ steps:[{say:"Without domain events, the order calls every follow-up service from inside place().",send:[{par:[["ord","loy","addPoints"],["ord","sms","send"],["ord","wh","pick"]]}]},
+  {say:"Order now depends on loyalty, SMS and the warehouse. Each new reaction means editing Order.",tag:{ord:"imports 3 services"}},
+  {say:"The SMS goes out, then the transaction rolls back. The customer is told about an order that doesn't exist.",tag:{sms:"SMS sent ✗",ord:"rolled back"}}]},
+"test-doubles":{nodes:[N("test","CheckoutTest",110,200,{kind:"client"}),N("sut","Checkout",360,200),N("pg","Real payment sandbox",640,90,{sub:"2 s per call"}),N("sms","Real SMS provider",640,310,{sub:"₹0.20 per test"})],
+ edges:[["test","sut"],["sut","pg"],["sut","sms"]],
+ steps:[{say:"Without doubles, the unit test calls the real payment sandbox and SMS provider.",send:[["test","sut","pay(order)"],{par:[["sut","pg","charge"],["sut","sms","send"]]}]},
+  {say:"Every run takes seconds and costs money, so people stop running the tests.",tag:{test:"2.4 s per test"}},
+  {say:"The sandbox is down one morning, and the build goes red for a reason that has nothing to do with the code.",tag:{pg:"sandbox down",test:"red build ✗"}}]},
+"contract-testing":{nodes:[N("cons","Checkout",130,110,{sub:"expects pricePaise"}),N("prov","Catalog 2.4.0",130,300,{sub:"renamed it to price"}),N("e2e","Shared test environment",420,200,{sub:"nightly, often down"}),N("prod","Production",690,200)],
+ edges:[["prov","e2e"],["cons","e2e"],["prov","prod"]],
+ steps:[{say:"Without contracts, the teams rely on a shared end-to-end environment that runs overnight.",send:[{par:[["prov","e2e","deploy 2.4.0"],["cons","e2e","run suite"]]}]},
+  {say:"The environment is down half the time, so its failures get ignored.",tag:{e2e:"down again ✗"}},
+  {say:"Catalog ships the renamed field, and checkout breaks in production.",send:[["prov","prod","deploy 2.4.0"]],tag:{prod:"checkout broken ✗"}}]},
+"test-data-builder":{nodes:[N("t1","Test: express fee",130,80,{kind:"client"}),N("t2","Test: big basket",130,200,{kind:"client"}),N("t3","Test: gift order",130,320,{kind:"client"}),N("ord","Order constructor",560,200,{sub:"7 parameters"})],
+ edges:[["t1","ord"],["t2","ord"],["t3","ord"]],
+ steps:[{say:"Without builders, every test builds a whole order by hand, field by field.",send:[{par:[["t1","ord","new Order(…7 args)"],["t2","ord","new Order(…7 args)"],["t3","ord","new Order(…7 args)"]]}]},
+  {say:"The one detail each test cares about is buried in a dozen lines of setup.",tag:{t1:"12 lines of setup"}},
+  {say:"Order gains a giftWrap parameter, and 40 tests stop compiling.",tag:{ord:"8 parameters",t1:"compile error ✗",t2:"compile error ✗",t3:"compile error ✗"}}]}
+});
+Object.assign(PAIRS,{
+"repository~unit-of-work":"A repository is where you get and put aggregates; a unit of work tracks what changed during one use case and writes it all at once. JPA gives you both.",
+"value-object~immutable-object":"Both never change. An immutable object is about safe sharing between threads; a value object is about meaning: defined by its values, validated, with its own rules.",
+"domain-events~observer":"Observer is an in-memory mechanism; a domain event is a business fact (OrderPlaced), often delivered through that mechanism after the transaction commits.",
+"test-doubles~contract-testing":"Doubles fake a dependency so one unit is tested alone; contract tests check that the real dependency still behaves the way those doubles assumed."
+});
+PICK.o.push(
+ {t:"Model a business domain",h:"enterprise and DDD",n:{q:"What do you need?",o:[
+  {t:"Swap dependencies (database, clock, gateway) easily",p:"dependency-injection"},
+  {t:"Load and save objects without SQL in business code",p:"repository"},
+  {t:"Save several changes together, all or nothing",p:"unit-of-work"},
+  {t:"Give a primitive (amount, phone, dates) rules of its own",p:"value-object"},
+  {t:"Keep a group of objects consistent together",p:"aggregate"},
+  {t:"Let other parts react to something that happened",p:"domain-events"}]}},
+ {t:"Test my code",h:"unit and contract tests",n:{q:"What makes testing hard?",o:[
+  {t:"The code calls slow, costly or random things",p:"test-doubles"},
+  {t:"Another team's service might change under me",p:"contract-testing"},
+  {t:"Test setup is longer than the test",p:"test-data-builder"}]}});
 
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);

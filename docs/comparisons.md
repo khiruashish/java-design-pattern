@@ -207,6 +207,19 @@ order.dispatch();                   // State: PACKED decides the next state is O
 
 > **Say:** "A saga is about coordinating many services; an outbox is about not losing one service's event. In practice each saga step publishes through an outbox."
 
+## Enterprise & testing look-alikes
+
+<iframe class="motion-embed motion-compare" src="../motion/index.html?compare=repository~unit-of-work|value-object~immutable-object|domain-events~observer|test-doubles~contract-testing&amp;embed=1" title="Enterprise and testing look-alikes: animations played side by side" loading="lazy"></iframe>
+
+| Pair | Key difference |
+|---|---|
+| **Repository vs. Unit of Work** | A repository is where you get and put aggregates; a unit of work tracks what changed in one use case and writes it all at once. JPA gives you both |
+| **Value Object vs. Immutable Object** | Both never change. Immutability is about safe sharing between threads; a value object is about meaning: defined by its values, validated, with its own rules |
+| **Domain Events vs. Observer** | Observer is the in-memory mechanism; a domain event is a business fact, often delivered through it after the transaction commits |
+| **Test Doubles vs. Contract Testing** | Doubles fake a dependency so one unit is tested alone; contract tests check that the real dependency still behaves the way those doubles assumed |
+
+> **Say:** "My unit tests use a fake catalog client; the contract test is what proves the real catalog still matches that fake."
+
 ---
 
 [:material-arrow-left: Pattern Selection Guide](pattern-selection-guide.md){ .md-button }

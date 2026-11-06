@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=repository&amp;embed=1" title="Animated walkthrough of the Repository pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#repository){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** when a restock rule contains `SELECT ... WHERE stock < ?` and `ResultSet` mapping, three things go wrong. You can't unit-test the rule without a database; changing the schema means editing business code; and the same query gets copy-pasted into five services with five slightly different bugs.
