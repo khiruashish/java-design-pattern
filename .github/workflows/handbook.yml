@@ -46,6 +46,19 @@ jobs:
       - name: Build site (fails on broken links or missing snippets)
         run: mkdocs build --strict
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/motion-check/package-lock.json
+
+      - name: Check every animation and every page that embeds one
+        working-directory: tools/motion-check
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          node check.js
+
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: mkdocs gh-deploy --force

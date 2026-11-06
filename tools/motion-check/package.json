@@ -1,0 +1,7 @@
+{
+  "name": "motion-check",
+  "private": true,
+  "description": "Headless checks for docs/motion/index.html and every page that embeds it",
+  "scripts": { "check": "node check.js" },
+  "dependencies": { "playwright": "1.63.0" }
+}

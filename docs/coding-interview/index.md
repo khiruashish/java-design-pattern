@@ -39,6 +39,12 @@ Each page follows the same structure:
 
 Levels: <span class="level l1">L1</span> 0–2 yrs · <span class="level l2">L2</span> 2–5 yrs · <span class="level l3">L3</span> 5–10 yrs · <span class="level l4">L4</span> 10+ yrs / architect.
 
+### Watch the patterns behind the problems
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?set=singleton,builder,factory-method,strategy,observer,decorator,command,state,chain-of-responsibility,composite,visitor,proxy,adapter&amp;embed=1" title="Animated player for the patterns used in the coding problems" loading="lazy"></iframe>
+
+The chips follow the problem map: one animation for each pattern the twelve problems use (problem 10 uses both Composite and Visitor). Watch the one you're about to solve to fix the shape in your head before you write code.
+
 ## Which technique fits? (the interviewer's hidden question)
 
 ```mermaid

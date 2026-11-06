@@ -93,8 +93,11 @@ java -cp "capstone/target/classes:$(cat capstone/target/classpath.txt)" com.hand
 │   ├── outputs/              # exact console output of every demo, embedded in the docs
 │   └── run-demos.sh
 ├── coding-interview/         # 12 single-file pattern problems (src/, outputs/, run-all.sh --check)
+├── tools/motion-check/       # headless checks for every animation and embed (runs in CI)
 └── .github/workflows/        # CI: tests, output checks, strict site build, GitHub Pages deploy
 ```
+
+The animations all come from one file, `docs/motion/index.html`. [`docs/motion/README.md`](docs/motion/README.md) explains its data format, how to add an animation, how to embed one, and how to run the checker.
 
 ## How the microservices code runs
 
