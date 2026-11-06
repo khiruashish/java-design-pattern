@@ -5715,6 +5715,9 @@
 <hr />
 <h2 id="1-parking-lot">1. Parking Lot<a class="headerlink" href="#1-parking-lot" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> multiple floors; spot sizes small/medium/large; bikes, cars and trucks (a vehicle fits its size or larger); issue a ticket on entry; charge on exit (first 30 minutes free, then per started hour by vehicle type); show free spots; reject reused tickets. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> for allocation and pricing, so rules can change per lot.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-parking-lot&amp;embed=1" title="Animated walkthrough of the Parking Lot design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-parking-lot" target="_blank">Open in the explorer</a></p>
 <div class="diagram">classDiagram
     class ParkingLot {
       +park(vehicle, time) Optional~Ticket~
@@ -5944,6 +5947,9 @@
 <hr />
 <h2 id="2-elevator-system">2. Elevator System<a class="headerlink" href="#2-elevator-system" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> N elevators; hall calls (floor + direction) and car calls (button inside); serve requests efficiently; don't reverse while there are stops ahead. <strong>Patterns:</strong> <a href="../../behavioral/state/">State</a> (direction per car), <a href="../../behavioral/strategy/">Strategy</a> (dispatcher), SCAN scheduling.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-elevator&amp;embed=1" title="Animated walkthrough of the Elevator System design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-elevator" target="_blank">Open in the explorer</a></p>
 <div class="diagram">classDiagram
     class ElevatorSystem {
       +hallCall(floor, dir)
@@ -6111,6 +6117,9 @@
 <hr />
 <h2 id="3-vending-machine">3. Vending Machine<a class="headerlink" href="#3-vending-machine" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> accept ₹1/2/5/10 coins; select a product; dispense if paid enough and in stock; return change with the fewest coins; cancel and refund. <strong>Pattern:</strong> <a href="../../behavioral/state/">State</a>, with sealed types and pattern matching so each state's behaviour is explicit.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-vending&amp;embed=1" title="Animated walkthrough of the Vending Machine design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-vending" target="_blank">Open in the explorer</a></p>
 <div class="diagram">stateDiagram-v2
     [*] --&gt; Idle
     Idle --&gt; HasMoney: insert coin
@@ -6261,6 +6270,9 @@
 <hr />
 <h2 id="4-lru-cache">4. LRU Cache<a class="headerlink" href="#4-lru-cache" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> fixed capacity; <code>get</code> and <code>put</code> in O(1); evict the least recently used entry; thread-safe. <strong>Design:</strong> <code>HashMap&lt;K, Node&gt;</code> + doubly linked list with sentinel head/tail; a lock around both.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-lru-cache&amp;embed=1" title="Animated walkthrough of the LRU Cache design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-lru-cache" target="_blank">Open in the explorer</a></p>
 <div class="diagram">flowchart LR
     H[head sentinel] &lt;--&gt; A["MANGO (MRU)"] &lt;--&gt; B[MILK] &lt;--&gt; C["RICE (LRU)"] &lt;--&gt; T[tail sentinel]
     M[(HashMap key → node)] -.-&gt; A
@@ -6449,6 +6461,9 @@
 <hr />
 <h2 id="5-splitwise-expense-sharing">5. Splitwise (Expense Sharing)<a class="headerlink" href="#5-splitwise-expense-sharing" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> groups of people; expenses paid by one person and split equally, by percentage or by exact amounts; show balances; settle up with few payments; never lose a paisa to rounding. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> for split types; a greedy max-creditor/max-debtor settlement.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-splitwise&amp;embed=1" title="Animated walkthrough of the Splitwise (Expense Sharing) design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-splitwise" target="_blank">Open in the explorer</a></p>
 <div class="diagram">classDiagram
     class ExpenseSharing {
       +addExpense(paidBy, amount, participants, split)
@@ -6611,6 +6626,9 @@
 <hr />
 <h2 id="6-snake-and-ladder">6. Snake and Ladder<a class="headerlink" href="#6-snake-and-ladder" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> configurable board; snakes go down, ladders go up; players take turns; exact roll needed to finish; first to the last square wins. <strong>Patterns:</strong> <a href="../../creational/builder/">Builder</a> with validation, <a href="../../behavioral/strategy/">Strategy</a> for dice (seeded/fixed in tests).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-snake-ladder&amp;embed=1" title="Animated walkthrough of the Snake and Ladder design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-snake-ladder" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">SnakeAndLadder.java</label><label for="__tabbed_6_2">SnakeAndLadderDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6769,6 +6787,9 @@
 <hr />
 <h2 id="7-library-management">7. Library Management<a class="headerlink" href="#7-library-management" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> books with copies; members (students: 2 loans, 14 days; faculty: 5 loans, 30 days); reservations queue when no copy is free; fines for late returns by member type; notify the next member when a reserved book comes back. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> (fine policy), <a href="../../behavioral/observer/">Observer</a> (notifications).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-library&amp;embed=1" title="Animated walkthrough of the Library Management design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-library" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Library.java</label><label for="__tabbed_7_2">LibraryDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -6918,6 +6939,9 @@
 <hr />
 <h2 id="8-movie-ticket-booking">8. Movie Ticket Booking<a class="headerlink" href="#8-movie-ticket-booking" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> a show's seat map; users select several seats; seats are <strong>held</strong> for 5 minutes while paying; all-or-nothing holds; confirm only while the hold is valid; expired holds become available; <strong>no double booking</strong> under concurrency. This is the core of BookMyShow-style designs.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-movie-booking&amp;embed=1" title="Animated walkthrough of the Movie Ticket Booking design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-movie-booking" target="_blank">Open in the explorer</a></p>
 <div class="diagram">stateDiagram-v2
     [*] --&gt; Free
     Free --&gt; Held: hold (all requested seats free)
@@ -7061,6 +7085,9 @@
 <hr />
 <h2 id="9-notification-system">9. Notification System<a class="headerlink" href="#9-notification-system" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> send order updates by email, SMS and push; respect user preferences; templates with per-channel formatting (SMS length limits); retry transient failures; one failing channel must not block the others. <strong>Patterns:</strong> <a href="../../behavioral/strategy/">Strategy</a> (sender per channel), <a href="../../creational/factory-method/">Factory</a>/registry, <a href="../../behavioral/template-method/">Template Method</a> (message skeleton), <a href="../../structural/decorator/">Decorator</a> (retry).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-notification&amp;embed=1" title="Animated walkthrough of the Notification System design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-notification" target="_blank">Open in the explorer</a></p>
 <div class="diagram">classDiagram
     class NotificationService {
       +register(channel, sender)
@@ -7232,6 +7259,9 @@
 <hr />
 <h2 id="10-logging-framework">10. Logging Framework<a class="headerlink" href="#10-logging-framework" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> levels DEBUG &lt; INFO &lt; WARN &lt; ERROR; named loggers in a hierarchy (<code>com.shop.payment</code> inherits from <code>com.shop</code>); multiple appenders with their own thresholds and formats (console, JSON file, pager); cheap when a level is disabled. <strong>Patterns:</strong> <a href="../../behavioral/chain-of-responsibility/">Chain of Responsibility</a>, <a href="../../behavioral/strategy/">Strategy</a> (formatter).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-logging&amp;embed=1" title="Animated walkthrough of the Logging Framework design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-logging" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">MiniLogger.java</label><label for="__tabbed_10_2">LoggingDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -7379,6 +7409,9 @@
 <hr />
 <h2 id="11-grocery-discount-engine">11. Grocery Discount Engine<a class="headerlink" href="#11-grocery-discount-engine" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> rules like "buy 2 get 1 free" on a SKU, "10% off dairy for Gold members", "₹150 off over ₹1,000", "5% off over ₹2,000"; some rules stack, while among <strong>exclusive</strong> coupons only the best applies; the total never goes negative; new rules without changing the engine. <strong>Patterns:</strong> <a href="../../behavioral/specification/">Specification</a> (eligibility), <a href="../../behavioral/strategy/">Strategy</a> (discount calculation).</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-discount&amp;embed=1" title="Animated walkthrough of the Grocery Discount Engine design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-discount" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">DiscountEngine.java</label><label for="__tabbed_11_2">DiscountDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -7534,6 +7567,9 @@
 <hr />
 <h2 id="12-tic-tac-toe">12. Tic-Tac-Toe<a class="headerlink" href="#12-tic-tac-toe" title="Permanent link">&para;</a></h2>
 <p><strong>Requirements:</strong> n×n board; two players alternate; detect win or draw after each move in O(1); reject illegal moves and moves after the game ends.</p>
+<iframe class="motion-embed" src="../../motion/index.html?p=lld-tic-tac-toe&amp;embed=1" title="Animated walkthrough of the Tic-Tac-Toe design" loading="lazy"></iframe>
+
+<p>Watch the design handle the demo scenario step by step, with the matching code lit up. Switch to <strong>Naive design</strong> to see a simpler design fail. <a href="../../motion/#lld-tic-tac-toe" target="_blank">Open in the explorer</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">TicTacToe.java</label><label for="__tabbed_12_2">TicTacToeDemo.java</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
