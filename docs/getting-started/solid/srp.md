@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../../motion/index.html?p=srp&amp;embed=1" title="Animated walkthrough of the Single Responsibility principle" loading="lazy"></iframe>
+
+Press **Play** to see the design that follows the principle. Switch to **Breaks it** to see the "before" version that violates it. [Open the full explorer](../../motion/index.html#srp){ target=_blank }
+
 ## 1. Definition & Origin
 
 > *"A module should be responsible to one, and only one, actor."* (Robert C. Martin, *Clean Architecture*, 2017)

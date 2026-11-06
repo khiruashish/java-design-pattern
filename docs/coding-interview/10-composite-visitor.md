@@ -7,6 +7,12 @@
 > Model arithmetic expressions such as `(x + 2) * (3 + -1)` as a tree. Implement **evaluate**, **pretty-print** and
 > **simplify** (`y * 1 + 0` → `y`, and constant folding). New operations must not require editing the node classes.
 
+## See the pattern in motion
+
+This problem combines two patterns. Watch them side by side before you code: the tree (Composite) and the operation that walks it (Visitor).
+
+<iframe class="motion-embed motion-compare" src="../../motion/index.html?compare=composite~visitor&amp;embed=1" title="Composite and Visitor played side by side" loading="lazy"></iframe>
+
 ## Key idea
 
 **Composite**: leaves (`Num`, `Var`) and branches (`Add`, `Mul`, `Neg`) share one type, so operations recurse uniformly.

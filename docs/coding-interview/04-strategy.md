@@ -7,6 +7,12 @@
 > Checkout applies a discount rule chosen by customer tier: percentage, flat amount above a threshold, buy-3-get-the-cheapest-free,
 > or **the best of several rules**. Adding a rule must not change `Checkout`.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Strategy page](../behavioral/strategy.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=strategy&amp;embed=1" title="Animated walkthrough of the Strategy pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Extract the varying part into a **one-method interface**. Each rule is an implementation, and in modern Java often just a

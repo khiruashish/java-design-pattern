@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../../motion/index.html?p=ocp&amp;embed=1" title="Animated walkthrough of the Open/Closed principle" loading="lazy"></iframe>
+
+Press **Play** to see the design that follows the principle. Switch to **Breaks it** to see the "before" version that violates it. [Open the full explorer](../../motion/index.html#ocp){ target=_blank }
+
 ## 1. Definition & Origin
 
 > *"Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification."*

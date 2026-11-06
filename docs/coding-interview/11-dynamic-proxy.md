@@ -7,6 +7,12 @@
 > Add result caching to **any interface** without writing a class per interface, and create an expensive service
 > **lazily**, only when it's first used.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Proxy page](../structural/proxy.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=proxy&amp;embed=1" title="Animated walkthrough of the Proxy pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 A **JDK dynamic proxy** generates a class at run time that implements the interfaces you pass and routes every call to one

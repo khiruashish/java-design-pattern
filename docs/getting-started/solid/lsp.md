@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../../motion/index.html?p=lsp&amp;embed=1" title="Animated walkthrough of the Liskov Substitution principle" loading="lazy"></iframe>
+
+Press **Play** to see the design that follows the principle. Switch to **Breaks it** to see the "before" version that violates it. [Open the full explorer](../../motion/index.html#lsp){ target=_blank }
+
 ## 1. Definition & Origin
 
 > *"If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T,

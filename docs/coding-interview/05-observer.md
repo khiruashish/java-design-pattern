@@ -7,6 +7,12 @@
 > Implement an in-process event bus. Listeners subscribe to a specific event **type**, can **unsubscribe**, and a listener that
 > throws must **not** stop the others from receiving the event.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Observer page](../behavioral/observer.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=observer&amp;embed=1" title="Animated walkthrough of the Observer pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Keep a map from **event class to listener list**. `publish` looks up the event's class and calls each listener inside its own

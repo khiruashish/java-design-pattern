@@ -20,7 +20,7 @@ tags:
 
 <iframe class="motion-embed" src="../../motion/index.html?p=adapter&amp;embed=1" title="Animated walkthrough of the Adapter pattern" loading="lazy"></iframe>
 
-Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#adapter){ target=_blank }
+Press **Play** to watch the calls travel between objects, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer](../motion/index.html#adapter){ target=_blank }
 
 ## 1. Intent & Problem It Solves
 

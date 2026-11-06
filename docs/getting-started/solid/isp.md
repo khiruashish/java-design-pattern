@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../../motion/index.html?p=isp&amp;embed=1" title="Animated walkthrough of the Interface Segregation principle" loading="lazy"></iframe>
+
+Press **Play** to see the design that follows the principle. Switch to **Breaks it** to see the "before" version that violates it. [Open the full explorer](../../motion/index.html#isp){ target=_blank }
+
 ## 1. Definition & Origin
 
 > *"Clients should not be forced to depend upon interfaces that they do not use."* (Robert C. Martin, 1996)

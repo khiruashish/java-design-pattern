@@ -7,6 +7,12 @@
 > Every API request passes **authentication → rate limiting → validation → handler**. Any step may reject the request with
 > its own status code. Steps must be addable and reorderable, and one step must also run **after** the handler (audit).
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Chain of Responsibility page](../behavioral/chain-of-responsibility.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=chain-of-responsibility&amp;embed=1" title="Animated walkthrough of the Chain of Responsibility pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Each handler receives the request and a **`next`** link. It either returns a response itself (short-circuit) or calls

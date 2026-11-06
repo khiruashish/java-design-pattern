@@ -8,6 +8,12 @@
 > retries). Invalid combinations ("GET with a body", "POST without a body", retries > 5) must be rejected, with all
 > the errors reported at once.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Builder page](../creational/builder.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=builder&amp;embed=1" title="Animated walkthrough of the Builder pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Put the **required parameters into the builder's entry point** (`HttpRequest.post(url)`) so they can't be forgotten, and the

@@ -7,6 +7,12 @@
 > `createNotifier(channel)` is a `switch` that grows with every new channel (email, SMS, push and so on). Refactor it so that adding a
 > channel **doesn't edit the factory**, and new channels can even be registered at run time.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Factory Method page](../creational/factory-method.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=factory-method&amp;embed=1" title="Animated walkthrough of the Factory Method pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Replace the `switch` with a **map from key to constructor** (`Map<String, Supplier<Notifier>>`). Creation becomes a lookup,

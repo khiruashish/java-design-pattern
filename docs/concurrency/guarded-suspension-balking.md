@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=guarded-suspension-balking&amp;embed=1" title="Animated walkthrough of the Guarded Suspension &amp; Balking pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between threads, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer](../motion/index.html#guarded-suspension-balking){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a rider arrives at the restaurant before the food is ready. Checking in a loop (`while (!ready) {}`) burns a CPU core; sleeping a fixed second wastes time or misses the moment. Separately, a nightly settlement job is triggered by the scheduler, by an operator and by a retry at the same time. Running it three times means three payouts.
