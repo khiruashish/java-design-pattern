@@ -5,7 +5,7 @@ tags:
 
 # Name That Pattern
 
-A quick way to test yourself before an interview. Each question plays one of the handbook's 75 animated walkthroughs with the names hidden: the boxes are just **A**, **B**, **C**. Watch what moves between them, then pick the pattern.
+A quick way to test yourself before an interview. Each question plays one of the handbook's animated walkthroughs with the names hidden: the boxes are just **A**, **B**, **C**. Watch what moves between them, then pick the pattern.
 
 - **Scoring:** 2 points for a right answer, 1 if you used **Show the names** first.
 - **Hard mode** hides the labels on the moving messages too, so you have only the shape of the conversation to go on.

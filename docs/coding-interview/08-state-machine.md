@@ -7,6 +7,12 @@
 > A vending machine behaves differently depending on its state: **Idle**, **HasMoney(credit)** or **SoldOut**. Support
 > insert, select and refund. It should give change, ask for more money, and refuse coins when it's sold out.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full State page](../behavioral/state.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=state&amp;embed=1" title="Animated walkthrough of the State pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Replace `if (state == X && action == Y)` ladders with **one type per state**. Each state implements the actions that are

@@ -8,6 +8,12 @@
 > `double`, numeric status codes, checked exceptions) and a **third-party client** (map-based requests, string statuses)
 > without changing checkout.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Adapter page](../structural/adapter.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=adapter&amp;embed=1" title="Animated walkthrough of the Adapter pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Write one **adapter per vendor** that implements *our* interface and wraps *their* client. It translates **units**

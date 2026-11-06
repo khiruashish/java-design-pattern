@@ -7,6 +7,12 @@
 > Implement a text editor that supports `insert` and `delete` with **unlimited undo and redo**. A new edit after an undo must
 > discard the redo history.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Command page](../behavioral/command.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=command&amp;embed=1" title="Animated walkthrough of the Command pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Turn each action into an **object that can `execute()` and `undo()` itself**. The editor keeps two stacks: run pushes

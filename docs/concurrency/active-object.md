@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=active-object&amp;embed=1" title="Animated walkthrough of the Active Object pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between threads, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer](../motion/index.html#active-object){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** a wallet receives thousands of cashback credits and payment debits from different threads. With locks, every method must be carefully synchronized; a slow operation holds the lock and blocks callers; and a missed lock somewhere corrupts the balance. What if only **one** thread ever touched the wallet, and everyone else just sent it messages?

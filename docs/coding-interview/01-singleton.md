@@ -7,6 +7,12 @@
 > Write a lazily initialised, thread-safe Singleton. Then show how **reflection** and **serialization** can create a
 > second instance, and defend against both.
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Singleton page](../creational/singleton.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=singleton&amp;embed=1" title="Animated walkthrough of the Singleton pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 The **holder idiom** gives lazy, lock-free initialisation, because the JVM runs a class initialiser exactly once and

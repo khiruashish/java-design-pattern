@@ -7,6 +7,12 @@
 > A remote `PriceService` is slow and sometimes times out. Add **retries**, **caching** and **logging** without changing it,
 > and without a subclass for every combination (`RetryingCachingLoggingPriceService`...).
 
+## See the pattern in motion
+
+Before you write any code, watch the pattern this problem is built on. Switch to **Without it** to see the bug the pattern prevents. [Read the full Decorator page](../structural/decorator.md).
+
+<iframe class="motion-embed" src="../../motion/index.html?p=decorator&amp;embed=1" title="Animated walkthrough of the Decorator pattern" loading="lazy"></iframe>
+
 ## Key idea
 
 Each concern is a class that **implements the same interface and wraps another instance of it**. Stack them like layers.

@@ -27,6 +27,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-tour:#4d6f0f; --t-tour:#ebf3da;
   --c-enterprise:#8a5a0b; --t-enterprise:#f8ecd6;
   --c-testing:#44607a; --t-testing:#e3ebf3;
+  --c-principles:#2c6e69; --t-principles:#dff0ee;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -44,6 +45,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-tour:#a9d65e; --t-tour:#24300f;
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
+  --c-principles:#7fd1c8; --t-principles:#15302d;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -58,6 +60,7 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-tour:#a9d65e; --t-tour:#24300f;
   --c-enterprise:#f0b45c; --t-enterprise:#3a2a10;
   --c-testing:#9db8d4; --t-testing:#1d2a38;
+  --c-principles:#7fd1c8; --t-principles:#15302d;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -368,6 +371,7 @@ const CATS={
   architecture:{name:"Architecture",blurb:"how a codebase is organized"},
   enterprise:{name:"Enterprise & DDD",blurb:"how domain code is modelled"},
   testing:{name:"Testing",blurb:"how code gets tested"},
+  principles:{name:"SOLID",blurb:"principles for class design"},
   tour:{name:"FreshCart tour",blurb:"one order, end to end"}
 };
 const P=[
@@ -1910,6 +1914,169 @@ pact.given("product milk-1l exists")
   {say:"The big-basket test changes only the lines. Everything else stays at the defaults.",show:["o2"],send:[["t2","b",".withLines(60)"],["b","o2","build()"]]},
   {say:"Order gains a new required field. You add one default to the builder, and none of the 40 tests change.",on:["b"],tag:{b:"defaults + giftWrap = false"}}
  ]},
+/* ───────── more concurrency ───────── */
+{id:"guarded-suspension-balking",name:"Guarded Suspension & Balking",cat:"concurrency",pkg:"guarded",ex:["delivery","settlement","buffer","ifwhile"],mod:"concurrency",
+ intent:"Handle a method that may only run when a condition holds. Guarded suspension waits until the condition becomes true; balking gives up at once if it isn't.",
+ when:"Wait when the condition will soon be true and the caller needs the result (a rider waiting for a packed order). Balk when the work is already happening or isn't needed (a second 'run settlement' click).",
+ analogy:"A rider waiting at the counter until the bag is packed is guarded suspension. A lift button that does nothing when the lift is already on its way is balking.",
+ tip:"Always wait in a while loop, not an if: a thread can wake up without the condition being true. Prefer java.util.concurrent tools over raw wait/notify where they fit.",
+ code:`<span class="k">synchronized</span> Bag pickUp() <span class="k">throws</span> InterruptedException {
+  <span class="k">while</span> (!packed) wait();          <span class="c">// guarded suspension: wait for the guard</span>
+  <span class="k">return</span> bag;
+}
+<span class="k">synchronized void</span> markPacked(Bag b) { bag = b; packed = <span class="k">true</span>; notifyAll(); }
+
+<span class="k">synchronized boolean</span> startSettlement() {
+  <span class="k">if</span> (running) <span class="k">return false</span>;       <span class="c">// balking: already running, do nothing</span>
+  running = <span class="k">true</span>; <span class="k">return true</span>;
+}`,
+ nodes:[N("rider","Rider thread",110,80,{kind:"client",sub:"–"}),N("packer","Packer thread",110,190,{kind:"client"}),N("order","Order #88",430,135,{sub:"packed: no"}),
+  N("admin","Admin click #2",110,320,{kind:"client",sub:"–"}),N("job","Settlement job",430,320,{sub:"running: yes"})],
+ edges:[["rider","order"],["packer","order"],["admin","job"]],
+ steps:[
+  {say:"Guarded suspension: the rider asks for the bag, but it isn't packed yet. The rider's thread waits instead of failing.",send:[["rider","order","pickUp()"]],tag:{rider:"waiting…"}},
+  {say:"The packer finishes and calls notifyAll(). The rider wakes up, checks the condition again, and takes the bag.",send:[["packer","order","markPacked()"],["order","rider","bag"]],tag:{order:"packed: yes",rider:"got the bag"}},
+  {say:"Balking: settlement is already running when an admin clicks 'run' a second time.",send:[["admin","job","startSettlement()"]]},
+  {say:"The guard fails, so the call returns at once and does nothing. No duplicate settlement and no waiting.",send:[["job","admin","false: already running"]],tag:{admin:"ignored ✓"}}
+ ]},
+{id:"active-object",name:"Active Object",cat:"concurrency",pkg:"activeobject",ex:["wallet","printer","keyed","generic"],mod:"concurrency",
+ intent:"Give an object its own thread. Callers don't run its methods directly; they put requests in its queue and get a Future back. One thread runs the requests in order, so the object's state needs no locks.",
+ when:"A shared resource must be used one request at a time (a wallet, a printer, a device), especially when callers shouldn't block.",
+ analogy:"A bank counter with a token machine. You take a token and carry on; the one clerk serves tokens in order and calls you when yours is done.",
+ tip:"Bound the queue and decide what happens when it's full. One slow request delays every request behind it.",
+ code:`<span class="k">class</span> WalletActor {
+  <span class="k">private final</span> ExecutorService thread = Executors.newSingleThreadExecutor();
+  <span class="k">private long</span> balance;                                  <span class="c">// only touched by that one thread</span>
+  CompletableFuture&lt;Long&gt; credit(<span class="k">long</span> paise) {
+    <span class="k">return</span> CompletableFuture.supplyAsync(() -&gt; balance += paise, thread);
+  }
+}`,
+ nodes:[N("c1","Checkout thread",110,80),N("c2","Refund thread",110,200),N("c3","Cashback thread",110,320),
+  N("q","Request queue",400,200,{sub:"0 waiting"}),N("w","Wallet's own thread",670,200,{sub:"balance ₹500"})],
+ edges:[["c1","q"],["c2","q"],["c3","q"],["q","w"]],
+ steps:[
+  {say:"Three threads want to change the same wallet at the same moment.",on:["c1","c2","c3"]},
+  {say:"None of them touches the balance. Each drops a request in the wallet's queue and immediately gets a Future back.",send:[{par:[["c1","q","debit ₹200"],["c2","q","credit ₹50"],["c3","q","credit ₹20"]]}],tag:{q:"3 waiting"}},
+  {say:"The wallet's single thread takes the requests one at a time, so there's never a race and no locks are needed.",send:[["q","w","debit ₹200"],["q","w","credit ₹50"],["q","w","credit ₹20"]],tag:{w:"balance ₹370",q:"0 waiting"}},
+  {say:"Each caller's Future completes when its own request is done.",send:[{par:[["q","c1","₹300"],["q","c2","₹350"],["q","c3","₹370"]]}]}
+ ]},
+{id:"fork-join",name:"Fork/Join",cat:"concurrency",pkg:"forkjoin",ex:["sales","routes","masking","threshold"],mod:"concurrency",
+ intent:"Split a big CPU-bound job in half again and again until the pieces are small, run the pieces in parallel on a work-stealing pool, and combine the results.",
+ when:"CPU-heavy work on large in-memory data: sums, searches, transforms, sorting. Parallel streams use it underneath.",
+ analogy:"Counting votes: each hall splits its ballots between teams, every team counts a small pile, and the totals are added up the chain.",
+ tip:"Don't use it for blocking I/O; that's what virtual threads are for. Pick a threshold so the pieces aren't tiny, or splitting costs more than it saves.",
+ code:`<span class="k">class</span> SumTask <span class="k">extends</span> RecursiveTask&lt;Long&gt; {
+  <span class="k">protected</span> Long compute() {
+    <span class="k">if</span> (hi - lo &lt;= 10_000) <span class="k">return</span> sumDirectly();        <span class="c">// small enough</span>
+    <span class="k">var</span> left  = <span class="k">new</span> SumTask(lo, mid);  left.fork();     <span class="c">// run in parallel</span>
+    <span class="k">var</span> right = <span class="k">new</span> SumTask(mid, hi);
+    <span class="k">return</span> right.compute() + left.join();               <span class="c">// combine</span>
+  }
+}
+<span class="k">long</span> total = ForkJoinPool.commonPool().invoke(<span class="k">new</span> SumTask(0, sales.length));`,
+ nodes:[N("root","Sum 1 M sales",400,60,{sub:"–"}),N("l","First 500 k",220,180,{sub:"–"}),N("r","Last 500 k",580,180,{sub:"–"}),
+  N("ll","250 k",120,320,{sub:"–",hidden:1}),N("lr","250 k",320,320,{sub:"–",hidden:1}),N("rl","250 k",480,320,{sub:"–",hidden:1}),N("rr","250 k",680,320,{sub:"–",hidden:1})],
+ edges:[["root","l"],["root","r"],["l","ll"],["l","lr"],["r","rl"],["r","rr"]],
+ steps:[
+  {say:"The job is too big to do in one piece, so the task splits itself in two.",send:[{par:[["root","l","fork"],["root","r","fork"]]}]},
+  {say:"Each half is still above the threshold, so each one splits again.",show:["ll","lr","rl","rr"],send:[{par:[["l","ll","fork"],["l","lr","fork"],["r","rl","fork"],["r","rr","fork"]]}]},
+  {say:"The four small pieces run in parallel on the pool's threads. A thread that runs out of work steals some from a busy one.",on:["ll","lr","rl","rr"],tag:{ll:"₹1.2 Cr",lr:"₹0.9 Cr",rl:"₹1.1 Cr",rr:"₹1.4 Cr"}},
+  {say:"Results are joined back up the tree: each half adds its pieces, then the root adds the halves.",send:[{par:[["ll","l","₹1.2 Cr"],["lr","l","₹0.9 Cr"],["rl","r","₹1.1 Cr"],["rr","r","₹1.4 Cr"]]},{par:[["l","root","₹2.1 Cr"],["r","root","₹2.5 Cr"]]}],tag:{l:"₹2.1 Cr",r:"₹2.5 Cr",root:"total ₹4.6 Cr"}}
+ ]},
+/* ───────── SOLID ───────── */
+{id:"srp",name:"Single Responsibility (SRP)",cat:"principles",mod:"principles",pkg:"solid/srp",ex:["before","after"],
+ intent:"Give each class one reason to change: one job, owned by one group of people.",
+ when:"A class mixes rules that change for different reasons, like tax calculation, formatting and storage.",
+ analogy:"A restaurant where the chef cooks, the cashier bills and the cleaner cleans. A new menu doesn't change how bills are printed.",
+ tip:"'One reason to change' means one source of change requests, not one method. Don't split so finely that a simple change touches ten tiny classes.",
+ code:`<span class="k">class</span> Invoice { List&lt;Line&gt; lines; Money total() { ... } }              <span class="c">// data</span>
+<span class="k">class</span> TaxCalculator { Money tax(Invoice i) { ... } }                   <span class="c">// tax rules</span>
+<span class="k">interface</span> InvoicePrinter { String print(Invoice i); }                <span class="c">// format</span>
+<span class="k">class</span> CsvInvoicePrinter <span class="k">implements</span> InvoicePrinter { ... }
+<span class="k">class</span> InvoiceRepository { <span class="k">void</span> save(Invoice i) { ... } }               <span class="c">// storage</span>`,
+ nodes:[N("inv","Invoice",130,200,{sub:"lines and totals only"}),N("tax","TaxCalculator",420,80,{sub:"tax rules"}),N("prn","InvoicePrinter",420,200,{sub:"text"}),N("repo","InvoiceRepository",420,320,{sub:"storage"}),
+  N("acct","Accountant",690,80,{kind:"client"}),N("fin","Finance team",690,200,{kind:"client"}),N("dba","DBA",690,320,{kind:"client"})],
+ edges:[["inv","tax"],["inv","prn"],["inv","repo"],["acct","tax"],["fin","prn"],["dba","repo"]],
+ steps:[
+  {say:"Each class has one reason to change. Invoice just holds the lines and works out the totals.",on:["inv"]},
+  {say:"Tax rules live in TaxCalculator, formatting in InvoicePrinter, storage in InvoiceRepository.",send:[{par:[["inv","tax","total"],["inv","prn","lines"],["inv","repo","save"]]}]},
+  {say:"The accountant changes the GST rule. Only TaxCalculator changes; printing and storage aren't touched.",send:[["acct","tax","new GST rule"]],tag:{tax:"changed ✓"}},
+  {say:"Finance wants CSV. A CsvInvoicePrinter is added, and the tax code doesn't need retesting.",send:[["fin","prn","CSV, please"]],tag:{prn:"text + CSV printers"}}
+ ]},
+{id:"ocp",name:"Open/Closed (OCP)",cat:"principles",mod:"principles",pkg:"solid/ocp",ex:["before","after"],
+ intent:"Make code open for extension but closed for modification: add new behaviour by adding code, not by editing code that already works.",
+ when:"A class has a growing if/else or switch over types, and every new case means editing and retesting it.",
+ analogy:"A power strip. You plug in a new appliance; you don't rewire the strip.",
+ tip:"Don't build extension points for changes that may never come. Refactor towards OCP the second or third time the same kind of change arrives.",
+ code:`<span class="k">interface</span> Shape { <span class="k">double</span> area(); }
+<span class="k">record</span> Circle(<span class="k">double</span> r) <span class="k">implements</span> Shape { <span class="k">public double</span> area() { <span class="k">return</span> PI * r * r; } }
+<span class="k">record</span> Rectangle(<span class="k">double</span> w, <span class="k">double</span> h) <span class="k">implements</span> Shape { <span class="k">public double</span> area() { <span class="k">return</span> w * h; } }
+<span class="k">double</span> total(List&lt;Shape&gt; shapes) { <span class="k">return</span> shapes.stream().mapToDouble(Shape::area).sum(); }
+<span class="k">record</span> Triangle(<span class="k">double</span> b, <span class="k">double</span> h) <span class="k">implements</span> Shape { ... }   <span class="c">// added later</span>`,
+ nodes:[N("calc","AreaCalculator",150,200,{sub:"adds up shape.area()"}),N("sh","Shape",440,70,{sub:"«interface» area()",kind:"iface"}),
+  N("c","Circle",300,310),N("r","Rectangle",480,310),N("t","Triangle",660,310,{hidden:1})],
+ edges:[["calc","sh"],["c","sh","i"],["r","sh","i"],["t","sh","i"]],
+ steps:[
+  {say:"AreaCalculator depends only on the Shape interface. Each shape knows how to work out its own area.",on:["calc","sh"]},
+  {say:"The calculator asks every shape for its area and adds the results.",send:[{par:[["calc","c","area()"],["calc","r","area()"]]}]},
+  {say:"Triangle arrives as a new class. AreaCalculator isn't edited at all: open for extension, closed for modification.",show:["t"],send:[["calc","t","area()"]],tag:{calc:"unchanged ✓"}}
+ ]},
+{id:"lsp",name:"Liskov Substitution (LSP)",cat:"principles",mod:"principles",pkg:"solid/lsp",ex:["before","after"],
+ intent:"A subtype must work anywhere its parent type is expected, keeping every promise the parent makes.",
+ when:"A subclass overrides methods in ways that surprise callers, or callers start checking 'instanceof' to work around a subclass.",
+ analogy:"A rental car of 'any compact model'. Whichever one you get, the pedals and gears work the same way; you don't need to know the model to drive it.",
+ tip:"'Is-a' in real life isn't enough. A square is a rectangle in maths, but a mutable Square can't keep a Rectangle's promise that width and height change separately.",
+ code:`<span class="k">sealed interface</span> Shape <span class="k">permits</span> Rectangle, Square { <span class="k">int</span> area(); }
+<span class="k">record</span> Rectangle(<span class="k">int</span> width, <span class="k">int</span> height) <span class="k">implements</span> Shape { <span class="k">public int</span> area() { <span class="k">return</span> width * height; } }
+<span class="k">record</span> Square(<span class="k">int</span> side) <span class="k">implements</span> Shape { <span class="k">public int</span> area() { <span class="k">return</span> side * side; } }
+<span class="c">// resizing creates a new shape; there are no setters to break the contract</span>`,
+ nodes:[N("res","Resizer",130,200,{kind:"client",sub:"works with any Shape"}),N("sh","Shape",440,70,{sub:"«interface» area()",kind:"iface"}),
+  N("rect","Rectangle",340,300,{sub:"width, height"}),N("sq","Square",570,300,{sub:"side"})],
+ edges:[["res","sh"],["rect","sh","i"],["sq","sh","i"]],
+ steps:[
+  {say:"Rectangle and Square are separate shapes. Square is no longer a Rectangle subclass with surprising setters.",on:["rect","sq","sh"]},
+  {say:"Code that uses a Shape can rely on what Shape promises: area() is always right for that shape.",send:[{par:[["res","rect","area()"],["res","sq","area()"]]}]},
+  {say:"Any Shape can be passed in without the caller checking which kind it got. That's the Liskov substitution principle.",on:["res"],tag:{res:"no type checks ✓"}}
+ ]},
+{id:"isp",name:"Interface Segregation (ISP)",cat:"principles",mod:"principles",pkg:"solid/isp",ex:["before","after"],
+ intent:"Prefer several small, focused interfaces over one large one, so no class is forced to depend on methods it doesn't use.",
+ when:"Implementations leave methods empty or throwing 'unsupported', or a change to one method forces unrelated clients to recompile.",
+ analogy:"A TV remote with a simple mode for guests: power, volume, channel. They don't need the 40 buttons for picture settings.",
+ tip:"Split interfaces by what clients need, not by what implementations happen to do. A class can still implement several small interfaces.",
+ code:`<span class="k">interface</span> Printer { <span class="k">void</span> print(PrintJob job); }
+<span class="k">interface</span> Scanner { Image scan(); }
+<span class="k">interface</span> Fax { <span class="k">void</span> fax(String number, PrintJob job); }
+<span class="k">class</span> BasicPrinter <span class="k">implements</span> Printer { ... }
+<span class="k">class</span> MultiFunctionDevice <span class="k">implements</span> Printer, Scanner, Fax { ... }`,
+ nodes:[N("bp","BasicPrinter",130,110,{sub:"implements Printer"}),N("mfd","MultiFunctionDevice",130,300,{sub:"Printer + Scanner + Fax"}),
+  N("p","Printer",450,70,{sub:"«interface»",kind:"iface"}),N("s","Scanner",450,200,{sub:"«interface»",kind:"iface"}),N("f","Fax",450,330,{sub:"«interface»",kind:"iface"}),
+  N("app","Office app",690,200,{kind:"client",sub:"needs print()"})],
+ edges:[["bp","p","i"],["mfd","p","i"],["mfd","s","i"],["mfd","f","i"],["app","p"]],
+ steps:[
+  {say:"Each small interface describes one ability: Printer, Scanner, Fax.",on:["p","s","f"]},
+  {say:"The cheap BasicPrinter implements only Printer. It isn't forced to fake scanning or faxing.",on:["bp","p"]},
+  {say:"The office app depends on Printer alone, so either device works, and a change to Fax never touches the app.",send:[["app","p","print(job)"]],tag:{app:"depends on print() only ✓"}}
+ ]},
+{id:"dip",name:"Dependency Inversion (DIP)",cat:"principles",mod:"principles",pkg:"solid/dip",ex:["before","after"],
+ intent:"Make high-level policy depend on abstractions it owns, and make low-level details implement them, so the dependency arrow points at the policy.",
+ when:"Business logic creates or calls concrete infrastructure (email, database, HTTP) directly, so changing a detail means changing the logic.",
+ analogy:"A wall socket. Appliances are built to the socket standard; the house doesn't rewire itself for each appliance.",
+ tip:"The interface belongs to the high-level module and uses its words (MessageSender.send), not the detail's (SmtpClient.connect). Dependency injection is how the detail gets passed in.",
+ code:`<span class="k">interface</span> MessageSender { String send(String to, String text); }   <span class="c">// owned by the policy</span>
+<span class="k">class</span> OrderNotifier {
+  <span class="k">private final</span> MessageSender sender;
+  OrderNotifier(MessageSender sender) { <span class="k">this</span>.sender = sender; }
+}
+<span class="k">class</span> EmailSender <span class="k">implements</span> MessageSender { ... }
+<span class="k">class</span> SmsSender <span class="k">implements</span> MessageSender { ... }`,
+ nodes:[N("on","OrderNotifier",140,200,{sub:"high-level policy"}),N("ms","MessageSender",430,200,{sub:"«interface», owned by the policy",kind:"iface"}),
+  N("em","EmailSender",700,100),N("sms","SmsSender",700,300,{hidden:1})],
+ edges:[["on","ms"],["em","ms","i"],["sms","ms","i"]],
+ steps:[
+  {say:"OrderNotifier depends on an interface it owns, MessageSender, not on any email code.",on:["on","ms"]},
+  {say:"At startup an EmailSender is plugged in behind the interface.",send:[["on","ms","send()"],["ms","em","handled by"]]},
+  {say:"The business wants SMS. An SmsSender is added and injected; OrderNotifier doesn't change.",show:["sms"],send:[["on","ms","send()"],["ms","sms","handled by"]],tag:{on:"unchanged ✓"}}
+ ]},
 ];
 
 /* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
@@ -2614,6 +2781,75 @@ PICK.o.push(
   {t:"Another team's service might change under me",p:"contract-testing"},
   {t:"Test setup is longer than the test",p:"test-data-builder"}]}});
 
+/* ───────── more concurrency + SOLID: code lines, "without it", pairs, picker ───────── */
+Object.assign(HL,{
+"guarded-suspension-balking":[[0,1],[4,1,2],[6],[7]],
+"active-object":[[0],[3,4],[1,2,4],[4]],
+"fork-join":[[3,4],[3,4],[2],[5,8]],
+"srp":[[0],[1,2,4],[1],[2,3]],
+"ocp":[[0,3],[1,2,3],[4]],
+"lsp":[[0,1,2],[1,2],[3]],
+"isp":[[0,1,2],[3],[0]],
+"dip":[[0,1,2],[3,5],[6]]
+});
+Object.assign(NAIVE,{
+"guarded-suspension-balking":{nodes:[N("rider","Rider thread",110,110,{kind:"client"}),N("order","Order #88",440,110,{sub:"packed: no"}),N("admin","Admin click #2",110,300,{kind:"client"}),N("job","Settlement job",440,300,{sub:"running"})],
+ edges:[["rider","order"],["admin","job"]],
+ steps:[{say:"Without a guard, the rider takes the bag before it's packed and gets nothing, or spins in a loop checking and burns CPU.",send:[["rider","order","pickUp()"],["order","rider","null"]],tag:{rider:"no bag ✗"}},
+  {say:"Without balking, a second click starts settlement again while the first run is still going.",send:[["admin","job","start again"]]},
+  {say:"Merchants get paid twice.",tag:{job:"two runs: paid twice ✗"}}]},
+"active-object":{nodes:[N("c1","Checkout thread",120,110),N("c2","Refund thread",120,290),N("w","Wallet",520,200,{sub:"balance ₹500 · no lock"})],
+ edges:[["c1","w"],["c2","w"]],
+ steps:[{say:"Without an active object (or a lock), two threads update the balance at the same time.",send:[{par:[["c1","w","read ₹500"],["c2","w","read ₹500"]]}]},
+  {say:"Both start from ₹500: one subtracts ₹200, the other adds ₹50.",send:[{par:[["c1","w","write ₹300"],["c2","w","write ₹550"]]}]},
+  {say:"The last write wins, ₹550. The ₹200 debit is lost.",tag:{w:"₹550 ✗ (should be ₹350)"}}]},
+"fork-join":{nodes:[N("t","One thread",250,200,{sub:"loops over 1 M sales"}),N("cores","8 CPU cores",620,200,{sub:"–"})],
+ edges:[["t","cores"]],
+ steps:[{say:"Without fork/join, one thread loops over all one million sales.",send:[["t","cores","sum"]]},
+  {say:"Seven of the eight cores sit idle.",tag:{cores:"1 busy · 7 idle"}},
+  {say:"The report takes about eight times longer than it needs to.",tag:{t:"4.0 s instead of 0.5 s ✗"}}]},
+"srp":{nodes:[N("big","Invoice",250,200,{sub:"totals + tax + print + save"}),N("acct","Accountant",620,80,{kind:"client"}),N("fin","Finance team",620,200,{kind:"client"}),N("dba","DBA",620,320,{kind:"client"})],
+ edges:[["acct","big"],["fin","big"],["dba","big"]],
+ steps:[{say:"Before: one Invoice class calculates tax, prints itself and saves itself to the database.",on:["big"]},
+  {say:"Three different people now have reasons to change the same class.",send:[{par:[["acct","big","tax rule"],["fin","big","CSV format"],["dba","big","new table"]]}]},
+  {say:"The CSV change breaks the tax calculation, because both edits landed in the same 400-line class.",tag:{big:"tax wrong after CSV change ✗"}}]},
+"ocp":{nodes:[N("calc","AreaCalculator",260,200,{sub:"if circle … else if rectangle …"}),N("dev","New shape: Triangle",620,200,{kind:"client"})],
+ edges:[["dev","calc"]],
+ steps:[{say:"Before: AreaCalculator checks each shape's type and has a formula for each one.",on:["calc"]},
+  {say:"Adding Triangle means opening the calculator and adding another branch.",send:[["dev","calc","edit"]],tag:{calc:"one more branch"}},
+  {say:"Every edit risks breaking circles and rectangles, so every shape must be retested each time.",tag:{calc:"retest every shape ✗"}}]},
+"lsp":{nodes:[N("res","Resizer",150,200,{kind:"client",sub:"setWidth(5), setHeight(4)"}),N("rect","Rectangle",480,90,{sub:"–"}),N("sq","Square extends Rectangle",480,310,{sub:"setters change both sides"})],
+ edges:[["res","rect"],["res","sq"]],
+ steps:[{say:"Before: Square extends Rectangle. The resizer sets width 5 and height 4 and expects an area of 20.",send:[["res","rect","set 5 × 4"],["rect","res","area 20"]],tag:{rect:"area 20 ✓"}},
+  {say:"Pass in a Square instead. Its setHeight also changes the width, to keep it square.",send:[["res","sq","set 5 × 4"]]},
+  {say:"The area comes back as 16, not 20. The subclass broke a promise the parent made, so callers start checking types.",send:[["sq","res","area 16"]],tag:{sq:"area 16 ✗"}}]},
+"isp":{nodes:[N("om","OfficeMachine",440,90,{sub:"«interface» print · scan · fax",kind:"iface"}),N("bp","BasicPrinter",250,300,{sub:"scan() and fax() throw"}),N("app","Office app",650,300,{kind:"client"})],
+ edges:[["bp","om","i"],["app","om"]],
+ steps:[{say:"Before: one big OfficeMachine interface has print, scan and fax.",on:["om"]},
+  {say:"BasicPrinter must implement all three, so scan() and fax() just throw.",on:["bp"]},
+  {say:"The app calls scan() on what looks like a valid OfficeMachine and crashes at runtime.",send:[["app","om","scan()"]],tag:{bp:"UnsupportedOperationException ✗"}}]},
+"dip":{nodes:[N("on","OrderNotifier",210,200,{sub:"new EmailSender()"}),N("em","EmailSender",570,200,{sub:"SMTP details"})],
+ edges:[["on","em"]],
+ steps:[{say:"Before: OrderNotifier creates an EmailSender itself, so the policy depends on a detail.",send:[["on","em","new + send"]]},
+  {say:"The business wants SMS. The notifier itself has to be edited and retested.",tag:{on:"edited for SMS"}},
+  {say:"Tests can't swap the sender either, so every test sends a real email.",tag:{em:"real emails in tests ✗"}}]}
+});
+Object.assign(PAIRS,{
+"composite~visitor":"Composite builds a tree you can treat as one object; Visitor adds operations that walk such a tree without changing its classes. They're often used together.",
+"dip~dependency-injection":"Dependency Inversion is the principle: high-level code depends on abstractions it owns. Dependency injection is the technique that hands it a concrete implementation.",
+"active-object~thread-pool":"A thread pool runs many independent tasks in parallel; an active object runs one object's requests one at a time on its own thread, so its state needs no locks."
+});
+PICK.o.find(o=>o.t==="Make threads work together").n.o.push(
+  {t:"Wait until a condition holds, or skip if it's already happening",p:"guarded-suspension-balking"},
+  {t:"One shared resource, used one request at a time, without locks",p:"active-object"},
+  {t:"Split a big CPU job across all cores",p:"fork-join"});
+PICK.o.push({t:"Improve a class design",h:"SOLID principles",n:{q:"What's wrong with the class?",o:[
+  {t:"It changes for several unrelated reasons",p:"srp"},
+  {t:"Every new case means editing it",p:"ocp"},
+  {t:"A subclass breaks what callers expect",p:"lsp"},
+  {t:"Classes must implement methods they don't need",p:"isp"},
+  {t:"Business logic depends on low-level details",p:"dip"}]}});
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -2746,8 +2982,9 @@ function variantOf(p,kind,i){
 function renderModes(kind,i){
   const p=base,b=BREAKS[p.id]||[],has=NAIVE[p.id]||b.length;
   $("#modes").hidden=!has;if(!has)return;
-  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">With the pattern</button>`;
-  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">Without it</button>`;
+  const pr=p.cat==="principles";
+  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":"With the pattern"}</button>`;
+  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":"Without it"}</button>`;
   h+=`</div>`;
   if(b.length)h+=`<div class="breaks"><span>Break it:</span>${b.map((x,j)=>`<button data-k="break" data-i="${j}" aria-pressed="${kind==="break"&&i===j}">⚡ ${esc(x.label)}</button>`).join("")}</div>`;
   $("#modes").innerHTML=h;
@@ -2756,7 +2993,7 @@ function setVariant(kind,i=0,auto=true){
   stop();const v=variantOf(base,kind,i);main.set(v);
   document.documentElement.classList.toggle("naive",kind==="naive");
   $("#steps").innerHTML=v.steps.map((s,j)=>`<li tabindex="0" data-i="${j}">${esc(s.say)}</li>`).join("");
-  $("#codehint").hidden=!v._v;
+  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":"· shows the pattern version";
   renderModes(kind,i);main.playStep(false);
   if(auto&&!reduce)setTimeout(()=>{if(main.p===v&&main.step===0&&!playing)autoplay()},400);
 }

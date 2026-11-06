@@ -16,6 +16,12 @@ tags:
 
 ---
 
+## See It in Motion
+
+<iframe class="motion-embed" src="../../motion/index.html?p=fork-join&amp;embed=1" title="Animated walkthrough of the Fork/Join pattern" loading="lazy"></iframe>
+
+Press **Play** to watch the calls travel between threads, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer](../motion/index.html#fork-join){ target=_blank }
+
 ## 1. Intent & Problem It Solves
 
 **The problem in plain English:** summing 5 million order values, masking IDs in 400,000 records or searching thousands of delivery routes uses one core while the other seven sit idle. A thread pool with one task per element drowns in overhead; one task per core leaves cores idle when some chunks finish early.

@@ -21,7 +21,7 @@ tags:
 
 <iframe class="motion-embed" src="../../motion/index.html?p=idempotent-consumer&amp;embed=1" title="Animated walkthrough of the Idempotent Consumer pattern" loading="lazy"></iframe>
 
-Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer with all 75 patterns](../motion/index.html#idempotent-consumer){ target=_blank }
+Press **Play** to watch the calls travel between components, or step through with **Next** and **Back**. Switch to **Without it** to see what goes wrong without the pattern. [Open the full explorer](../motion/index.html#idempotent-consumer){ target=_blank }
 
 ## 1. Intent & Problem It Solves
 
