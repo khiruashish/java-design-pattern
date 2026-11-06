@@ -56,6 +56,12 @@ This section turns the handbook into an interview plan. Pattern pages already en
 | **Mid / 3–7 years** | Choose patterns for LLD problems; Spring internals; basic microservices | All GoF essentials + Chain of Responsibility, Composite, State, Producer-Consumer, Thread Pool | Circuit Breaker, Saga, Outbox, API Gateway, CQRS |
 | **Senior / 8–15 years** | Trade-offs, architecture, distributed systems, leading design reviews | Hexagonal/Clean, modular monolith, all resilience and data-consistency patterns, observability | Event sourcing, service mesh, migration strategies, anti-patterns and their cost |
 
+### Warm up on the must-know patterns
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?set=singleton,factory-method,builder,strategy,observer,adapter,decorator,template-method&amp;embed=1" title="Animated player for the patterns every interview expects you to know" loading="lazy"></iframe>
+
+These are the eight patterns from the fresher column above. Watch each one, then test yourself with the [pattern quiz](pattern-quiz.md), or use the [animated picker](../pattern-selection-guide.md) to practise choosing a pattern from a problem.
+
 ## A four-week plan (any company)
 
 | Week | Focus | Use these pages |

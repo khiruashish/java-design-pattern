@@ -386,6 +386,12 @@ It opens on **The anti-pattern** causing trouble; switch to **The fix** to see t
 | **Removing implicit limits** | Virtual threads overwhelm the database | Explicit semaphores and pools ([Virtual Threads](concurrency/virtual-threads.md)) |
 | **ThreadLocal leaks** | User A's tenant ID shows up in user B's request | `try/finally remove()`, `ScopedValue`, context propagation |
 
+### See them in motion
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?set=ap-unbounded-queue,ap-dcl-volatile,ap-io-under-lock,ap-shared-mutable,ap-busy-waiting,ap-if-wait,ap-common-pool,ap-removed-limits,ap-threadlocal-leak&amp;embed=1" title="Animated player for the concurrency anti-patterns" loading="lazy"></iframe>
+
+Pick an anti-pattern from the chips. Each one opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure. [Open in the explorer](motion/index.html#ap-unbounded-queue){ target=_blank }
+
 ## 3. Distributed-system and microservice anti-patterns
 
 | Anti-pattern | Symptoms | Why it hurts | Instead |
@@ -399,6 +405,12 @@ It opens on **The anti-pattern** causing trouble; switch to **The fix** to see t
 | **Missing idempotency** | Duplicate charges after timeouts | At-least-once delivery is the norm | Idempotency keys, de-duplication, conditional updates |
 | **Silent defaults** | Unknown status codes treated as success; `default:` in critical switches | Revenue leaks and data corruption found months later | Fail loudly; exhaustive `switch`; alerts on unknown values |
 | **Client-trusted state** | Prices or permissions in cookies or tokens without signatures | Tampering | Server-side state; signed tokens (HMAC); re-validate on the server |
+
+### See them in motion
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?set=ap-distributed-monolith,ap-shared-database,ap-chatty-services,ap-sync-chain,ap-dual-writes,ap-retry-storm,ap-missing-idempotency,ap-silent-defaults,ap-client-trusted-state&amp;embed=1" title="Animated player for the distributed-system anti-patterns" loading="lazy"></iframe>
+
+The retry storm shows the 5 × 3 × 3 = 45 calls from the table; dual writes shows an order with no event. Switch to **The fix** to see the outbox, backoff and the rest at work. [Open in the explorer](motion/index.html#ap-retry-storm){ target=_blank }
 
 ## 4. A code-review checklist
 

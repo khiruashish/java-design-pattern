@@ -106,6 +106,9 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/khiruashish/java-design-pattern
 
+exclude_docs: |
+  motion/README.md
+
 nav:
   - Home:
       - index.md
