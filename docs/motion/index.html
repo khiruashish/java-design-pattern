@@ -30,6 +30,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-principles:#2c6e69; --t-principles:#dff0ee;
   --c-oop:#7a3b69; --t-oop:#f5e4f0;
   --c-lld:#6b4423; --t-lld:#f3e8dc;
+  --c-dprinciples:#4b5fa8; --t-dprinciples:#e6e9f7;
+  --c-anti:#a3242b; --t-anti:#f8e2e3;
   --on-cat:#ffffff;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
@@ -50,6 +52,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-principles:#7fd1c8; --t-principles:#15302d;
   --c-oop:#e09ad0; --t-oop:#35192d;
   --c-lld:#d9a877; --t-lld:#33241a;
+  --c-dprinciples:#9fb0ff; --t-dprinciples:#1e2440;
+  --c-anti:#ff8a8a; --t-anti:#3a1517;
   --on-cat:#10151c; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -67,6 +71,8 @@ if(pb){sync();new MutationObserver(sync).observe(pb,{attributes:true,attributeFi
   --c-principles:#7fd1c8; --t-principles:#15302d;
   --c-oop:#e09ad0; --t-oop:#35192d;
   --c-lld:#d9a877; --t-lld:#33241a;
+  --c-dprinciples:#9fb0ff; --t-dprinciples:#1e2440;
+  --c-anti:#ff8a8a; --t-anti:#3a1517;
   --on-cat:#10151c; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -79,6 +85,8 @@ html.embed .wrap{padding:0;max-width:none;gap:0}
 html.embed header,html.embed #cats,html.embed #chips,html.embed aside,html.embed .stage h2,html.embed .intent,html.embed .eyebrow{display:none}
 html.embed .main{grid-template-columns:1fr}
 html.embed .stage{padding:16px;border-radius:12px}
+html.embed.fam #chips{display:flex;margin-bottom:12px}
+html.embed.fam .stage h2,html.embed.fam .intent{display:block}
 body{background:var(--paper);color:var(--ink);font:15px/1.55 var(--body);}
 .wrap{max-width:1240px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:grid;gap:22px}
 header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 32px}
@@ -379,7 +387,9 @@ const CATS={
   testing:{name:"Testing",blurb:"how code gets tested"},
   oop:{name:"OOP pillars",blurb:"the four building blocks"},
   principles:{name:"SOLID",blurb:"principles for class design"},
-  lld:{name:"LLD problems",blurb:"interview designs, end to end"},
+  dprinciples:{name:"Design principles",blurb:"rules of thumb for everyday code"},
+  anti:{name:"Anti-patterns",blurb:"common mistakes and their fixes"},
+  lld:{name:"LLD & system design",blurb:"interview designs, end to end"},
   tour:{name:"FreshCart tour",blurb:"one order, end to end"}
 };
 const P=[
@@ -2431,6 +2441,327 @@ Result move(<span class="k">int</span> r, <span class="k">int</span> c) {
   {say:"For UPI (5,000) and cash (700), their own versions run and return 0. The loop never checks which kind it has.",send:[["loop","upi","feeCents()"],["upi","loop","0"],["loop","cash","feeCents()"],["cash","loop","0"]]},
   {say:"Adding wallet payments means one new record. The loop doesn't change, and because Payment is sealed, the compiler points to every switch that must handle it.",on:["pay"]}
  ]},
+/* ───────── design principles ───────── */
+{id:"dp-dry",name:"DRY: Don't Repeat Yourself",cat:"dprinciples",mod:"principles",pkg:"other",ex:["dry"],
+ intent:"Give every piece of knowledge, such as a business rule, one authoritative place in the code.",
+ when:"The same rule (what a valid email is, how a fee is worked out) would otherwise be written in several places that can drift apart.",
+ analogy:"One master price list at head office instead of every branch keeping its own copy.",
+ tip:"DRY is about knowledge, not text. Two identical lines that encode different rules aren't duplication; one rule written two ways is.",
+ code:`<span class="k">public record</span> EmailAddress(String value) {               <span class="c">// the rule, in one place</span>
+  <span class="k">public</span> EmailAddress {
+    <span class="k">if</span> (value == <span class="k">null</span> || !SHAPE.matcher(value.strip()).matches()) <span class="k">throw new</span> IllegalArgumentException("invalid email");
+    value = value.strip().toLowerCase(Locale.ROOT);
+  }
+  <span class="k">public static boolean</span> isValid(String raw) { ... }
+  <span class="k">public</span> String domain() { <span class="k">return</span> value.substring(value.indexOf('@') + 1); }
+}`,
+ nodes:[N("reg","Signup",120,110,{kind:"client"}),N("inv","Invite",120,300,{kind:"client"}),N("ea","EmailAddress",450,200,{sub:"the one rule"})],
+ edges:[["reg","ea"],["inv","ea"]],
+ steps:[
+  {say:"Signup and invite both need to check an email address. Both ask the one EmailAddress rule.",on:["ea"]},
+  {say:"'@nobody' is checked once, and both get the same answer: invalid.",send:[{par:[["reg","ea","isValid(@nobody)"],["inv","ea","isValid(@nobody)"]]},{par:[["ea","reg","false"],["ea","inv","false"]]}]},
+  {say:"The rule also normalises: ' Ana@Example.com ' becomes ana@example.com, domain example.com. Change it here and every caller follows.",on:["ea"],tag:{ea:"ana@example.com · example.com"}}
+ ]},
+{id:"dp-kiss",name:"KISS: Keep It Simple",cat:"dprinciples",mod:"principles",pkg:"other",ex:["kiss"],
+ intent:"Prefer the solution that is easiest to read, review and change, even if it's less general or less clever.",
+ when:"Always, and especially when a 'clever' solution is tempting for a problem a plain one already solves.",
+ analogy:"Writing directions as 'second left after the temple' rather than as GPS coordinates.",
+ tip:"Simplicity is about how much a reader has to hold in their head, not line count. The standard library is often the simplest code of all.",
+ code:`<span class="k">static boolean</span> isLeapSimple(<span class="k">int</span> year) {
+  <span class="k">return</span> (year % 4 == 0 &amp;&amp; year % 100 != 0) || year % 400 == 0;
+}
+<span class="k">static int</span> maxSimple(List&lt;Integer&gt; values) { <span class="k">return</span> Collections.max(values); }`,
+ nodes:[N("rev","Reviewer",120,200,{kind:"client"}),N("simple","isLeapSimple()",450,110,{sub:"one readable line"}),N("max","Collections.max()",450,300,{sub:"library call"})],
+ edges:[["rev","simple"],["rev","max"]],
+ steps:[
+  {say:"The simple leap-year rule fits on one line that a reviewer can check against the calendar.",send:[["rev","simple","read"]]},
+  {say:"It gives the right answers: 1900 no, 2000 yes, 2024 yes, 2026 no.",tag:{simple:"1900 ✗ · 2000 ✓ · 2024 ✓ · 2026 ✗"}},
+  {say:"For the maximum, the library call says exactly what it does: 9, with nothing to review.",send:[["rev","max","read"]],tag:{max:"max = 9"}}
+ ]},
+{id:"dp-yagni",name:"YAGNI: You Aren't Gonna Need It",cat:"dprinciples",mod:"principles",pkg:"other",ex:["yagni"],
+ intent:"Build what today's requirement needs, and add flexibility when a real second need arrives, not before.",
+ when:"You catch yourself adding interfaces, plug-in points or options 'in case we need them later'.",
+ analogy:"Buying a family car now rather than a bus, because one day you might have twelve children.",
+ tip:"YAGNI isn't an excuse for sloppy code. Keep the simple version clean and well tested, so extending it later is cheap.",
+ code:`<span class="k">public record</span> InrToUsd(<span class="k">long</span> usdCentsPerHundredRupees) {              <span class="c">// just enough</span>
+  <span class="k">public long</span> convertPaise(<span class="k">long</span> paise) { <span class="k">return</span> Math.round(paise * (<span class="k">double</span>) usdCentsPerHundredRupees / 10_000); }
+}
+<span class="c">// not built yet: RateProvider, RateCache, ConversionListener (no second provider, no caching need)</span>`,
+ nodes:[N("req","Requirement",120,200,{kind:"client",sub:"INR → USD only"}),N("rec","InrToUsd",420,200,{sub:"1 record"}),N("out","Result",690,200,{sub:"–"})],
+ edges:[["req","rec"],["rec","out"]],
+ steps:[
+  {say:"The requirement is one conversion: Indian rupees to US dollars.",on:["req"]},
+  {say:"One small record does exactly that: 10,000 paise becomes 120 US cents.",send:[["req","rec","convertPaise(10000)"],["rec","out","120"]],tag:{out:"120 USD cents"}},
+  {say:"Providers, caches and listeners can be added the day a second need actually arrives.",on:["rec"],tag:{rec:"1 record · extend when needed"}}
+ ]},
+{id:"dp-composition",name:"Composition over Inheritance",cat:"dprinciples",mod:"principles",pkg:"other",ex:["composition"],
+ intent:"Build behaviour by holding and delegating to other objects, instead of extending a class whose internals you don't control.",
+ when:"You want to add behaviour to a class you didn't write, or combine behaviours that don't form a clean 'is-a' tree.",
+ analogy:"Hiring a driver for your car rather than rebuilding the car with a robot welded into the seat.",
+ tip:"Inheritance ties you to the parent's internal calls. A wrapper sees only the public interface, so the parent can change safely underneath.",
+ code:`<span class="k">public class</span> InstrumentedSet&lt;E&gt; <span class="k">implements</span> Set&lt;E&gt; {        <span class="c">// wraps, doesn't extend</span>
+  <span class="k">private final</span> Set&lt;E&gt; delegate;
+  <span class="k">private int</span> addCount = 0;
+  <span class="k">public boolean</span> add(E e) { addCount++; <span class="k">return</span> delegate.add(e); }
+  <span class="k">public boolean</span> addAll(Collection&lt;? <span class="k">extends</span> E&gt; c) { addCount += c.size(); <span class="k">return</span> delegate.addAll(c); }
+  <span class="c">// every other method forwards to delegate</span>
+}`,
+ nodes:[N("cl","Caller",110,200,{kind:"client"}),N("is","InstrumentedSet",400,200,{sub:"addCount 0"}),N("ts","TreeSet",690,200,{sub:"wrapped"})],
+ edges:[["cl","is"],["is","ts","h"]],
+ steps:[
+  {say:"InstrumentedSet wraps any Set and counts what's added. It holds the set instead of extending it.",on:["is","ts"]},
+  {say:"addAll([a, b, c]) adds 3 to the count and passes the call to the wrapped set.",send:[["cl","is","addAll(a, b, c)"],["is","ts","addAll"]],tag:{is:"addCount 3"}},
+  {say:"The wrapped set can't call back into the counter, so the count is exactly 3, and it works over a TreeSet just as well.",on:["is","ts"],tag:{ts:"[a, b, c]",is:"addCount 3 ✓"}}
+ ]},
+{id:"dp-demeter",name:"Law of Demeter",cat:"dprinciples",mod:"principles",pkg:"other",ex:["demeter"],
+ intent:"Talk to your immediate collaborators, not to the objects they contain: ask the customer to pay, don't reach into their wallet.",
+ when:"You see chains like customer.getWallet().setCents(…), where a caller depends on the insides of an object it was handed.",
+ analogy:"A delivery person asks you for payment; they don't open your bag and take your purse.",
+ tip:"Long getter chains are a hint, not a rule. Fluent builders and streams chain calls too, without exposing anyone's insides.",
+ code:`<span class="k">public class</span> Customer {
+  <span class="k">private final</span> Wallet wallet;
+  <span class="k">public long</span> pay(<span class="k">long</span> cents) {                        <span class="c">// the rule lives with the data</span>
+    <span class="k">if</span> (wallet.getCents() &lt; cents) <span class="k">throw new</span> IllegalStateException(name + " cannot pay " + cents);
+    wallet.setCents(wallet.getCents() - cents); <span class="k">return</span> cents;
+  }
+}
+collected += customer.pay(due);        <span class="c">// talk to your neighbour, not its wallet</span>`,
+ nodes:[N("pb","Paperboy",120,200,{kind:"client",sub:"collected 0"}),N("cu","Customer",410,200,{sub:"pay(cents)"}),N("wa","Wallet",690,200,{sub:"1,000"})],
+ edges:[["pb","cu"],["cu","wa","h"]],
+ steps:[
+  {say:"The paperboy only talks to the customer. The customer decides how to pay.",on:["pb","cu"]},
+  {say:"pay(600): the customer takes the money from its own wallet and hands it over.",send:[["pb","cu","pay(600)"],["cu","wa","−600"],["cu","pb","600"]],tag:{wa:"400",pb:"collected 600"}},
+  {say:"Asking for 5,000 is refused by the customer itself, because the rule sits with the data.",send:[["pb","cu","pay(5000)"],["cu","pb","cannot pay 5000"]]}
+ ]},
+{id:"dp-tell-dont-ask",name:"Tell, Don't Ask",cat:"dprinciples",mod:"principles",pkg:"other",ex:["telldontask"],
+ intent:"Tell an object what happened and let it decide what to do, instead of asking for its data and deciding outside it.",
+ when:"Callers read an object's fields, apply a rule, then write the result back.",
+ analogy:"Telling a thermostat 'it's 20 °C in here' and letting it decide, rather than reading its setting and flipping the boiler switch yourself.",
+ tip:"Queries are fine for display and reporting. The smell is a caller re-implementing a decision the object should own.",
+ code:`<span class="k">public class</span> Thermostat {
+  <span class="k">private final int</span> targetCelsius;  <span class="k">private boolean</span> heating;
+  <span class="k">public void</span> onTemperatureReading(<span class="k">int</span> currentCelsius) {
+    heating = currentCelsius &lt; targetCelsius - 1;        <span class="c">// 1-degree band, in ONE place</span>
+  }
+}
+thermostat.onTemperatureReading(20);   <span class="c">// tell it what happened; it decides</span>`,
+ nodes:[N("sensor","Sensor",120,200,{kind:"client"}),N("th","Thermostat",420,200,{sub:"target 21 °C"}),N("heat","Heater",700,200,{sub:"off"})],
+ edges:[["sensor","th"],["th","heat"]],
+ steps:[
+  {say:"The sensor tells the thermostat the reading. The thermostat owns the rule for when to heat.",send:[["sensor","th","reading 20 °C"]]},
+  {say:"20 °C is within its 1-degree band below the 21 °C target, so it keeps the heater off.",on:["th","heat"],tag:{th:"target 21 · reading 20",heat:"off"}},
+  {say:"At 18 °C it turns the heater on. No caller re-implements the rule.",send:[["sensor","th","reading 18 °C"],["th","heat","on"]],tag:{heat:"on"}}
+ ]},
+{id:"dp-fail-fast",name:"Fail Fast",cat:"dprinciples",mod:"principles",pkg:"other",ex:["failfast"],
+ intent:"Detect invalid input or state as early as possible and stop with a clear error, instead of carrying bad data forward.",
+ when:"Constructors, public methods and system edges receive data that could be wrong.",
+ analogy:"A form that won't let you submit a return date before the departure date, instead of selling you an impossible ticket.",
+ tip:"Fail fast at boundaries, with messages that say what was wrong and with which value. Inside a validated core, you can trust the data.",
+ code:`<span class="k">public</span> Reservation(String guest, LocalDate checkIn, LocalDate checkOut, <span class="k">int</span> guests) {
+  <span class="k">if</span> (guest.isBlank()) <span class="k">throw new</span> IllegalArgumentException("guest must not be blank");
+  <span class="k">if</span> (!checkOut.isAfter(checkIn)) <span class="k">throw new</span> IllegalArgumentException("checkOut must be after checkIn");
+  <span class="k">if</span> (guests &lt; 1 || guests &gt; 8) <span class="k">throw new</span> IllegalArgumentException("guests must be 1..8");
+}
+<span class="k">public long</span> nights() { <span class="k">return</span> checkIn.until(checkOut).getDays(); }`,
+ nodes:[N("form","Booking form",120,200,{kind:"client"}),N("res","Reservation",430,200,{sub:"validates in its constructor"}),N("inv","Invoice",710,200,{sub:"–"})],
+ edges:[["form","res"],["res","inv"]],
+ steps:[
+  {say:"A booking arrives with check-out on 7 March, before check-in on 10 March.",send:[["form","res","new Reservation(10 → 7 Mar)"]]},
+  {say:"The constructor rejects it on the spot with a clear message, so a bad reservation never exists.",send:[["res","form","checkOut must be after checkIn"]],tag:{res:"rejected at creation"}},
+  {say:"A valid booking passes the checks: 3 nights, invoiced correctly.",send:[["form","res","new Reservation(10 → 13 Mar)"],["res","inv","nights = 3"]],tag:{res:"valid",inv:"3 nights"}}
+ ]},
+/* ───────── anti-patterns: the main animation is the fix; "naive" is the anti-pattern ───────── */
+{id:"ap-god-object",name:"God Object",cat:"anti",ex:[],
+ intent:"One class that knows and does too much: pricing, tax, stock, payment, email, PDFs and audit all in one place.",
+ when:"Spot it when one class has thousands of lines, every feature touches it, and merge conflicts in it are a daily event.",
+ analogy:"One office clerk who answers phones, does the accounts, fixes the printer and signs contracts. Nothing works when they're off sick.",
+ tip:"Split by responsibility and bounded context: Strategies, States, a Facade per use case, and domain logic in domain objects.",
+ code:`<span class="k">class</span> CheckoutFacade { OrderId place(Cart c) { pricing.price(c); stock.reserve(c); payments.charge(c); <span class="k">return</span> orders.save(c); } }
+<span class="k">class</span> PricingService { ... }     <span class="k">class</span> StockService { ... }
+<span class="k">class</span> PaymentService { ... }     <span class="k">class</span> OrderRepository { ... }
+<span class="c">// each class has one reason to change and its own tests</span>`,
+ nodes:[N("f","CheckoutFacade",150,200,{sub:"one use case"}),N("p","Pricing",480,60,{sub:"–"}),N("s","Stock",480,160),N("pay","Payments",480,260),N("o","Orders",480,360)],
+ edges:[["f","p"],["f","s"],["f","pay"],["f","o"]],
+ steps:[
+  {say:"The fix: split by responsibility. A small facade coordinates the checkout use case.",on:["f"]},
+  {say:"Pricing, stock, payments and orders each live in their own class, with their own tests.",send:[["f","p","price"],["f","s","reserve"],["f","pay","charge"],["f","o","save"]]},
+  {say:"A change to tax rules touches only Pricing, so no other team is affected.",on:["p"],tag:{p:"changed alone ✓"}}
+ ]},
+{id:"ap-golden-hammer",name:"Golden Hammer",cat:"anti",ex:[],
+ intent:"Using a favourite pattern everywhere, whether or not the problem needs it: a factory for a class with one implementation, a visitor for two types that never change.",
+ when:"Spot it when indirection has no second variation behind it, and newcomers can't find the code that actually runs.",
+ analogy:"Someone with a new hammer treating every problem as a nail, including the screws.",
+ tip:"Apply YAGNI. Introduce a pattern when the second variation arrives. Patterns are responses to forces, not goals.",
+ code:`<span class="k">record</span> Greeting(String text) {}
+Greeting greeting = <span class="k">new</span> Greeting("Hello");      <span class="c">// just create it</span>
+<span class="c">// add a factory when a second kind of greeting actually appears</span>`,
+ nodes:[N("cl","Caller",150,200,{kind:"client"}),N("g","Greeting",470,200,{sub:"new Greeting(\"Hello\")"})],
+ edges:[["cl","g"]],
+ steps:[
+  {say:"The fix: with only one implementation, just create the object.",send:[["cl","g","new"]]},
+  {say:"Anyone reading the code finds what runs in one step.",on:["g"]},
+  {say:"When a second kind of greeting really appears, that's the moment to add a factory.",on:["g"],tag:{g:"add a pattern when needed"}}
+ ]},
+{id:"ap-copy-paste",name:"Copy-Paste Programming",cat:"anti",ex:[],
+ intent:"The same logic copied into several places, so a fix made in one copy never reaches the others.",
+ when:"Spot it when the same if-ladder appears in checkout, refunds and reconciliation, and a bug is 'fixed in 51 of 54 places'.",
+ analogy:"Correcting a typo in one printed copy of a notice and leaving the other fifty on the noticeboards.",
+ tip:"Give the rule one home: a Factory Method, a Template Method, a Specification, or a method on an enum.",
+ code:`<span class="k">enum</span> PaymentMethod {
+  CARD { <span class="k">long</span> fee(<span class="k">long</span> a) { <span class="k">return</span> a * 2 / 100; } },
+  UPI  { <span class="k">long</span> fee(<span class="k">long</span> a) { <span class="k">return</span> 0; } },
+  COD  { <span class="k">long</span> fee(<span class="k">long</span> a) { <span class="k">return</span> 50; } };
+  <span class="k">abstract long</span> fee(<span class="k">long</span> amount);
+}
+<span class="k">long</span> fee = method.fee(amount);      <span class="c">// checkout, refunds and reconciliation all call this</span>`,
+ nodes:[N("co","Checkout",150,80,{kind:"client"}),N("re","Refunds",150,200,{kind:"client"}),N("rc","Reconciliation",150,320,{kind:"client"}),N("pm","PaymentMethod.fee()",480,200,{sub:"one definition"})],
+ edges:[["co","pm"],["re","pm"],["rc","pm"]],
+ steps:[
+  {say:"The fix: the fee rule is defined once, on PaymentMethod.",on:["pm"]},
+  {say:"Checkout, refunds and reconciliation all call the same method.",send:[{par:[["co","pm","fee()"],["re","pm","fee()"],["rc","pm","fee()"]]}]},
+  {say:"A change to the UPI fee is made once, and every caller agrees.",on:["pm"],tag:{pm:"UPI fee changed once ✓"}}
+ ]},
+{id:"ap-primitive-obsession",name:"Primitive Obsession",cat:"anti",ex:[],
+ intent:"Using raw strings, doubles and ints for domain ideas like money, account ids and emails, so validation is repeated or forgotten.",
+ when:"Spot it in signatures like transfer(String, String, double, String) and money held in double.",
+ analogy:"Writing every measurement as a bare number with no unit, and hoping everyone guesses metres, not feet.",
+ tip:"Introduce small immutable value objects (Money, AccountId, Email) that validate in their constructor.",
+ code:`<span class="k">record</span> AccountId(String value) { AccountId { requireValidFormat(value); } }
+<span class="k">record</span> Money(<span class="k">long</span> minor, Currency currency) { Money { <span class="k">if</span> (minor &lt; 0) <span class="k">throw new</span> IllegalArgumentException(); } }
+<span class="k">void</span> transfer(AccountId from, AccountId to, Money amount) { ... }
+transfer(acc1, acc2, Money.of(30, INR));     <span class="c">// swapped types won't compile; no floating point</span>`,
+ nodes:[N("cl","Caller",140,200,{kind:"client"}),N("tr","transfer()",460,200,{sub:"(AccountId, AccountId, Money)"})],
+ edges:[["cl","tr"]],
+ steps:[
+  {say:"The fix: small value types, AccountId and Money, each validated when it's created.",on:["tr"]},
+  {say:"Passing an amount where an account id belongs won't compile, and money is whole paise, not a double.",send:[["cl","tr","transfer(acc1, acc2, ₹0.30)"]]},
+  {say:"Invalid values are stopped at the edge, so nothing deeper in the system has to check again.",on:["tr"],tag:{tr:"only valid values inside ✓"}}
+ ]},
+{id:"ap-boolean-flags",name:"Boolean Flag Explosion",cat:"anti",ex:[],
+ intent:"Several boolean flags on one object (paid, shipped, delivered, cancelled, refunded) that allow impossible combinations.",
+ when:"Spot it when an entity has four or more isX flags and bugs mention states like 'cancelled and delivered'.",
+ analogy:"A traffic light with three independent switches, so red and green can be on at the same time.",
+ tip:"Replace the flags with a single status and an explicit State machine of allowed transitions.",
+ code:`<span class="k">enum</span> OrderStatus { PLACED, PAID, SHIPPED, DELIVERED, CANCELLED, REFUNDED }
+<span class="k">class</span> Order {
+  <span class="k">private</span> OrderStatus status = PLACED;
+  <span class="k">void</span> cancel() { <span class="k">if</span> (status == SHIPPED || status == DELIVERED) <span class="k">throw new</span> IllegalStateException(); status = CANCELLED; }
+}`,
+ nodes:[N("cl","Support agent",140,200,{kind:"client"}),N("ord","Order",460,200,{sub:"status: DELIVERED"})],
+ edges:[["cl","ord"]],
+ steps:[
+  {say:"The fix: one status field with explicit transitions, a small State machine.",on:["ord"]},
+  {say:"Cancelling a delivered order is checked against the current state and refused.",send:[["cl","ord","cancel()"],["ord","cl","refused"]]},
+  {say:"Only valid states can exist: 6 statuses instead of 32 flag combinations.",on:["ord"],tag:{ord:"6 states, all valid ✓"}}
+ ]},
+{id:"ap-service-locator",name:"Service Locator & Global State",cat:"anti",ex:[],
+ intent:"Business code fetching its dependencies from a global registry, or sharing mutable global singletons.",
+ when:"Spot it in calls like AppContext.getInstance().get(TaxService.class) inside business methods.",
+ analogy:"A recipe that says 'use whatever's in the shared fridge': it works until someone else moved the butter.",
+ tip:"Use constructor injection. Let the DI container manage singletons, and keep shared state immutable.",
+ code:`<span class="k">class</span> InvoiceService {
+  <span class="k">private final</span> TaxService tax;
+  InvoiceService(TaxService tax) { <span class="k">this</span>.tax = tax; }        <span class="c">// the dependency is visible</span>
+  <span class="k">long</span> total(Order o) { <span class="k">return</span> o.subtotal() + tax.on(o); }
+}
+<span class="k">new</span> InvoiceService(<span class="k">new</span> FixedRateTax(18));                    <span class="c">// a test passes a fake</span>`,
+ nodes:[N("test","Unit test",130,110,{kind:"client"}),N("app","Spring container",130,300,{kind:"client",sub:"wires production"}),N("inv","InvoiceService",450,200,{sub:"needs a TaxService"})],
+ edges:[["test","inv"],["app","inv"]],
+ steps:[
+  {say:"The fix: InvoiceService asks for a TaxService in its constructor, so the dependency is visible.",on:["inv"]},
+  {say:"In production, the container passes in the real tax service.",send:[["app","inv","inject TaxService"]]},
+  {say:"In a test, a fixed-rate fake goes in. The test doesn't depend on global state or on which tests ran before it.",send:[["test","inv","new(FixedRateTax(18))"]],tag:{inv:"testable ✓"}}
+ ]},
+{id:"ap-anemic-domain",name:"Anemic Domain Model",cat:"anti",ex:[],
+ intent:"Domain objects with only getters and setters, while every rule lives in service classes that change them from outside.",
+ when:"Spot it when entities are bags of fields and invariants can be broken by any code that calls a setter.",
+ analogy:"A bank vault with the door left open and a note saying 'please check your balance before taking money'.",
+ tip:"Put behaviour and invariants on the domain objects (account.withdraw() checks the balance), and keep services for orchestration. Some teams accept anemic models for simple CRUD, which is why this one is debated.",
+ code:`<span class="k">class</span> Account {
+  <span class="k">private long</span> balance;
+  <span class="k">void</span> withdraw(<span class="k">long</span> amount) {
+    <span class="k">if</span> (amount &gt; balance) <span class="k">throw new</span> InsufficientFunds();
+    balance -= amount;                                 <span class="c">// the rule lives with the data</span>
+  }
+}`,
+ nodes:[N("svc","AccountService",150,110,{kind:"client",sub:"orchestrates"}),N("other","RefundService",150,300,{kind:"client"}),N("acc","Account",470,200,{sub:"balance 500"})],
+ edges:[["svc","acc"],["other","acc"]],
+ steps:[
+  {say:"The fix: the account enforces its own rule in withdraw().",on:["acc"]},
+  {say:"Any service that wants money out has to call withdraw(), which checks the balance.",send:[["svc","acc","withdraw(800)"],["acc","svc","insufficient funds"]]},
+  {say:"A new service can't skip the check, because there's no setter to reach for.",send:[["other","acc","withdraw(800)"],["acc","other","insufficient funds"]],tag:{acc:"balance 500 ✓"}}
+ ]},
+{id:"ap-magic-numbers",name:"Magic Numbers & Strings",cat:"anti",ex:[],
+ intent:"Unexplained literals like 51, 0.18 or \"356\" scattered through the code.",
+ when:"Spot it when you see if (code == 51) or amount * 18 / 100 with no name saying what the value means.",
+ analogy:"A recipe that says 'add 7' without saying 7 of what.",
+ tip:"Use named constants, enums and configuration, and translate vendor codes once in an adapter at the edge.",
+ code:`<span class="k">enum</span> DeclineCode { INSUFFICIENT_FUNDS(51), ... }       <span class="c">// vendor codes translated once</span>
+<span class="k">static final int</span> GST_PERCENT = 18;
+<span class="k">static final</span> String INDIA = "356";                    <span class="c">// ISO 3166 numeric code</span>
+<span class="k">if</span> (resp.decline() == INSUFFICIENT_FUNDS) retryLater();
+<span class="k">long</span> tax = amount * GST_PERCENT / 100;`,
+ nodes:[N("code","Checkout code",150,200,{kind:"client"}),N("cfg","Named constants",470,90,{sub:"GST_PERCENT = 18"}),N("ad","Gateway adapter",470,310,{sub:"51 → INSUFFICIENT_FUNDS"})],
+ edges:[["code","cfg"],["code","ad"]],
+ steps:[
+  {say:"The fix: every value gets a name, and vendor codes are translated once, at the edge.",on:["cfg","ad"]},
+  {say:"The code now reads as intent: decline == INSUFFICIENT_FUNDS, amount × GST_PERCENT.",send:[["code","cfg","GST_PERCENT"],["code","ad","decline()"]]},
+  {say:"When the tax rate changes, one constant changes, and every calculation follows.",on:["cfg"],tag:{cfg:"GST_PERCENT changed once ✓"}}
+ ]},
+{id:"ap-swallowed-exceptions",name:"Swallowed Exceptions",cat:"anti",ex:[],
+ intent:"Catching exceptions and ignoring them (or returning null), so failures disappear silently.",
+ when:"Spot it in catch (Exception e) {}, in 'return null on error', and in exceptions used to exit loops.",
+ analogy:"Taping over a car's warning light instead of finding out why it came on.",
+ tip:"Handle only the cases you expect, let the rest propagate or translate them into domain errors, and prefer Optional or sealed result types over null.",
+ code:`Optional&lt;User&gt; find(String id) {
+  <span class="k">try</span> { <span class="k">return</span> Optional.of(repo.load(id)); }
+  <span class="k">catch</span> (NotFoundException e) { <span class="k">return</span> Optional.empty(); }    <span class="c">// the one expected case</span>
+}                                                               <span class="c">// anything else propagates and is logged</span>`,
+ nodes:[N("cl","Profile page",130,200,{kind:"client"}),N("svc","UserService.find()",430,200),N("db","Database",710,200,{sub:"timing out"})],
+ edges:[["cl","svc"],["svc","db"]],
+ steps:[
+  {say:"The fix: handle only the case you expect, 'not found', and let everything else propagate.",on:["svc"]},
+  {say:"A missing user comes back as Optional.empty(), and the page shows 'no such user'.",send:[["cl","svc","find(U9)"],["svc","db","load"],["db","svc","not found"],["svc","cl","empty"]]},
+  {say:"A database timeout isn't swallowed. It reaches the error handler with its stack trace, and the alert fires.",send:[["cl","svc","find(U1)"],["svc","db","load"],["db","svc","timeout"],["svc","cl","error + stack trace"]],tag:{svc:"logged and alerted ✓"}}
+ ]},
+{id:"ap-lava-flow",name:"Lava Flow",cat:"anti",ex:[],
+ intent:"Dead code and abandoned abstractions that nobody dares to delete because they 'might still be used'.",
+ when:"Spot it in comments like 'TODO remove after v2 migration (2019)', deprecated classes still wired in, and feature flags years old.",
+ analogy:"A garage full of boxes nobody has opened in years, kept 'just in case'.",
+ tip:"Measure whether code runs, delete it with tests as a safety net, and give feature flags an owner and an expiry date.",
+ code:`<span class="c">// 1. measure: is LegacyPriceEngine still called?  legacy.price.calls == 0 for 30 days</span>
+<span class="c">// 2. delete it, with the test suite as the safety net</span>
+<span class="c">// 3. new flags get an owner and an expiry date</span>
+@Flag(owner = "pricing", expires = "2026-12-31") <span class="k">boolean</span> newCheckoutRanking;`,
+ nodes:[N("m","Usage metrics",150,110,{sub:"–"}),N("t","Test suite",150,300,{sub:"green"}),N("leg","LegacyPriceEngine",500,200,{sub:"deprecated since 2019"})],
+ edges:[["m","leg"],["t","leg"]],
+ steps:[
+  {say:"The fix: first measure whether the old code still runs.",send:[["m","leg","calls?"]],tag:{m:"0 calls in 30 days"}},
+  {say:"With zero calls and a green test suite, it's deleted.",send:[["t","leg","safe to delete"]],tag:{leg:"deleted ✓"}},
+  {say:"New feature flags get an owner and an expiry date, so dead paths don't pile up again.",on:["m","t"]}
+ ]},
+/* ───────── system design ───────── */
+{id:"sd-consistent-hashing",name:"Consistent Hashing",cat:"lld",ex:[],
+ repoLinks:[["ConsistentHashRing.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/systemdesign/ConsistentHashRing.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/systemdesign/ConsistentHashingDemo.txt"]],
+ intent:"Place cache or database nodes and keys on a hash ring, so adding or removing a node moves only about 1/N of the keys.",
+ when:"Spreading keys across a cluster that grows and shrinks: caches, sharded databases, partitioned queues.",
+ analogy:"Seats around a round table: if one more person sits down, only their neighbours shuffle along, not the whole room.",
+ tip:"Use virtual nodes (many points per server) to even out the load, and weight them for servers of different sizes.",
+ code:`<span class="k">private final</span> TreeMap&lt;Long, String&gt; ring = <span class="k">new</span> TreeMap&lt;&gt;();
+<span class="k">public void</span> addNode(String node) { <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; virtualNodes; i++) ring.put(hash(node + "#" + i), node); }
+<span class="k">public</span> String nodeFor(String key) {
+  <span class="k">var</span> e = ring.ceilingEntry(hash(key));                 <span class="c">// the next node clockwise</span>
+  <span class="k">return</span> (e != <span class="k">null</span> ? e : ring.firstEntry()).getValue();
+}`,
+ nodes:[N("key","Cart key",110,200,{kind:"client",sub:"cart:C-1042"}),N("ring","Hash ring",380,200,{sub:"4 nodes × 200 virtual nodes"}),N("c5","cache-5",380,70,{sub:"new",hidden:1}),
+  N("c1","cache-1",680,60,{sub:"–"}),N("c2","cache-2",680,160,{sub:"–"}),N("c3","cache-3",680,260,{sub:"–"}),N("c4","cache-4",680,360,{sub:"–"})],
+ edges:[["key","ring"],["ring","c1"],["ring","c2"],["ring","c3"],["ring","c4"],["ring","c5"]],
+ steps:[
+  {say:"Each cache node is placed on the ring 200 times (virtual nodes), so keys spread evenly: about 25,000 each out of 100,000.",on:["ring"],tag:{c1:"25,169 keys",c2:"23,658 keys",c3:"24,689 keys",c4:"26,484 keys"}},
+  {say:"A key is hashed onto the ring and belongs to the next node clockwise.",send:[["key","ring","hash(cart:C-1042)"],["ring","c3","next clockwise"]]},
+  {say:"Adding cache-5 takes over only the slices next to its own points: 21.5% of keys move, close to the ideal 1/5.",show:["c5"],send:[["ring","c5","add 200 points"]],tag:{c5:"took 21.5% of keys"}},
+  {say:"With hash % N instead, going from 4 to 5 nodes would move 80% of the keys and empty most of the cache at once.",on:["ring"],tag:{ring:"hash % N would move 80.1%"}}
+ ]},
 ];
 
 /* ───────── code lines lit by each step (indexes into the pattern's code, 0-based) ───────── */
@@ -3330,6 +3661,141 @@ Object.assign(NAIVE,{
   {t:"Closely related classes copy the same code",p:"inheritance"},
   {t:"Code keeps checking an object's type before acting",p:"polymorphism"})})();
 
+/* ───────── principles, anti-patterns, system design: code lines, paired versions, picker ───────── */
+Object.assign(HL,{
+"dp-dry":[[0],[2,5],[3,6]],
+"dp-kiss":[[0,1],[1],[3]],
+"dp-yagni":[[0],[1],[3]],
+"dp-composition":[[0,1],[2,4],[5]],
+"dp-demeter":[[0,1],[2,4,7],[3]],
+"dp-tell-dont-ask":[[2,6],[3],[3]],
+"dp-fail-fast":[[0],[2],[5]],
+"ap-god-object":[[0],[0,1,2],[1]],
+"ap-golden-hammer":[[1],[0,1],[2]],
+"ap-copy-paste":[[0,1,2,3,4],[6],[2]],
+"ap-primitive-obsession":[[0,1],[2,3],[0,1]],
+"ap-boolean-flags":[[0,2],[3],[0]],
+"ap-service-locator":[[1,2],[2],[5]],
+"ap-anemic-domain":[[2,3],[2,3],[4]],
+"ap-magic-numbers":[[0],[3,4],[1]],
+"ap-swallowed-exceptions":[[1,2],[2],[3]],
+"ap-lava-flow":[[0],[1],[2,3]],
+"sd-consistent-hashing":[[0,1],[2,3,4],[1],[0]]
+});
+Object.assign(NAIVE,{
+"dp-dry":{nodes:[N("reg","Signup",130,110,{kind:"client"}),N("inv","Invite",130,300,{kind:"client"}),N("c1","canRegister()",470,110,{sub:"has @, not first"}),N("c2","canInvite()",470,300,{sub:"has @ (drifted)"})],
+ edges:[["reg","c1"],["inv","c2"]],
+ steps:[{say:"Before: the email rule is copied into canRegister() and canInvite().",on:["c1","c2"]},
+  {say:"Someone tightened one copy but not the other. '@nobody' is rejected at signup…",send:[["reg","c1","@nobody"],["c1","reg","false"]]},
+  {say:"…and accepted as an invite. Two copies, two answers.",send:[["inv","c2","@nobody"],["c2","inv","true"]],tag:{c2:"accepts @nobody ✗"}}]},
+"dp-kiss":{nodes:[N("rev","Reviewer",130,200,{kind:"client"}),N("clever","isLeapClever()",470,200,{sub:"Supplier<Function<…BinaryOperator>>"})],
+ edges:[["rev","clever"]],
+ steps:[{say:"Before: a 'clever' version builds a factory of functions to test divisibility.",on:["clever"]},
+  {say:"It gives the same answers, but the reviewer needs ten minutes to convince themselves it's right.",send:[["rev","clever","read…"]],tag:{rev:"10 minutes to review"}},
+  {say:"The next person to change it gets it wrong, because nobody can see the rule any more.",tag:{clever:"bug on the next change ✗"}}]},
+"dp-yagni":{nodes:[N("req","Requirement",130,200,{kind:"client",sub:"INR → USD only"}),N("oe","OverEngineeredConverter",470,200,{sub:"providers · cache · listener"})],
+ edges:[["req","oe"]],
+ steps:[{say:"Before: 'we might need other providers one day', so the converter takes a provider map, a cache and a listener.",on:["oe"]},
+  {say:"It gives the same answer, 120 cents, but needs 3 interfaces and 1 class wired together.",send:[["req","oe","convert(…)"]],tag:{oe:"120 USD cents · 4 types"}},
+  {say:"The second provider never arrives, and everyone pays for the extra code on every read and change.",tag:{oe:"unused flexibility ✗"}}]},
+"dp-composition":{nodes:[N("cl","Caller",110,200,{kind:"client"}),N("hs","InstrumentedHashSet",400,200,{sub:"extends HashSet · addCount 0"}),N("parent","HashSet.addAll()",690,200,{sub:"calls add() for each"})],
+ edges:[["cl","hs"],["hs","parent"]],
+ steps:[{say:"Before: InstrumentedHashSet extends HashSet and overrides add() and addAll() to count.",on:["hs"]},
+  {say:"addAll([a, b, c]) adds 3, then calls super.addAll().",send:[["cl","hs","addAll(a, b, c)"],["hs","parent","super.addAll"]],tag:{hs:"extends HashSet · addCount 3"}},
+  {say:"HashSet's addAll calls the overridden add() for each element, so they're counted again: 6.",send:[["parent","hs","add() ×3"]],tag:{hs:"addCount 6 ✗"}}]},
+"dp-demeter":{nodes:[N("pb","Paperboy",130,200,{kind:"client"}),N("cu","Customer",420,90,{sub:"getWallet()"}),N("wa","Wallet",420,310,{sub:"1,300"})],
+ edges:[["pb","cu"],["pb","wa"]],
+ steps:[{say:"Before: the paperboy calls customer.getWallet() and handles the wallet himself.",send:[["pb","cu","getWallet()"],["cu","pb","wallet"]]},
+  {say:"He takes 600 straight out of it. The customer has no say.",send:[["pb","wa","setCents(… − 600)"]],tag:{wa:"700"}},
+  {say:"Every caller now depends on Wallet's insides, and the 'can they afford it?' rule gets copied into each one.",tag:{pb:"knows Wallet's insides ✗"}}]},
+"dp-tell-dont-ask":{nodes:[N("ctl","Controller",150,200,{kind:"client",sub:"reads, then decides"}),N("th","Thermostat",450,90,{sub:"getTargetCelsius(), setHeating()"}),N("heat","Heater",450,310,{sub:"off"})],
+ edges:[["ctl","th"],["th","heat"]],
+ steps:[{say:"Before: the controller asks for the target and makes the decision itself.",send:[["ctl","th","getTargetCelsius()"],["th","ctl","21"]]},
+  {say:"It uses its own rule, reading < target, and turns heating on at 20 °C.",send:[["ctl","th","setHeating(true)"],["th","heat","on"]],tag:{heat:"on at 20 °C"}},
+  {say:"The thermostat's 1-degree band is ignored, and each caller ends up with a slightly different copy of the rule.",tag:{ctl:"rule re-implemented ✗"}}]},
+"dp-fail-fast":{nodes:[N("form","Booking form",120,200,{kind:"client"}),N("res","LenientReservation",430,200,{sub:"accepts anything"}),N("inv","Invoice",710,200,{sub:"–"})],
+ edges:[["form","res"],["res","inv"]],
+ steps:[{say:"Before: the reservation accepts check-out before check-in without complaint.",send:[["form","res","new (10 → 7 Mar)"]]},
+  {say:"The mistake travels on until pricing: −3 nights × 5,000.",send:[["res","inv","priceCents(5000)"]]},
+  {say:"The invoice comes out at −15,000: an accidental refund, far from where the bad data came in.",tag:{inv:"−15,000 cents ✗"}}]},
+"ap-god-object":{nodes:[N("god","OrderManager",300,200,{sub:"4,000 lines · 120 methods"}),N("t1","Payments team",650,90,{kind:"client"}),N("t2","Tax team",650,200,{kind:"client"}),N("t3","Email team",650,310,{kind:"client"})],
+ edges:[["t1","god"],["t2","god"],["t3","god"]],
+ steps:[{say:"The anti-pattern: one OrderManager handles pricing, tax, stock, payment, email, PDFs and audit.",on:["god"]},
+  {say:"Every team edits the same class, so there are merge conflicts every day.",send:[{par:[["t1","god","edit"],["t2","god","edit"],["t3","god","edit"]]}]},
+  {say:"A tax change breaks the confirmation email, and nothing can be tested on its own.",tag:{god:"tax change broke email ✗"}}]},
+"ap-golden-hammer":{nodes:[N("cl","Caller",110,200,{kind:"client"}),N("fi","GreetingFactory",360,90,{sub:"«interface»",kind:"iface"}),N("df","DefaultGreetingFactory",360,310),N("g","Greeting",650,200)],
+ edges:[["cl","fi"],["df","fi","i"],["df","g"]],
+ steps:[{say:"The anti-pattern: a factory interface and a default factory for one class that will never vary.",on:["fi","df"]},
+  {say:"Creating a greeting goes through the interface and the factory.",send:[["cl","fi","create()"],["fi","df","handled by"],["df","g","new"]]},
+  {say:"Three types to read for one 'new', and newcomers can't find the code that actually runs.",tag:{cl:"3 types for one new ✗"}}]},
+"ap-copy-paste":{nodes:[N("co","Checkout",200,80,{sub:"own fee if-ladder"}),N("re","Refunds",200,200,{sub:"own fee if-ladder"}),N("rc","Reconciliation",200,320,{sub:"own fee if-ladder"}),N("rep","Finance report",600,200,{kind:"client"})],
+ edges:[["rc","rep"]],
+ steps:[{say:"The anti-pattern: the same fee if-ladder is copied into checkout, refunds and reconciliation.",on:["co","re","rc"]},
+  {say:"A UPI bug is fixed in the refunds copy only.",tag:{re:"fixed",co:"old rule",rc:"old rule"}},
+  {say:"Checkout and refunds now disagree on the fee, and reconciliation reports a mismatch every night.",send:[["rc","rep","mismatch"]],tag:{rc:"mismatch ✗"}}]},
+"ap-primitive-obsession":{nodes:[N("cl","Caller",140,200,{kind:"client"}),N("tr","transfer()",470,200,{sub:"(String, String, double, String)"})],
+ edges:[["cl","tr"]],
+ steps:[{say:"The anti-pattern: transfer(String, String, double, String).",on:["tr"]},
+  {say:"Accounts swapped, 0.1 + 0.2 as the amount, 'usd' in lower case: it all compiles.",send:[["cl","tr","(\"ACC-2\",\"ACC-1\",0.1+0.2,\"usd\")"]]},
+  {say:"Money moves the wrong way, by 0.30000000000000004, and validation is repeated (or forgotten) everywhere.",tag:{tr:"wrong way, wrong amount ✗"}}]},
+"ap-boolean-flags":{nodes:[N("cl","Support agent",140,200,{kind:"client"}),N("ord","Order",470,200,{sub:"paid · shipped · delivered · cancelled · refunded"})],
+ edges:[["cl","ord"]],
+ steps:[{say:"The anti-pattern: five boolean flags on Order allow 32 combinations, and only about 6 make sense.",on:["ord"]},
+  {say:"A support action sets cancelled = true on an order that's already delivered.",send:[["cl","ord","cancelled = true"]],tag:{ord:"delivered AND cancelled"}},
+  {say:"Reports, refunds and emails each interpret the impossible combination differently.",tag:{ord:"impossible state ✗"}}]},
+"ap-service-locator":{nodes:[N("inv","InvoiceService",250,200,{sub:"AppContext.getInstance().get(…)"}),N("ctx","AppContext",620,90,{sub:"global singleton"}),N("test","Unit test",620,310,{kind:"client"})],
+ edges:[["inv","ctx"],["test","inv"]],
+ steps:[{say:"The anti-pattern: InvoiceService fetches TaxService from a global AppContext inside its method.",send:[["inv","ctx","get(TaxService)"]]},
+  {say:"Nothing in the class's signature says it needs a tax service.",tag:{inv:"hidden dependency"}},
+  {say:"Tests must set up global state first, and they pass or fail depending on what ran before them.",send:[["test","inv","total()"]],tag:{test:"order-dependent ✗"}}]},
+"ap-anemic-domain":{nodes:[N("svc","AccountService",160,110,{kind:"client",sub:"checks the balance"}),N("other","RefundService",160,300,{kind:"client",sub:"forgot the check"}),N("acc","Account",480,200,{sub:"getBalance / setBalance · 500"})],
+ edges:[["svc","acc"],["other","acc"]],
+ steps:[{say:"The anti-pattern: Account only has getters and setters, and the rules live in services.",on:["acc"]},
+  {say:"AccountService checks the balance before changing it.",send:[["svc","acc","getBalance(), setBalance()"]]},
+  {say:"A newer service calls setBalance() directly and drives it negative.",send:[["other","acc","setBalance(−300)"]],tag:{acc:"balance −300 ✗"}}]},
+"ap-magic-numbers":{nodes:[N("f1","Checkout",160,110,{sub:"amount * 18 / 100"}),N("f2","Invoices",160,300,{sub:"amount * 18 / 100"}),N("gst","Tax rate changes",560,200,{kind:"client"})],
+ edges:[["gst","f1"]],
+ steps:[{say:"The anti-pattern: 18, 51 and \"356\" are scattered through the code with no names.",on:["f1","f2"]},
+  {say:"The tax rate changes. Someone searches for 18 and updates checkout.",send:[["gst","f1","edit 18 → 12"]],tag:{f1:"amount * 12 / 100"}},
+  {say:"Invoices still use 18, so customers are charged one tax and billed another.",tag:{f2:"amount * 18 / 100 ✗"}}]},
+"ap-swallowed-exceptions":{nodes:[N("cl","Profile page",130,200,{kind:"client"}),N("svc","UserService.find()",430,200,{sub:"catch (Exception e) { return null; }"}),N("db","Database",720,200,{sub:"timing out"})],
+ edges:[["cl","svc"],["svc","db"]],
+ steps:[{say:"The anti-pattern: catch every exception and return null.",on:["svc"]},
+  {say:"The database times out. The exception disappears, and null comes back.",send:[["cl","svc","find(U1)"],["svc","db","load"],["db","svc","timeout"],["svc","cl","null"]]},
+  {say:"The page crashes with a NullPointerException far from the cause, and nobody learns the database is down.",tag:{cl:"NullPointerException ✗"}}]},
+"ap-lava-flow":{nodes:[N("leg","LegacyPriceEngine",260,200,{sub:"TODO remove (2019)"}),N("dev","On-call engineer",620,200,{kind:"client"})],
+ edges:[["dev","leg"]],
+ steps:[{say:"The anti-pattern: dead code and old flags nobody dares to delete, 'in case it's still used'.",on:["leg"]},
+  {say:"During an incident, the engineer reads through the old engine, unsure whether it even runs.",send:[["dev","leg","is this used?"]]},
+  {say:"An hour is lost on a false lead, and the next person will be just as unsure.",tag:{dev:"an hour on a false lead ✗"}}]},
+"sd-consistent-hashing":{nodes:[N("key","Cart key",110,200,{kind:"client"}),N("mod","hash(key) % N",400,200,{sub:"N = 4"}),N("c","Cache cluster",690,200,{sub:"warm"})],
+ edges:[["key","mod"],["mod","c"]],
+ steps:[{say:"Without consistent hashing, a key goes to node hash(key) % N.",send:[["key","mod","hash % 4"],["mod","c","node 2"]]},
+  {say:"Add a fifth node and N becomes 5. Almost every key now maps to a different node.",on:["mod"],tag:{mod:"N = 5"}},
+  {say:"80% of the keys move at once: the cache is effectively empty, and the database takes the full load.",tag:{c:"80.1% of keys moved ✗"}}]}
+});
+PICK.o.push(
+ {t:"Apply a design principle",h:"everyday rules of thumb",n:{q:"What's bothering you about the code?",o:[
+  {t:"The same rule is written in several places",p:"dp-dry"},
+  {t:"The solution is too clever to review",p:"dp-kiss"},
+  {t:"Flexibility built for needs that don't exist yet",p:"dp-yagni"},
+  {t:"Subclassing a class I don't control",p:"dp-composition"},
+  {t:"Long chains reaching into other objects",p:"dp-demeter"},
+  {t:"Callers read data and decide for the object",p:"dp-tell-dont-ask"},
+  {t:"Bad input travels far before anything breaks",p:"dp-fail-fast"}]}},
+ {t:"Fix a code smell",h:"common anti-patterns",n:{q:"Which smell do you see?",o:[
+  {t:"One huge class does everything",p:"ap-god-object"},
+  {t:"Patterns used where nothing varies",p:"ap-golden-hammer"},
+  {t:"The same logic copied around",p:"ap-copy-paste"},
+  {t:"Strings and doubles for money and ids",p:"ap-primitive-obsession"},
+  {t:"Lots of isX boolean flags",p:"ap-boolean-flags"},
+  {t:"Global lookups inside business code",p:"ap-service-locator"},
+  {t:"Entities with only getters and setters",p:"ap-anemic-domain"},
+  {t:"Unexplained numbers in the code",p:"ap-magic-numbers"},
+  {t:"Empty catch blocks or return null on error",p:"ap-swallowed-exceptions"},
+  {t:"Old code nobody dares to delete",p:"ap-lava-flow"}]}});
+PICK.o.find(o=>o.t==="Practise an LLD interview problem").n.o.push({t:"Consistent hashing: spreading keys over cache nodes",p:"sd-consistent-hashing"});
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -3338,6 +3804,7 @@ const srcDir=p=>p.mod?`${GH}/code/${p.mod}/src/main/java/com/handbook/${p.mod}/$
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const EMBED=document.documentElement.classList.contains("embed");
 const Q=new URLSearchParams(location.search);
+const FAM=(Q.get("family")||"").split(",").filter(k=>k&&CATS[k]);
 const byId=id=>P.find(p=>p.id===id);
 let speed=1;
 
@@ -3462,9 +3929,9 @@ function variantOf(p,kind,i){
 function renderModes(kind,i){
   const p=base,b=BREAKS[p.id]||[],has=NAIVE[p.id]||b.length;
   $("#modes").hidden=!has;if(!has)return;
-  const pr=p.cat==="principles", ld=p.cat==="lld", oo=p.cat==="oop";
-  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":ld?"This design":oo?"Uses the pillar":"With the pattern"}</button>`;
-  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":ld?"Naive design":"Without it"}</button>`;
+  const pr=p.cat==="principles"||p.cat==="dprinciples", ld=p.cat==="lld", oo=p.cat==="oop", ap=p.cat==="anti";
+  let h=`<div class="seg" role="group" aria-label="Version"><button data-k="with" aria-pressed="${kind==="with"}">${pr?"Follows the principle":ld?"This design":oo?"Uses the pillar":ap?"The fix":"With the pattern"}</button>`;
+  if(NAIVE[p.id])h+=`<button data-k="naive" aria-pressed="${kind==="naive"}">${pr?"Breaks it":ld?"Naive design":ap?"The anti-pattern":"Without it"}</button>`;
   h+=`</div>`;
   if(b.length)h+=`<div class="breaks"><span>Break it:</span>${b.map((x,j)=>`<button data-k="break" data-i="${j}" aria-pressed="${kind==="break"&&i===j}">⚡ ${esc(x.label)}</button>`).join("")}</div>`;
   $("#modes").innerHTML=h;
@@ -3473,7 +3940,7 @@ function setVariant(kind,i=0,auto=true){
   stop();const v=variantOf(base,kind,i);main.set(v);
   document.documentElement.classList.toggle("naive",kind==="naive");
   $("#steps").innerHTML=v.steps.map((s,j)=>`<li tabindex="0" data-i="${j}">${esc(s.say)}</li>`).join("");
-  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="principles"?"· shows the version that follows the principle":base.cat==="lld"?"· shows this design":base.cat==="oop"?"· shows the version that uses the pillar":"· shows the pattern version";
+  $("#codehint").hidden=!v._v;$("#codehint").textContent=base.cat==="anti"?"· shows the fix":(base.cat==="principles"||base.cat==="dprinciples")?"· shows the version that follows the principle":base.cat==="lld"?"· shows this design":base.cat==="oop"?"· shows the version that uses the pillar":"· shows the pattern version";
   renderModes(kind,i);main.playStep(false);
   if(auto&&!reduce)setTimeout(()=>{if(main.p===v&&main.step===0&&!playing)autoplay()},400);
 }
@@ -3507,12 +3974,13 @@ function selectPattern(p,{auto=true,push=true}={}){
   $("#steps").innerHTML=p.steps.map((s,i)=>`<li tabindex="0" data-i="${i}">${esc(s.say)}</li>`).join("");
   $("#dia").setAttribute("aria-label",`Animated diagram of the ${p.name} pattern`);
   if(push&&!EMBED){try{history.replaceState(null,"","#"+p.id)}catch(e){location.hash=p.id}}
+  if(p.cat==="anti"&&NAIVE[p.id]){setVariant("naive",0,auto);return}
   main.playStep(false);
   if(auto&&!reduce)setTimeout(()=>{if(cur()===p&&main.step===0&&!playing)autoplay()},500);
 }
 function renderNav(){
   $("#cats").innerHTML=Object.entries(CATS).map(([k,c])=>`<button class="cat" style="--cc:var(--c-${k})" data-cat="${k}" aria-pressed="${k===curCat}">${c.name} <small>${P.filter(p=>p.cat===k).length} · ${c.blurb}</small></button>`).join("");
-  $("#chips").innerHTML=P.filter(p=>p.cat===curCat).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur()}">${p.name}</button>`).join("");
+  $("#chips").innerHTML=(FAM.length?FAM.flatMap(k=>P.filter(p=>p.cat===k)):P.filter(p=>p.cat===curCat)).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur()}">${p.name}</button>`).join("");
 }
 $("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;selectPattern(P.find(p=>p.cat===b.dataset.cat))});
 $("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selectPattern(byId(b.dataset.id))});
@@ -3626,11 +4094,11 @@ function startQuiz(){
   const store={get(k,d){try{const v=localStorage.getItem("pim-"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("pim-"+k,JSON.stringify(v))}catch(e){}}};
   let fam="all", deck=[], cur=null, opts=[], answered=false, usedHint=false, qtok=0;
   let score=0, asked=0, streak=0, best=store.get("best",0), hard=false;
-  const QP=P.filter(p=>p.cat!=="tour"&&p.cat!=="lld");
+  const QP=P.filter(p=>!["tour","lld","anti"].includes(p.cat));
   const pool=()=>fam==="all"?QP:QP.filter(p=>p.cat===fam);
   const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   function renderFam(){
-    $("#qfam").innerHTML=[["all",`All ${QP.length}`],...Object.entries(CATS).filter(([k])=>k!=="tour"&&k!=="lld").map(([k,c])=>[k,c.name])]
+    $("#qfam").innerHTML=[["all",`All ${QP.length}`],...Object.entries(CATS).filter(([k])=>!["tour","lld","anti"].includes(k)).map(([k,c])=>[k,c.name])]
       .map(([k,l])=>`<button class="chip" data-f="${k}" aria-current="${k===fam}">${l}</button>`).join("");
   }
   function renderScore(){
@@ -3716,6 +4184,7 @@ let onVisible=null;
 if(Q.get("pick")){startPick()}
 else if(Q.get("quiz")){startQuiz()}
 else if(Q.get("compare")){const c=startCompare();onVisible=c.autoplayOnce}
+else if(EMBED&&FAM.length){document.documentElement.classList.add("fam");selectPattern(fromHash()||P.find(p=>p.cat===FAM[0]),{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
 else if(EMBED){selectPattern(fromHash()||P[0],{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
 else selectPattern(fromHash()||P[0],{push:false});
 

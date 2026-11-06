@@ -19,6 +19,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Why it hurts:** violates Single Responsibility; impossible to test in isolation; one change breaks unrelated features.
 - **Instead:** split by responsibility and bounded context; extract [Strategies](behavioral/strategy.md), [States](behavioral/state.md), a [Facade](structural/facade.md) per use case; keep domain logic in domain objects.
 
+<iframe class="motion-embed" src="../motion/index.html?p=ap-god-object&amp;embed=1" title="Animated walkthrough of the God Object / God Class anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-god-object){ target=_blank }
+
 ??? example "Before / after: God Object"
 
     === "❌ Before"
@@ -55,6 +59,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Why it hurts:** indirection without benefit; newcomers can't find the code that runs.
 - **Instead:** apply YAGNI. Introduce a pattern when the **second** variation arrives. Patterns are responses to forces, not goals.
 
+<iframe class="motion-embed" src="../motion/index.html?p=ap-golden-hammer&amp;embed=1" title="Animated walkthrough of the Golden Hammer (pattern overuse) anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-golden-hammer){ target=_blank }
+
 ??? example "Before / after: Golden Hammer"
 
     === "❌ Before"
@@ -84,6 +92,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Symptoms:** the same `if` ladder for payment methods in checkout, refunds and reconciliation; a bug fixed in one copy but not the others.
 - **Why it hurts:** drift and inconsistent behavior (the classic "fixed it in 51 of 54 places").
 - **Instead:** one definition: [Factory Method](creational/factory-method.md), [Template Method](behavioral/template-method.md), [Specification](behavioral/specification.md).
+
+<iframe class="motion-embed" src="../motion/index.html?p=ap-copy-paste&amp;embed=1" title="Animated walkthrough of the Copy-Paste Programming anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-copy-paste){ target=_blank }
 
 ??? example "Before / after: Copy-Paste Programming"
 
@@ -116,6 +128,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Why it hurts:** floating-point money errors, invalid values deep in the system, unclear APIs (`transfer(String, String, double)`).
 - **Instead:** small **immutable value objects** (`Money`, `Email`, `OrderId`) with validation in the constructor. See [Immutable Object](concurrency/immutable-object.md).
 
+<iframe class="motion-embed" src="../motion/index.html?p=ap-primitive-obsession&amp;embed=1" title="Animated walkthrough of the Primitive Obsession anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-primitive-obsession){ target=_blank }
+
 ??? example "Before / after: Primitive Obsession"
 
     === "❌ Before"
@@ -143,6 +159,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Symptoms:** `isPaid`, `isShipped`, `isCancelled`, `isRefunded` on one entity; impossible combinations ("cancelled and delivered").
 - **Why it hurts:** 2ⁿ states, most invalid; rules scattered.
 - **Instead:** a single status with an explicit [State](behavioral/state.md) machine.
+
+<iframe class="motion-embed" src="../motion/index.html?p=ap-boolean-flags&amp;embed=1" title="Animated walkthrough of the Boolean Flag Explosion anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-boolean-flags){ target=_blank }
 
 ??? example "Before / after: Boolean Flag Explosion"
 
@@ -178,6 +198,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Why it hurts:** hidden dependencies, untestable code, order-dependent tests, concurrency bugs.
 - **Instead:** **constructor injection**; DI-managed singletons; immutable shared state. See [Singleton](creational/singleton.md).
 
+<iframe class="motion-embed" src="../motion/index.html?p=ap-service-locator&amp;embed=1" title="Animated walkthrough of the Service Locator and Global State anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-service-locator){ target=_blank }
+
 ??? example "Before / after: Service Locator and Global State"
 
     === "❌ Before"
@@ -208,6 +232,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Symptoms:** entities with only getters and setters; all rules in `*Service` classes that manipulate them.
 - **Why it hurts:** invariants can be broken from anywhere (`order.setStatus(DELIVERED)` on a cancelled order).
 - **Instead:** put behavior and invariants on the domain objects (`order.cancel()` enforces its rules). Keep services for orchestration.
+
+<iframe class="motion-embed" src="../motion/index.html?p=ap-anemic-domain&amp;embed=1" title="Animated walkthrough of the Anemic Domain Model (debated) anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-anemic-domain){ target=_blank }
 
 ??? example "Before / after: Anemic Domain Model"
 
@@ -245,6 +273,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Why it hurts:** meaning is lost; values change in one place and not another.
 - **Instead:** named constants, enums, configuration, and [Adapters](structural/adapter.md) that translate vendor codes once.
 
+<iframe class="motion-embed" src="../motion/index.html?p=ap-magic-numbers&amp;embed=1" title="Animated walkthrough of the Magic Numbers and Strings anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-magic-numbers){ target=_blank }
+
 ??? example "Before / after: Magic Numbers and Strings"
 
     === "❌ Before"
@@ -272,6 +304,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Symptoms:** `catch (Exception e) {}`; using exceptions to exit loops; returning `null` on errors.
 - **Why it hurts:** silent failures; impossible debugging; NPEs far from the cause.
 - **Instead:** let exceptions propagate or translate them into domain errors; return result types (`Optional`, sealed results); use [Null Object](behavioral/null-object.md) only where "nothing" is genuinely correct.
+
+<iframe class="motion-embed" src="../motion/index.html?p=ap-swallowed-exceptions&amp;embed=1" title="Animated walkthrough of the Swallowed Exceptions / Exceptions as Control Flow anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-swallowed-exceptions){ target=_blank }
 
 ??? example "Before / after: Swallowed Exceptions"
 
@@ -310,6 +346,10 @@ Each entry: **symptoms → why it hurts → what to do instead**. Each design an
 - **Symptoms:** dead code and abandoned abstractions nobody dares to delete ("might still be used").
 - **Why it hurts:** cognitive load; false leads during incidents.
 - **Instead:** delete with tests and usage metrics as a safety net; feature flags with expiry dates.
+
+<iframe class="motion-embed" src="../motion/index.html?p=ap-lava-flow&amp;embed=1" title="Animated walkthrough of the Lava Flow anti-pattern" loading="lazy"></iframe>
+
+It opens on **The anti-pattern** causing trouble; switch to **The fix** to see the cure in action. [Open in the explorer](motion/index.html#ap-lava-flow){ target=_blank }
 
 ??? example "Before / after: Lava Flow"
 

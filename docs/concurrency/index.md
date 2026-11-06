@@ -17,3 +17,9 @@ Concurrency patterns solve **coordination between threads**: sharing work, shari
 
 !!! tip "The three questions behind every concurrency bug"
     **Visibility**: will other threads *see* my write? **Atomicity**: can another thread see a half-done update? **Ordering**: can the JVM or CPU reorder my operations? The Java Memory Model's **happens-before** rules answer all three. Every pattern here is a way to get those guarantees right.
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=concurrency&amp;embed=1" title="Animated player for every concurrency pattern" loading="lazy"></iframe>

@@ -92,6 +92,12 @@ hide:
 
 </div>
 
+## Not sure where to start?
+
+Answer a few questions and the picker suggests a pattern and plays its animation. Every pattern page has the same kind of animation, plus a **Without it** switch.
+
+<iframe class="motion-embed motion-pick" src="motion/index.html?pick=1&amp;embed=1" title="Pattern picker: answer a few questions to find a pattern" loading="lazy"></iframe>
+
 ## What's covered
 
 ```mermaid

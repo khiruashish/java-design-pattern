@@ -98,6 +98,13 @@ flowchart TB
 !!! warning "Microservices are a trade-off, not an upgrade"
     They buy **team autonomy and independent scaling** at the cost of distributed-systems complexity. For a small team or an unclear domain, a [modular monolith](../architecture/modular-monolith.md) is often the better start, and the patterns in the [Architecture](../architecture/index.md) section apply either way.
 
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=microservices&amp;embed=1" title="Animated player for every microservices pattern" loading="lazy"></iframe>
+
 ---
 
 [:material-arrow-left: Fork/Join](../concurrency/fork-join.md){ .md-button }

@@ -24,3 +24,9 @@ flowchart TD
     Q4 -->|Copy a template| P[Prototype]
     Q4 -->|Reuse instances| OP[Object Pool]
 ```
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=creational&amp;embed=1" title="Animated player for every creational pattern" loading="lazy"></iframe>

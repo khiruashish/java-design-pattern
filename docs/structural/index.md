@@ -27,3 +27,9 @@ flowchart TD
 !!! tip "Adapter vs. Decorator vs. Proxy vs. Facade"
     All four wrap something. Ask **what changes**:
     **Adapter** changes the *interface*. **Decorator** keeps the interface and *adds behavior*. **Proxy** keeps the interface and *controls access*. **Facade** gives a *new, simpler* interface to *many* objects.
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=structural&amp;embed=1" title="Animated player for every structural pattern" loading="lazy"></iframe>

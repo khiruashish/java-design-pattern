@@ -32,6 +32,13 @@ flowchart TB
 !!! tip "The one-sentence interview answer"
     "I unit-test domain and application code with **fakes and stubs** built from **test data builders**, reserve **mocks** for outgoing side effects, test adapters against real infrastructure with Testcontainers, protect service boundaries with **consumer-driven contracts** and can-i-deploy, and keep only a handful of end-to-end smoke tests."
 
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=testing&amp;embed=1" title="Animated player for every testing pattern" loading="lazy"></iframe>
+
 ---
 
 [:material-arrow-left: Domain Events](../enterprise/domain-events.md){ .md-button }

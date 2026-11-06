@@ -84,3 +84,9 @@ Want to see what happens when these principles are ignored? See [Anti-Patterns](
 ??? question "Can you over-apply SOLID?"
     Yes. You get interfaces with one implementation, five-class chains for a one-line rule, and abstractions guessed
     on the wrong axis. Balance SOLID with **KISS** and **YAGNI**: apply it where change actually happens and at I/O boundaries.
+
+## See them in motion
+
+Every pillar and principle on this page has an animated walkthrough of the handbook's own example. Pick one to play it, and switch to **Without it** or **Breaks it** to see the "before" code fail.
+
+<iframe class="motion-embed motion-family" src="../../motion/index.html?family=oop,principles,dprinciples&amp;embed=1" title="Animated player for the OOP pillars, SOLID and design principles" loading="lazy"></iframe>

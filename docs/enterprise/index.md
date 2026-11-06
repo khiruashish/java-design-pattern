@@ -39,6 +39,13 @@ A typical request in a hexagonal Spring service: the controller calls a **use ca
 !!! tip "The one-sentence interview answer"
     "I keep business rules in **aggregates** built from **value objects**, load and save them through **repositories**, make each use case one **unit of work**, let aggregates raise **domain events** that are handled after commit, and wire it all with **constructor injection** so every piece is testable on its own."
 
+
+## See every pattern here in motion
+
+Pick any pattern below to watch it play, step through it, light up its code, and switch to **Without it** to see what goes wrong without it.
+
+<iframe class="motion-embed motion-family" src="../motion/index.html?family=enterprise&amp;embed=1" title="Animated player for every enterprise pattern" loading="lazy"></iframe>
+
 ---
 
 [:material-arrow-left: Modular Monolith](../architecture/modular-monolith.md){ .md-button }
