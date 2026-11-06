@@ -2740,6 +2740,313 @@ transfer(acc1, acc2, Money.of(30, INR));     <span class="c">// swapped types wo
   {say:"With zero calls and a green test suite, it's deleted.",send:[["t","leg","safe to delete"]],tag:{leg:"deleted ✓"}},
   {say:"New feature flags get an owner and an expiry date, so dead paths don't pile up again.",on:["m","t"]}
  ]},
+/* ───────── concurrency anti-patterns ───────── */
+{id:"ap-unbounded-queue",name:"Unbounded Queues",cat:"anti",ex:[],
+ intent:"A work queue with no capacity limit: when producers outpace consumers, the backlog grows in memory until the JVM runs out.",
+ when:"Spot it in Executors.newFixedThreadPool(...) or new LinkedBlockingQueue<>() with no size, and in heap graphs that climb during every traffic spike.",
+ analogy:"A restaurant that seats everyone who walks in, however full the kitchen is. Nobody is turned away, and nobody gets fed.",
+ tip:"Give every queue a capacity and an explicit full policy: block, reject, or make the caller run the task. A full queue is back-pressure; it tells the producer to slow down.",
+ code:`ExecutorService pool = <span class="k">new</span> ThreadPoolExecutor(8, 8, 0, SECONDS,
+    <span class="k">new</span> ArrayBlockingQueue&lt;&gt;(1_000),                 <span class="c">// bounded</span>
+    <span class="k">new</span> ThreadPoolExecutor.CallerRunsPolicy());      <span class="c">// explicit full policy</span>
+pool.submit(() -&gt; sendReceipt(order));`,
+ nodes:[N("prod","Order events",110,200,{kind:"client"}),N("q","ArrayBlockingQueue",400,200,{sub:"capacity 1,000"}),N("w","8 workers",690,200)],
+ edges:[["prod","q"],["w","q"]],
+ steps:[
+  {say:"The fix: the queue has a fixed capacity of 1,000 and a policy for when it's full.",on:["q"]},
+  {say:"Under normal load, tasks flow in and 8 workers drain them.",send:[["prod","q","submit"],["q","w","take"]],tag:{q:"312 / 1,000"}},
+  {say:"A sale spike fills the queue. CallerRunsPolicy makes the producer run the next task itself, which slows it to the workers' pace.",send:[["prod","q","submit"],["q","prod","full: run it yourself"]],tag:{q:"1,000 / 1,000",prod:"slowed down ✓"}},
+  {say:"Memory stays flat, and the backlog shows up in metrics instead of hiding in the heap.",tag:{q:"bounded ✓"}}
+ ]},
+{id:"ap-dcl-volatile",name:"Double-Checked Locking Without volatile",cat:"anti",ex:[],
+ intent:"Lazy initialisation with a double null check, but without volatile, so another thread can see the object before its constructor has finished.",
+ when:"Spot it in hand-written lazy singletons and caches with if (x == null) { synchronized … } where the field isn't volatile. The bug appears rarely, and only under load.",
+ analogy:"A shop that hangs the 'Open' sign before the shelves are stocked. An early customer walks in to empty shelves.",
+ tip:"Make the field volatile, or avoid the problem entirely: the holder idiom, an enum singleton, or ConcurrentHashMap.computeIfAbsent.",
+ code:`<span class="k">private</span> <span class="k">static</span> volatile Config instance;           <span class="c">// volatile: safe publication</span>
+<span class="k">static</span> Config get() {
+  Config c = instance;
+  <span class="k">if</span> (c == null) { <span class="k">synchronized</span> (Config.<span class="k">class</span>) {
+    c = instance; <span class="k">if</span> (c == null) instance = c = <span class="k">new</span> Config(); } }
+  <span class="k">return</span> c;
+}`,
+ nodes:[N("t1","Thread A",110,110,{kind:"client"}),N("t2","Thread B",110,300,{kind:"client"}),N("inst","volatile instance",420,200,{sub:"null"}),N("cfg","Config",700,200,{sub:"fully built",hidden:1})],
+ edges:[["t1","inst"],["t2","inst"],["inst","cfg"]],
+ steps:[
+  {say:"The fix: instance is volatile, so writing the reference can't be moved ahead of the constructor's writes.",on:["inst"]},
+  {say:"Thread A finds null, takes the lock and builds the Config completely.",show:["cfg"],send:[["t1","inst","null? lock"],["inst","cfg","new Config()"]],tag:{cfg:"timeout = 30s"}},
+  {say:"Only then is the reference published. Thread B sees either null or a finished object, never half of one.",send:[["t2","inst","read"],["inst","t2","complete Config"]],tag:{inst:"→ Config",t2:"timeout = 30s ✓"}}
+ ]},
+{id:"ap-io-under-lock",name:"I/O While Holding a Lock",cat:"anti",ex:[],
+ intent:"Doing slow work (a network call, a disk write) while holding a lock, so every other thread that needs the lock waits for the I/O.",
+ when:"Spot it in latency spikes that line up with a refresh or flush, and thread dumps full of threads BLOCKED on the same monitor.",
+ analogy:"Taking a phone call while standing in the only doorway. Everyone behind you waits until you hang up.",
+ tip:"Prepare outside the lock, swap inside it. Fetch or compute the new value first, then hold the lock only long enough to replace a reference.",
+ code:`Map&lt;String, Price&gt; fresh = priceApi.fetchAll();   <span class="c">// slow I/O, no lock held</span>
+lock.writeLock().lock();
+<span class="k">try</span> { prices = fresh; }                            <span class="c">// the swap takes microseconds</span>
+<span class="k">finally</span> { lock.writeLock().unlock(); }`,
+ nodes:[N("ref","Refresher",110,90,{kind:"client"}),N("api","Price API",110,310,{sub:"800 ms per call"}),N("cache","Price cache",420,200,{sub:"lock free"}),N("rd","Checkout readers",700,200,{kind:"client"})],
+ edges:[["ref","api"],["ref","cache"],["rd","cache"]],
+ steps:[
+  {say:"The fix: the refresher fetches the new prices first, without holding the lock.",send:[["ref","api","fetchAll()"],["api","ref","800 ms later"]]},
+  {say:"Meanwhile, readers keep getting the current prices with no waiting.",send:[["rd","cache","get(MANGO)"],["cache","rd","₹120"]],tag:{cache:"lock free · serving"}},
+  {say:"Then the write lock is taken just to swap the reference, for a couple of microseconds.",send:[["ref","cache","swap"]],tag:{cache:"locked 2 µs ✓"}}
+ ]},
+{id:"ap-shared-mutable",name:"Shared Mutable State",cat:"anti",ex:[],
+ intent:"Several threads reading and writing the same mutable object without coordination, so updates are lost and 'impossible' values appear.",
+ when:"Spot it in plain HashMap, ArrayList or counters used from many threads, and bugs that vanish when you add a log line.",
+ analogy:"Two people editing the same paper shopping list at once. Each crosses out and rewrites, and one person's items disappear.",
+ tip:"Share immutable values, confine mutable state to one thread, or use concurrent tools: AtomicReference, ConcurrentHashMap, LongAdder.",
+ code:`<span class="k">record</span> Cart(List&lt;Line&gt; lines) {                    <span class="c">// immutable snapshot</span>
+  Cart { lines = List.copyOf(lines); }
+  Cart add(Line l) { <span class="k">var</span> n = <span class="k">new</span> ArrayList&lt;&gt;(lines); n.add(l); <span class="k">return</span> <span class="k">new</span> Cart(n); }
+}
+AtomicReference&lt;Cart&gt; current = <span class="k">new</span> AtomicReference&lt;&gt;(<span class="k">new</span> Cart(List.of()));
+current.updateAndGet(c -&gt; c.add(line));          <span class="c">// atomic swap, no lost update</span>`,
+ nodes:[N("t1","Thread A",110,110,{kind:"client"}),N("t2","Thread B",110,300,{kind:"client"}),N("ref","AtomicReference<Cart>",420,200,{sub:"v1: 0 lines"}),N("snap","Cart v3",700,200,{sub:"immutable",hidden:1})],
+ edges:[["t1","ref"],["t2","ref"],["ref","snap"]],
+ steps:[
+  {say:"The fix: the cart is an immutable record. Changing it means building a new one.",on:["ref"]},
+  {say:"Thread A and thread B both add a line at the same moment with updateAndGet.",send:[{par:[["t1","ref","add(milk)"],["t2","ref","add(eggs)"]]}]},
+  {say:"Each update is a compare-and-swap. The loser retries on the newer version, so neither line is lost.",show:["snap"],send:[["ref","snap","v3"]],tag:{ref:"v3: 2 lines",snap:"milk + eggs ✓"}}
+ ]},
+{id:"ap-busy-waiting",name:"Busy Waiting",cat:"anti",ex:[],
+ intent:"Waiting for a condition by checking it over and over in a loop, burning a CPU core while doing nothing useful.",
+ when:"Spot it in while (!ready) {} or while (!done) Thread.sleep(1) loops, and a core pinned at 100% while the app is idle.",
+ analogy:"Asking 'are we there yet?' every second of a five-hour drive, instead of sleeping until someone wakes you.",
+ tip:"Block on a real signal: CountDownLatch, BlockingQueue, CompletableFuture, or wait/notify. The thread sleeps until there's work.",
+ code:`CountDownLatch ready = <span class="k">new</span> CountDownLatch(1);
+<span class="c">// request thread</span>
+ready.await();                                   <span class="c">// parked: no CPU used</span>
+<span class="c">// loader thread</span>
+loadCatalog(); ready.countDown();                <span class="c">// wakes every waiter</span>`,
+ nodes:[N("w","Request thread",110,200,{kind:"client"}),N("latch","CountDownLatch",420,200,{sub:"count 1"}),N("loader","Catalog loader",700,200,{sub:"loading…"})],
+ edges:[["w","latch"],["loader","latch"]],
+ steps:[
+  {say:"The fix: the request thread waits on a latch and is parked, using no CPU.",send:[["w","latch","await()"]],tag:{w:"parked · 0% CPU"}},
+  {say:"The loader finishes loading the catalog and counts the latch down.",send:[["loader","latch","countDown()"]],tag:{loader:"loaded",latch:"count 0"}},
+  {say:"The waiting thread wakes straight away and carries on.",send:[["latch","w","wake"]],tag:{w:"running ✓"}}
+ ]},
+{id:"ap-if-wait",name:"if Around wait()",cat:"anti",ex:[],
+ intent:"Checking a condition once with if before wait(), so a thread that wakes up (spuriously, or after another thread took the item) carries on as if the condition were true.",
+ when:"Spot it in if (queue.isEmpty()) queue.wait(); and in rare NoSuchElementExceptions or hangs in hand-written queues.",
+ analogy:"Hearing the doorbell, running downstairs and signing for a parcel without checking it was delivered to you and not next door.",
+ tip:"Always wait in a loop: while (!condition) wait(); Better still, use BlockingQueue or a Condition from java.util.concurrent.",
+ code:`<span class="k">synchronized</span> (queue) {
+  <span class="k">while</span> (queue.isEmpty()) queue.wait();       <span class="c">// re-check after every wakeup</span>
+  <span class="k">return</span> queue.remove();
+}`,
+ nodes:[N("c1","Consumer 1",110,110,{kind:"client"}),N("c2","Consumer 2",110,300,{kind:"client"}),N("q","queue",420,200,{sub:"empty"}),N("p","Producer",700,200)],
+ edges:[["c1","q"],["c2","q"],["p","q"]],
+ steps:[
+  {say:"The fix: each consumer waits inside a while loop, so it re-checks the condition every time it wakes.",send:[["c1","q","wait()"],["c2","q","wait()"]]},
+  {say:"The producer adds one item and calls notifyAll().",send:[["p","q","put + notifyAll()"]],tag:{q:"1 item"}},
+  {say:"Consumer 1 takes it. Consumer 2 wakes too, finds the queue empty again, and goes back to waiting.",send:[["q","c1","item"],["q","c2","wake"],["c2","q","still empty: wait()"]],tag:{q:"empty",c2:"waiting again ✓"}}
+ ]},
+{id:"ap-common-pool",name:"Blocking in the Common Pool",cat:"anti",ex:[],
+ intent:"Running blocking I/O in ForkJoinPool.commonPool(), the small shared pool that parallel streams and default async tasks also use, so one slow dependency freezes unrelated work.",
+ when:"Spot it in supplyAsync(...) or runAsync(...) without an executor argument wrapping HTTP or database calls, and parallel streams that suddenly stall.",
+ analogy:"Sending the whole kitchen staff to wait at the bank. Nobody is left to cook, even for dishes that need nothing from the bank.",
+ tip:"Give blocking work its own executor, ideally virtual threads, and keep the common pool for short CPU-bound tasks.",
+ code:`ExecutorService io = Executors.newVirtualThreadPerTaskExecutor();   <span class="c">// for blocking I/O</span>
+CompletableFuture&lt;Price&gt; price = CompletableFuture.supplyAsync(() -&gt; priceApi.fetch(sku), io);
+<span class="c">// the common pool stays free for CPU work: parallel streams, sorting, hashing</span>`,
+ nodes:[N("req","Checkout tasks",110,90,{kind:"client"}),N("io","I/O executor",420,90,{sub:"virtual threads"}),N("api","Price API",700,90,{sub:"fast"}),
+  N("cpu","Search page",110,310,{kind:"client",sub:"parallel stream"}),N("common","Common pool",420,310,{sub:"7 threads · free"})],
+ edges:[["req","io"],["io","api"],["cpu","common"]],
+ steps:[
+  {say:"The fix: blocking calls are given their own executor, here one that uses virtual threads.",send:[["req","io","supplyAsync(fetch, io)"],["io","api","fetch"]]},
+  {say:"The price API slows down. Only the I/O tasks wait, and parked virtual threads are cheap.",tag:{api:"3 s per call",io:"500 parked, fine"}},
+  {say:"The common pool is untouched, so the search page's parallel stream runs at full speed.",send:[["cpu","common","parallel sort"]],tag:{common:"7 threads · CPU work ✓"}}
+ ]},
+{id:"ap-removed-limits",name:"Removing Implicit Limits",cat:"anti",ex:[],
+ intent:"Removing a bottleneck that was quietly protecting something downstream, such as a thread pool that capped database load, without putting an explicit limit in its place.",
+ when:"Spot it right after a move to virtual threads, reactive code or autoscaling, when the database or a partner API suddenly starts refusing connections.",
+ analogy:"Widening a motorway into a city whose streets stay the same size. The traffic jam simply moves into town.",
+ tip:"Limit what's actually scarce: a Semaphore sized to the connection pool, a rate limiter for the partner API, or a bulkhead per dependency.",
+ code:`Semaphore dbPermits = <span class="k">new</span> Semaphore(50);         <span class="c">// matches the connection pool</span>
+<span class="k">try</span> (<span class="k">var</span> exec = Executors.newVirtualThreadPerTaskExecutor()) {
+  orders.forEach(o -&gt; exec.submit(() -&gt; {
+    dbPermits.acquire();
+    <span class="k">try</span> { repo.save(o); } <span class="k">finally</span> { dbPermits.release(); }
+  }));
+}`,
+ nodes:[N("vt","10,000 virtual threads",120,200,{kind:"client"}),N("sem","Semaphore(50)",420,200,{sub:"50 permits"}),N("db","Database",700,200,{sub:"max 100 connections"})],
+ edges:[["vt","sem"],["sem","db"]],
+ steps:[
+  {say:"The fix: virtual threads remove the old 200-thread ceiling, so the limit is put back on purpose, with a semaphore.",on:["sem"]},
+  {say:"Ten thousand tasks start. Fifty get permits and the rest park cheaply.",send:[["vt","sem","acquire() ×10,000"],["sem","db","50 at a time"]],tag:{sem:"50 in use · 9,950 parked"}},
+  {say:"The database never sees more than 50 connections, and the batch finishes steadily.",tag:{db:"50 connections ✓"}}
+ ]},
+{id:"ap-threadlocal-leak",name:"ThreadLocal Leaks",cat:"anti",ex:[],
+ intent:"Setting a ThreadLocal in a pooled thread and never clearing it, so the next request on that thread inherits the previous user's context.",
+ when:"Spot it in filters that call CTX.set(...) without a finally block, and in reports of one customer seeing another customer's data.",
+ analogy:"A hotel that doesn't change the key card between guests. The next guest can open the previous guest's safe.",
+ tip:"Clear ThreadLocals in finally, or use ScopedValue, which is bound for one block of code and disappears automatically when it ends.",
+ code:`<span class="k">static</span> <span class="k">final</span> ScopedValue&lt;String&gt; TENANT = ScopedValue.newInstance();
+ScopedValue.where(TENANT, request.tenant())
+           .run(() -&gt; handle(request));          <span class="c">// gone when run() returns</span>
+<span class="c">// with ThreadLocal: try { CTX.set(t); handle(r); } finally { CTX.remove(); }</span>`,
+ nodes:[N("a","Request A",110,110,{kind:"client",sub:"tenant: acme"}),N("b","Request B",110,300,{kind:"client",sub:"no tenant header"}),N("th","Pooled thread 7",420,200,{sub:"context empty"}),N("db","Orders query",700,200)],
+ edges:[["a","th"],["b","th"],["th","db"]],
+ steps:[
+  {say:"The fix: the tenant is bound with ScopedValue, only for the duration of the request.",send:[["a","th","where(TENANT, acme).run(…)"]],tag:{th:"tenant = acme"}},
+  {say:"Request A's queries are filtered to acme.",send:[["th","db","WHERE tenant = acme"]]},
+  {say:"When run() returns the binding is gone. Request B on the same thread has no tenant and is rejected, rather than shown A's data.",send:[["b","th","handle()"]],tag:{th:"context empty",b:"401 no tenant ✓"}}
+ ]},
+/* ───────── distributed-system anti-patterns ───────── */
+{id:"ap-distributed-monolith",name:"Distributed Monolith",cat:"anti",ex:[],
+ intent:"Services that are deployed separately but can't change separately: shared libraries, shared schemas and synchronous coupling mean every change ships together.",
+ when:"Spot it when one feature touches six repositories, releases need a coordinated 'release night', and a DTO library bump forces every service to rebuild.",
+ analogy:"Four flats that share one set of water pipes. Nobody can fix their own tap without turning off the water for the whole building.",
+ tip:"Draw boundaries by business capability, integrate through events and versioned APIs, and use consumer-driven contract tests so each service can deploy on its own.",
+ code:`<span class="c">// Order publishes a fact; other services react on their own schedule</span>
+outbox.save(<span class="k">new</span> OrderPlaced(orderId, lines));
+<span class="c">// contract tests pin what each consumer relies on, so each service deploys alone</span>
+@PactTest <span class="k">void</span> orderPlacedHasLines() { ... }`,
+ nodes:[N("ord","Order",130,200),N("bus","Event bus",400,200),N("inv","Inventory",680,90),N("noti","Notifications",680,200),N("loy","Loyalty",680,310)],
+ edges:[["ord","bus"],["bus","inv"],["bus","noti"],["bus","loy"]],
+ steps:[
+  {say:"The fix: services are split by business capability and integrate through events.",send:[["ord","bus","OrderPlaced"],{par:[["bus","inv","event"],["bus","noti","event"],["bus","loy","event"]]}]},
+  {say:"Order adds a field to its event and deploys on its own. Contract tests show no consumer relied on the old shape.",tag:{ord:"deployed alone ✓"}},
+  {say:"Inventory rewrites its internals and also deploys alone, on a different day.",tag:{inv:"deployed alone ✓"}}
+ ]},
+{id:"ap-shared-database",name:"Shared Database",cat:"anti",ex:[],
+ intent:"Several services reading and writing the same tables, so the schema becomes a hidden contract that nobody owns.",
+ when:"Spot it when a migration needs sign-off from three teams, or a column rename breaks a service whose team never heard about it.",
+ analogy:"Three departments writing in one shared notebook. When one team reorganises the pages, the others can't find anything.",
+ tip:"One database per service. Other services ask through the owner's API or keep their own read model built from its events.",
+ code:`<span class="c">// Inventory owns its schema; others ask through its API or listen to its events</span>
+GET /inventory/stock/{sku}                       <span class="c">// read through the owner</span>
+@KafkaListener(topics = "grocery.inventory.stock.changed.v1")
+<span class="k">void</span> on(StockChanged e) { localView.update(e); } <span class="c">// or keep a local read model</span>`,
+ nodes:[N("ord","Order service",120,90),N("rep","Reporting",120,310),N("inv","Inventory service",420,200),N("invdb","Inventory DB",700,200,{sub:"owned by Inventory"})],
+ edges:[["ord","inv"],["inv","rep"],["inv","invdb"]],
+ steps:[
+  {say:"The fix: only Inventory touches its own tables.",send:[["inv","invdb","SQL"]]},
+  {say:"Order asks through the API, and Reporting builds its own view from Inventory's events.",send:[["ord","inv","GET /stock/MANGO"],["inv","ord","42"],["inv","rep","StockChanged"]]},
+  {say:"Inventory renames a column. Only its own code changes, and nobody else breaks.",tag:{invdb:"column renamed",ord:"unaffected ✓",rep:"unaffected ✓"}}
+ ]},
+{id:"ap-chatty-services",name:"Chatty Services",cat:"anti",ex:[],
+ intent:"Fine-grained APIs that force a client to make dozens of calls for one screen, multiplying latency and the chance that one of them fails.",
+ when:"Spot it when a page load fires 30–40 requests, often one per item, and mobile users see slow screens and partial failures.",
+ analogy:"Phoning the supermarket once for every item on your list instead of handing over the whole list.",
+ tip:"Offer coarse-grained APIs for real use cases: a BFF or Facade per screen, batch endpoints, and caching for data that rarely changes.",
+ code:`<span class="c">// BFF: one coarse call per screen, batched and cached behind it</span>
+@GetMapping("/home") HomePage home(@AuthenticationPrincipal User u) {
+  <span class="k">var</span> products = catalog.getAll(featuredIds);    <span class="c">// one batch call, not 20</span>
+  <span class="k">return</span> <span class="k">new</span> HomePage(products, cart.summary(u), offers.cached());
+}`,
+ nodes:[N("app","Mobile app",110,200,{kind:"client"}),N("bff","Home BFF",400,200),N("cat","Catalog",690,90),N("cart","Cart",690,200),N("off","Offers",690,310,{sub:"cached"})],
+ edges:[["app","bff"],["bff","cat"],["bff","cart"],["bff","off"]],
+ steps:[
+  {say:"The fix: the app makes one call to a BFF that returns the whole home screen.",send:[["app","bff","GET /home"]]},
+  {say:"Inside the data centre, the BFF batches 20 product lookups into one call and reads offers from a cache.",send:[{par:[["bff","cat","getAll(20 ids)"],["bff","cart","summary"],["bff","off","cache hit"]]}]},
+  {say:"One round trip over the mobile network: the screen loads in 300 ms.",send:[["bff","app","HomePage"]],tag:{app:"1 call · 300 ms ✓"}}
+ ]},
+{id:"ap-sync-chain",name:"Synchronous Call Chains",cat:"anti",ex:[],
+ intent:"A request that blocks on A → B → C → D in sequence, so availability is the product of all of them and one slow service backs up the whole chain.",
+ when:"Spot it in traces with long staircases of nested calls, and incidents where a non-essential service (email, loyalty) takes down checkout.",
+ analogy:"A relay race where every runner must wait for the next one to finish before they can stop running.",
+ tip:"Call synchronously only for what the response truly needs, with timeouts and circuit breakers. Everything else happens asynchronously through events.",
+ code:`<span class="c">// checkout waits only for what it truly needs, with a timeout and a breaker</span>
+@CircuitBreaker(name = "payments") @TimeLimiter(name = "payments")   <span class="c">// 2 s</span>
+CompletableFuture&lt;Payment&gt; pay(Order o) { ... }
+outbox.save(<span class="k">new</span> OrderPlaced(o.id()));           <span class="c">// loyalty and email react later</span>`,
+ nodes:[N("co","Checkout",120,200),N("pay","Payments",420,80,{sub:"breaker closed"}),N("bus","Event bus",420,290),N("loy","Loyalty",690,210),N("mail","Email",690,350)],
+ edges:[["co","pay"],["co","bus"],["bus","loy"],["bus","mail"]],
+ steps:[
+  {say:"The fix: checkout calls only Payments synchronously, with a 2-second timeout and a circuit breaker.",send:[["co","pay","charge (2 s max)"],["pay","co","ok"]]},
+  {say:"Loyalty points and the confirmation email happen asynchronously, triggered by an event.",send:[["co","bus","OrderPlaced"],{par:[["bus","loy","event"],["bus","mail","event"]]}]},
+  {say:"Loyalty goes down. Orders still succeed, and the points are added when it comes back.",tag:{loy:"down · catches up later",co:"orders succeed ✓"}}
+ ]},
+{id:"ap-dual-writes",name:"Dual Writes",cat:"anti",ex:[],
+ intent:"Writing to two systems (the database and a message broker, or two services) as separate steps, so a failure between them leaves them disagreeing.",
+ when:"Spot it in code that saves a row and then calls kafkaTemplate.send(...) or another service, and in orders that exist but never trigger downstream work.",
+ analogy:"Paying for a parcel and posting the label separately. If the post office closes in between, you've paid and nothing is sent.",
+ tip:"Use a transactional outbox: write the event to an outbox table in the same transaction, and let a relay or CDC (Debezium) publish it with retries.",
+ code:`@Transactional
+<span class="k">public</span> <span class="k">void</span> place(Order o) {
+  orders.save(o);
+  outbox.save(<span class="k">new</span> OutboxEvent("grocery.order.placed.v1", o.id()));  <span class="c">// same transaction</span>
+}
+<span class="c">// a relay (or Debezium CDC) publishes outbox rows to Kafka, retrying until it succeeds</span>`,
+ nodes:[N("svc","Order service",120,200),N("db","Orders DB",400,200,{sub:"orders + outbox"}),N("relay","Outbox relay",690,90),N("kafka","Kafka",690,310)],
+ edges:[["svc","db"],["relay","db"],["relay","kafka"]],
+ steps:[
+  {say:"The fix: the order and its event are written in the same database transaction, so either both exist or neither does.",send:[["svc","db","order + outbox row (1 tx)"]],tag:{db:"both or neither"}},
+  {say:"Kafka is down for a minute. The outbox row simply waits.",send:[["relay","db","poll"]],tag:{kafka:"down",relay:"retrying"}},
+  {say:"Kafka comes back and the relay publishes the event. Nothing was lost.",send:[["relay","kafka","OrderPlaced"]],tag:{kafka:"event delivered ✓",db:"outbox row sent"}}
+ ]},
+{id:"ap-retry-storm",name:"Retry Storms",cat:"anti",ex:[],
+ intent:"Retries at every layer with no backoff, so a slow dependency receives many times its normal load at exactly the moment it can least handle it.",
+ when:"Spot it in a struggling service whose request rate jumps when it slows down, and retry settings in the client, the gateway and the service at once.",
+ analogy:"A crowd at a jammed door where everyone pushes harder the longer it takes. The door stays jammed.",
+ tip:"Retry in one layer only, with exponential backoff and jitter, a retry budget and a circuit breaker. Every other layer fails fast.",
+ code:`<span class="c">// retry in ONE layer, with backoff + jitter; the other layers fail fast</span>
+RetryConfig.custom().maxAttempts(3)
+    .intervalFunction(IntervalFunction.ofExponentialRandomBackoff(100, 2.0, 0.5))
+    .build();
+CircuitBreakerConfig.custom().failureRateThreshold(50).build();   <span class="c">// stop when it's sick</span>`,
+ nodes:[N("app","App",100,200,{kind:"client",sub:"no retry"}),N("gw","Gateway",300,200,{sub:"no retry"}),N("svc","Order service",510,200,{sub:"3 tries + jitter"}),N("inv","Inventory",710,200,{sub:"healthy"})],
+ edges:[["app","gw"],["gw","svc"],["svc","inv"]],
+ steps:[
+  {say:"The fix: only the order service retries, with exponential backoff and jitter. The app and the gateway don't.",on:["svc"]},
+  {say:"Inventory slows down. Each request causes at most 3 calls, spread out over time.",send:[["app","gw","request"],["gw","svc","request"],["svc","inv","try 1"],["svc","inv","try 2 (+150 ms)"],["svc","inv","try 3 (+420 ms)"]],tag:{inv:"3 calls / request"}},
+  {say:"Failures keep coming, so the circuit breaker opens and calls stop, giving Inventory room to recover.",send:[["svc","gw","fail fast"]],tag:{svc:"breaker open",inv:"recovering ✓"}}
+ ]},
+{id:"ap-missing-idempotency",name:"Missing Idempotency",cat:"anti",ex:[],
+ intent:"Operations that do their work again every time a request is repeated, even though retries and at-least-once delivery make repeats normal.",
+ when:"Spot it in duplicate charges or duplicate orders after timeouts, and in consumers that can't tell a redelivered message from a new one.",
+ analogy:"A lift button that calls a new lift every time it's pressed. Impatient people end up summoning the whole bank.",
+ tip:"Accept an Idempotency-Key on mutating endpoints, store the result against it, and de-duplicate messages by id. Repeats then return the first result.",
+ code:`@PostMapping("/payments")
+Payment pay(@RequestHeader("Idempotency-Key") String key, @RequestBody Charge c) {
+  <span class="k">return</span> store.findByKey(key)                       <span class="c">// seen before? return the same result</span>
+      .orElseGet(() -&gt; store.save(key, gateway.charge(c)));
+}`,
+ nodes:[N("app","Mobile app",110,200,{kind:"client"}),N("pay","Payment service",420,200,{sub:"keys seen: –"}),N("card","Card network",700,200)],
+ edges:[["app","pay"],["pay","card"]],
+ steps:[
+  {say:"The fix: the app sends an Idempotency-Key with the payment.",send:[["app","pay","POST key=K1"],["pay","card","charge ₹500"]],tag:{pay:"K1 → charged"}},
+  {say:"The response is lost on a flaky network, so the app retries with the same key.",send:[["app","pay","retry key=K1"]],tag:{app:"timed out, retrying"}},
+  {say:"The service has seen K1 and returns the first result. The card is charged once.",send:[["pay","app","same payment"]],tag:{card:"charged once ✓"}}
+ ]},
+{id:"ap-silent-defaults",name:"Silent Defaults",cat:"anti",ex:[],
+ intent:"Treating unknown values as a safe default (unknown status codes as success, a catch-all default branch) so new cases slip through unnoticed.",
+ when:"Spot it in default -> APPROVED, else return true, and in losses or corrupted data discovered months after a partner added a new code.",
+ analogy:"A guard who waves through anyone whose pass they don't recognise, on the theory that it's probably fine.",
+ tip:"Fail loudly. Map known values explicitly, throw and alert on unknown ones, and prefer exhaustive switches over enums so the compiler flags new cases.",
+ code:`PaymentStatus status = switch (gatewayCode) {
+  <span class="k">case</span> "00" -&gt; APPROVED;
+  <span class="k">case</span> "05", "51" -&gt; DECLINED;
+  <span class="k">default</span> -&gt; <span class="k">throw</span> <span class="k">new</span> UnknownGatewayCode(gatewayCode);   <span class="c">// fail loudly + alert</span>
+};`,
+ nodes:[N("gw","Payment gateway",120,200),N("map","Status mapping",420,200,{sub:"known codes only"}),N("ord","Order",700,90),N("alert","On-call alert",700,310,{kind:"client"})],
+ edges:[["gw","map"],["map","ord"],["map","alert"]],
+ steps:[
+  {say:"The fix: every known code is mapped explicitly, and anything else is an error.",on:["map"]},
+  {say:"The gateway starts sending a new code, P1, for payments held for review.",send:[["gw","map","code P1"]]},
+  {say:"The mapping throws, the order isn't shipped, and an alert reaches the on-call engineer the same day.",send:[["map","alert","UnknownGatewayCode P1"]],tag:{ord:"held, not shipped ✓"}}
+ ]},
+{id:"ap-client-trusted-state",name:"Client-Trusted State",cat:"anti",ex:[],
+ intent:"Trusting prices, roles or other important state sent back by the client in cookies, hidden fields or unsigned tokens.",
+ when:"Spot it in carts that store prices in the browser, isAdmin flags in cookies, and orders whose totals don't match the catalogue.",
+ analogy:"A shop that lets customers write their own price tags at the till.",
+ tip:"Keep authoritative state on the server and recompute it every time. Anything that must travel through the client is signed (HMAC) and verified on return.",
+ code:`<span class="c">// the cart holds SKUs and quantities; the server prices it every time</span>
+<span class="k">long</span> total = cart.lines().stream()
+    .mapToLong(l -&gt; catalog.price(l.sku()) * l.qty())   <span class="c">// server-side price</span>
+    .sum();
+<span class="c">// any state that must travel is signed: HMAC-SHA256 over the payload, checked on return</span>`,
+ nodes:[N("user","Browser",110,200,{kind:"client"}),N("api","Checkout API",420,200,{sub:"prices on the server"}),N("cat","Catalog",700,200,{sub:"MANGO ₹120"})],
+ edges:[["user","api"],["api","cat"]],
+ steps:[
+  {say:"The fix: the browser sends only SKUs and quantities.",send:[["user","api","MANGO × 2"]]},
+  {say:"The server looks the price up itself.",send:[["api","cat","price(MANGO)"],["cat","api","₹120"]],tag:{api:"total ₹240"}},
+  {say:"A tampered request with price=1 changes nothing, because the server never reads it. The total is still ₹240.",send:[["user","api","MANGO × 2, price=1"]],tag:{api:"total ₹240 ✓"}}
+ ]},
 /* ───────── system design ───────── */
 {id:"sd-consistent-hashing",name:"Consistent Hashing",cat:"lld",ex:[],
  repoLinks:[["ConsistentHashRing.java","https://github.com/khiruashish/java-design-pattern/blob/main/code/lld/src/main/java/com/handbook/lld/systemdesign/ConsistentHashRing.java"],["demo output","https://github.com/khiruashish/java-design-pattern/blob/main/code/outputs/lld/systemdesign/ConsistentHashingDemo.txt"]],
@@ -3796,6 +4103,141 @@ PICK.o.push(
   {t:"Old code nobody dares to delete",p:"ap-lava-flow"}]}});
 PICK.o.find(o=>o.t==="Practise an LLD interview problem").n.o.push({t:"Consistent hashing: spreading keys over cache nodes",p:"sd-consistent-hashing"});
 
+/* ───────── concurrency + distributed anti-patterns: code lines, the anti-pattern, picker ───────── */
+Object.assign(HL,{
+"ap-unbounded-queue":[[1,2],[3],[2],[1]],
+"ap-dcl-volatile":[[0],[3,4],[2,5]],
+"ap-io-under-lock":[[0],[0],[1,2,3]],
+"ap-shared-mutable":[[0,1,2],[5],[4,5]],
+"ap-busy-waiting":[[0,2],[4],[2]],
+"ap-if-wait":[[1],[0],[1,2]],
+"ap-common-pool":[[0,1],[1],[2]],
+"ap-removed-limits":[[0],[1,2,3],[4]],
+"ap-threadlocal-leak":[[0,1,2],[2],[2,3]],
+"ap-distributed-monolith":[[0,1],[2,3],[2]],
+"ap-shared-database":[[0],[1,2,3],[0]],
+"ap-chatty-services":[[1],[2,3],[3]],
+"ap-sync-chain":[[1,2],[3],[3]],
+"ap-dual-writes":[[0,2,3],[5],[5]],
+"ap-retry-storm":[[0,1,2],[1,2],[4]],
+"ap-missing-idempotency":[[1,4],[1],[2,3]],
+"ap-silent-defaults":[[0,1,2],[3],[3]],
+"ap-client-trusted-state":[[0],[1,2,3],[2]]
+});
+Object.assign(NAIVE,{
+"ap-unbounded-queue":{nodes:[N("prod","Order events",110,200,{kind:"client"}),N("q","LinkedBlockingQueue",400,200,{sub:"no capacity"}),N("heap","JVM heap",690,200,{sub:"40% used"})],
+ edges:[["prod","q"],["q","heap"]],
+ steps:[{say:"The anti-pattern: Executors.newFixedThreadPool uses an unbounded LinkedBlockingQueue.",on:["q"]},
+  {say:"A sale spike: tasks arrive faster than the workers finish them, and the queue just keeps growing.",send:[["prod","q","submit ×50,000"]],tag:{q:"2,000,000 waiting",heap:"92% used"}},
+  {say:"The heap fills, the JVM spends its time collecting garbage, then dies with OutOfMemoryError, losing every queued task.",tag:{heap:"OutOfMemoryError ✗"}}]},
+"ap-dcl-volatile":{nodes:[N("t1","Thread A",110,110,{kind:"client"}),N("t2","Thread B",110,300,{kind:"client"}),N("inst","instance",420,200,{sub:"not volatile"}),N("cfg","Config",700,200,{sub:"constructor running"})],
+ edges:[["t1","inst"],["t2","inst"],["inst","cfg"]],
+ steps:[{say:"The anti-pattern: the same double null check, but instance isn't volatile.",on:["inst"]},
+  {say:"Thread A starts building the Config. The JIT is allowed to publish the reference before the constructor has set the fields.",send:[["t1","inst","assign first"],["inst","cfg","fields later"]],tag:{inst:"→ half-built Config"}},
+  {say:"Thread B sees a non-null reference, skips the lock and reads timeout = 0. It happens rarely, and only under load.",send:[["t2","inst","read"],["inst","t2","half-built Config"]],tag:{t2:"timeout = 0 ✗"}}]},
+"ap-io-under-lock":{nodes:[N("ref","Refresher",110,90,{kind:"client"}),N("api","Price API",110,310,{sub:"800 ms per call"}),N("cache","Price cache",420,200,{sub:"lock free"}),N("rd","Checkout readers",700,200,{kind:"client"})],
+ edges:[["ref","api"],["ref","cache"],["rd","cache"]],
+ steps:[{say:"The anti-pattern: the refresher takes the write lock, then calls the price API.",send:[["ref","cache","lock"]],tag:{cache:"LOCKED"}},
+  {say:"The API call takes 800 ms, and the lock is held the whole time.",send:[["ref","api","fetchAll() …"]],tag:{api:"800 ms"}},
+  {say:"Every checkout read waits behind it. Latency spikes on every refresh, and a hung API freezes checkout.",send:[["rd","cache","get(MANGO) waits"]],tag:{rd:"p99 +800 ms ✗"}}]},
+"ap-shared-mutable":{nodes:[N("t1","Thread A",110,110,{kind:"client"}),N("t2","Thread B",110,300,{kind:"client"}),N("list","ArrayList lines",450,200,{sub:"shared · unsynchronised"})],
+ edges:[["t1","list"],["t2","list"]],
+ steps:[{say:"The anti-pattern: two threads add to the same ArrayList with no coordination.",on:["list"]},
+  {say:"Both read size = 0, and both write into slot 0.",send:[{par:[["t1","list","add(milk)"],["t2","list","add(eggs)"]]}]},
+  {say:"One line vanishes (or the list throws ArrayIndexOutOfBoundsException): an 'impossible' result that never shows up in tests.",tag:{list:"1 line, eggs lost ✗"}}]},
+"ap-busy-waiting":{nodes:[N("w","Request thread",110,200,{kind:"client"}),N("flag","boolean ready",420,200,{sub:"false"}),N("loader","Catalog loader",700,200,{sub:"loading…"})],
+ edges:[["w","flag"],["loader","flag"]],
+ steps:[{say:"The anti-pattern: the request thread spins in while (!ready) {} until the flag flips.",send:[["w","flag","ready? no"]],tag:{w:"spinning"}},
+  {say:"It checks hundreds of millions of times a second, keeping a whole core busy doing nothing.",send:[["w","flag","ready? no ×10⁸"]],tag:{w:"100% CPU"}},
+  {say:"With a few such threads the loader gets less CPU, so the wait gets longer. Without volatile, the loop may never see the change at all.",tag:{loader:"starved, slower ✗"}}]},
+"ap-if-wait":{nodes:[N("c1","Consumer 1",110,110,{kind:"client"}),N("c2","Consumer 2",110,300,{kind:"client"}),N("q","queue",420,200,{sub:"empty"}),N("p","Producer",700,200)],
+ edges:[["c1","q"],["c2","q"],["p","q"]],
+ steps:[{say:"The anti-pattern: if (queue.isEmpty()) queue.wait(); then remove().",send:[["c1","q","wait()"],["c2","q","wait()"]]},
+  {say:"One item arrives, and notifyAll() wakes both consumers.",send:[["p","q","put + notifyAll()"],{par:[["q","c1","wake"],["q","c2","wake"]]}],tag:{q:"1 item"}},
+  {say:"Consumer 1 takes the item. Consumer 2 doesn't re-check, and calls remove() on an empty queue.",send:[["c1","q","remove()"],["c2","q","remove()"]],tag:{q:"empty",c2:"NoSuchElementException ✗"}}]},
+"ap-common-pool":{nodes:[N("req","Checkout tasks",110,90,{kind:"client"}),N("api","Price API",700,200,{sub:"fast"}),N("cpu","Search page",110,310,{kind:"client",sub:"parallel stream"}),N("common","Common pool",420,200,{sub:"7 threads"})],
+ edges:[["req","common"],["common","api"],["cpu","common"]],
+ steps:[{say:"The anti-pattern: supplyAsync(() -> priceApi.fetch(sku)) with no executor runs in the shared common pool.",send:[["req","common","supplyAsync(fetch)"],["common","api","fetch"]]},
+  {say:"The price API slows down, and all 7 common-pool threads block waiting for it.",tag:{api:"3 s per call",common:"7 / 7 blocked"}},
+  {say:"The search page's parallel stream uses the same pool, so it freezes too, even though it never calls the API.",send:[["cpu","common","parallel sort waits"]],tag:{cpu:"frozen ✗"}}]},
+"ap-removed-limits":{nodes:[N("vt","10,000 virtual threads",140,200,{kind:"client"}),N("db","Database",600,200,{sub:"max 100 connections"})],
+ edges:[["vt","db"]],
+ steps:[{say:"The anti-pattern: moving to virtual threads removes the 200-thread pool that used to cap concurrency, and nothing replaces it.",on:["vt"]},
+  {say:"All 10,000 tasks hit the database at once.",send:[["vt","db","10,000 queries"]]},
+  {say:"The database runs out of connections and starts refusing everyone, checkout included.",tag:{db:"too many connections ✗"}}]},
+"ap-threadlocal-leak":{nodes:[N("a","Request A",110,110,{kind:"client",sub:"tenant: acme"}),N("b","Request B",110,300,{kind:"client",sub:"no tenant header"}),N("th","Pooled thread 7",420,200,{sub:"context empty"}),N("db","Orders query",700,200)],
+ edges:[["a","th"],["b","th"],["th","db"]],
+ steps:[{say:"The anti-pattern: a filter sets a ThreadLocal tenant and never removes it.",send:[["a","th","CTX.set(acme)"]],tag:{th:"tenant = acme"}},
+  {say:"Request A finishes, but the pooled thread keeps the value.",tag:{th:"still acme"}},
+  {say:"Request B lands on the same thread with no tenant header, and is shown acme's orders.",send:[["b","th","handle()"],["th","db","WHERE tenant = acme"]],tag:{b:"sees acme's orders ✗"}}]},
+"ap-distributed-monolith":{nodes:[N("lib","shared-dto.jar",400,200,{sub:"v1.4"}),N("ord","Order",130,90),N("inv","Inventory",130,310),N("noti","Notifications",680,90),N("loy","Loyalty",680,310)],
+ edges:[["ord","lib"],["inv","lib"],["noti","lib"],["loy","lib"]],
+ steps:[{say:"The anti-pattern: every service depends on one shared DTO library and calls the others synchronously.",on:["lib"]},
+  {say:"Order renames one field in the shared library, and all four services must rebuild.",send:[{par:[["lib","ord","rebuild"],["lib","inv","rebuild"],["lib","noti","rebuild"],["lib","loy","rebuild"]]}],tag:{lib:"v1.5: field renamed"}},
+  {say:"They have to deploy together on one release night: all the costs of microservices and none of the benefits.",tag:{ord:"4 repos, 1 release night ✗"}}]},
+"ap-shared-database":{nodes:[N("ord","Order service",150,90),N("inv","Inventory service",150,200),N("rep","Reporting",150,310),N("db","Shared DB",600,200,{sub:"stock table"})],
+ edges:[["ord","db"],["inv","db"],["rep","db"]],
+ steps:[{say:"The anti-pattern: Order, Inventory and Reporting all read and write the same stock table.",send:[{par:[["ord","db","SQL"],["inv","db","SQL"],["rep","db","SQL"]]}]},
+  {say:"Inventory renames qty to on_hand in a migration.",send:[["inv","db","rename column"]],tag:{db:"qty → on_hand"}},
+  {say:"Order and Reporting break in production, and their teams never saw the change coming.",tag:{ord:"SQL error ✗",rep:"SQL error ✗"}}]},
+"ap-chatty-services":{nodes:[N("app","Mobile app",120,200,{kind:"client"}),N("cat","Catalog",560,90),N("cart","Cart",560,200),N("off","Offers",560,310)],
+ edges:[["app","cat"],["app","cart"],["app","off"]],
+ steps:[{say:"The anti-pattern: the home screen calls each service directly, one item at a time.",send:[["app","cat","getProduct(1)"],["app","cat","getProduct(2)"]]},
+  {say:"Forty calls go over the mobile network.",send:[{par:[["app","cat","×20"],["app","cart","×10"],["app","off","×10"]]}],tag:{app:"40 calls"}},
+  {say:"At 80 ms each the screen takes over 3 seconds, and if any one call fails the screen shows an error.",tag:{app:"3.2 s · fails if any fails ✗"}}]},
+"ap-sync-chain":{nodes:[N("a","Checkout",100,200),N("b","Payments",300,200),N("c","Loyalty",500,200),N("d","Email",700,200)],
+ edges:[["a","b"],["b","c"],["c","d"]],
+ steps:[{say:"The anti-pattern: Checkout → Payments → Loyalty → Email, each waiting for the next to answer.",send:[["a","b","call"],["b","c","call"],["c","d","call"]]},
+  {say:"Each service is 99.5% available, so the chain is only about 98% available, and the latencies add up.",tag:{a:"99.5%⁴ ≈ 98%"}},
+  {say:"Email slows down. Threads pile up all the way back, and checkout stops taking orders.",tag:{d:"slow",c:"threads stuck",a:"checkout down ✗"}}]},
+"ap-dual-writes":{nodes:[N("svc","Order service",120,200),N("db","Orders DB",420,90),N("kafka","Kafka",420,310),N("inv","Inventory",700,310)],
+ edges:[["svc","db"],["svc","kafka"],["kafka","inv"]],
+ steps:[{say:"The anti-pattern: save the order, then publish to Kafka as a separate step.",send:[["svc","db","save order"]],tag:{db:"order saved"}},
+  {say:"Kafka is unavailable, so the publish fails after the database has already committed.",send:[["svc","kafka","publish"],["kafka","svc","timeout"]],tag:{kafka:"publish failed"}},
+  {say:"The order exists but the event doesn't. Inventory never reserves the stock, and the order is stuck.",tag:{inv:"never told ✗"}}]},
+"ap-retry-storm":{nodes:[N("app","App",100,200,{kind:"client",sub:"retries 5×"}),N("gw","Gateway",300,200,{sub:"retries 3×"}),N("svc","Order service",510,200,{sub:"retries 3×"}),N("inv","Inventory",710,200,{sub:"slow"})],
+ edges:[["app","gw"],["gw","svc"],["svc","inv"]],
+ steps:[{say:"The anti-pattern: the app, the gateway and the service each retry, immediately and with no backoff.",on:["app","gw","svc"]},
+  {say:"Inventory slows down. One user action becomes 5 × 3 × 3 = 45 calls.",send:[["app","gw","×5"],["gw","svc","×15"],["svc","inv","×45"]],tag:{inv:"45× the load"}},
+  {say:"The extra load makes Inventory slower still, which triggers more retries. A slowdown becomes an outage.",tag:{inv:"down ✗"}}]},
+"ap-missing-idempotency":{nodes:[N("app","Mobile app",110,200,{kind:"client"}),N("pay","Payment service",420,200,{sub:"no key"}),N("card","Card network",700,200)],
+ edges:[["app","pay"],["pay","card"]],
+ steps:[{say:"The anti-pattern: payment requests carry no key, so the service can't recognise a repeat.",send:[["app","pay","POST ₹500"],["pay","card","charge ₹500"]]},
+  {say:"The response times out, so the app retries.",send:[["app","pay","retry ₹500"],["pay","card","charge ₹500"]],tag:{app:"timed out, retrying"}},
+  {say:"The customer is charged twice, and support has to issue a refund.",tag:{card:"charged ₹1,000 ✗"}}]},
+"ap-silent-defaults":{nodes:[N("gw","Payment gateway",120,200),N("map","Status mapping",420,200,{sub:"default -> APPROVED"}),N("ord","Order",700,90),N("fin","Finance",700,310,{kind:"client"})],
+ edges:[["gw","map"],["map","ord"]],
+ steps:[{say:"The anti-pattern: default -> APPROVED in the status switch.",on:["map"]},
+  {say:"The gateway introduces code P1 for payments held for review. It's mapped to APPROVED, and the order ships.",send:[["gw","map","code P1"],["map","ord","APPROVED"]],tag:{ord:"shipped"}},
+  {say:"The held payments are later reversed, after the goods are gone. Finance finds the leak months later.",tag:{fin:"₹4.2 lakh lost ✗"}}]},
+"ap-client-trusted-state":{nodes:[N("user","Browser",110,200,{kind:"client",sub:"cart cookie with prices"}),N("api","Checkout API",450,200,{sub:"trusts the price field"})],
+ edges:[["user","api"]],
+ steps:[{say:"The anti-pattern: the cart cookie holds prices, and the server trusts them.",send:[["user","api","MANGO × 2 @ ₹120"]]},
+  {say:"A user edits the cookie in the browser's developer tools.",tag:{user:"price = 1"}},
+  {say:"The order goes through at ₹2. Nobody notices until stock counts stop matching revenue.",send:[["user","api","MANGO × 2 @ ₹1"]],tag:{api:"charged ₹2 ✗"}}]}
+});
+PICK.o.push(
+ {t:"Track down a concurrency bug",h:"concurrency anti-patterns",n:{q:"What are you seeing?",o:[
+  {t:"Memory climbs until OutOfMemoryError under load",p:"ap-unbounded-queue"},
+  {t:"Rare half-initialised objects from a lazy singleton",p:"ap-dcl-volatile"},
+  {t:"Latency spikes while a refresh holds a lock",p:"ap-io-under-lock"},
+  {t:"Lost updates and 'impossible' values",p:"ap-shared-mutable"},
+  {t:"A core at 100% while a thread waits",p:"ap-busy-waiting"},
+  {t:"Rare errors after wait() returns",p:"ap-if-wait"},
+  {t:"Parallel streams freeze when an API is slow",p:"ap-common-pool"},
+  {t:"The database is overwhelmed after a move to virtual threads",p:"ap-removed-limits"},
+  {t:"One user sees another user's context",p:"ap-threadlocal-leak"}]}},
+ {t:"Fix a microservices pain point",h:"distributed-system anti-patterns",n:{q:"What hurts?",o:[
+  {t:"Services must deploy together",p:"ap-distributed-monolith"},
+  {t:"Several services use the same tables",p:"ap-shared-database"},
+  {t:"One screen makes dozens of calls",p:"ap-chatty-services"},
+  {t:"One slow service takes everything down",p:"ap-sync-chain"},
+  {t:"Database and broker disagree after failures",p:"ap-dual-writes"},
+  {t:"Load spikes when a service slows down",p:"ap-retry-storm"},
+  {t:"Duplicate charges after timeouts",p:"ap-missing-idempotency"},
+  {t:"Unknown codes treated as success",p:"ap-silent-defaults"},
+  {t:"Prices or roles trusted from the client",p:"ap-client-trusted-state"}]}});
+
 /* ───────── engine ───────── */
 const $=s=>document.querySelector(s);
 const NS="http://www.w3.org/2000/svg";
@@ -3805,6 +4247,7 @@ const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const EMBED=document.documentElement.classList.contains("embed");
 const Q=new URLSearchParams(location.search);
 const FAM=(Q.get("family")||"").split(",").filter(k=>k&&CATS[k]);
+const SET=(Q.get("set")||"").split(",").map(id=>P.find(p=>p.id===id)).filter(Boolean);
 const byId=id=>P.find(p=>p.id===id);
 let speed=1;
 
@@ -3980,7 +4423,7 @@ function selectPattern(p,{auto=true,push=true}={}){
 }
 function renderNav(){
   $("#cats").innerHTML=Object.entries(CATS).map(([k,c])=>`<button class="cat" style="--cc:var(--c-${k})" data-cat="${k}" aria-pressed="${k===curCat}">${c.name} <small>${P.filter(p=>p.cat===k).length} · ${c.blurb}</small></button>`).join("");
-  $("#chips").innerHTML=(FAM.length?FAM.flatMap(k=>P.filter(p=>p.cat===k)):P.filter(p=>p.cat===curCat)).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur()}">${p.name}</button>`).join("");
+  $("#chips").innerHTML=(SET.length?SET:FAM.length?FAM.flatMap(k=>P.filter(p=>p.cat===k)):P.filter(p=>p.cat===curCat)).map(p=>`<button class="chip" role="listitem" data-id="${p.id}" aria-current="${p===cur()}">${p.name}</button>`).join("");
 }
 $("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(!b)return;selectPattern(P.find(p=>p.cat===b.dataset.cat))});
 $("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selectPattern(byId(b.dataset.id))});
@@ -4184,7 +4627,7 @@ let onVisible=null;
 if(Q.get("pick")){startPick()}
 else if(Q.get("quiz")){startQuiz()}
 else if(Q.get("compare")){const c=startCompare();onVisible=c.autoplayOnce}
-else if(EMBED&&FAM.length){document.documentElement.classList.add("fam");selectPattern(fromHash()||P.find(p=>p.cat===FAM[0]),{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
+else if(EMBED&&(FAM.length||SET.length)){document.documentElement.classList.add("fam");selectPattern(fromHash()||SET[0]||P.find(p=>p.cat===FAM[0]),{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
 else if(EMBED){selectPattern(fromHash()||P[0],{push:false,auto:false});onVisible=()=>{if(main.step===0&&!playing)autoplay()}}
 else selectPattern(fromHash()||P[0],{push:false});
 
